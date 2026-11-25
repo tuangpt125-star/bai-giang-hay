@@ -47,13 +47,15 @@ export function bookRoute(book: Book) {
   };
 }
 
+export const homeUrl = import.meta.env.BASE_URL;
+
 function bookPath(book: Book) {
   const route = bookRoute(book);
-  return `/${route.series}/${route.grade}/${route.book}/`;
+  return `${homeUrl}${route.series}/${route.grade}/${route.book}/`;
 }
 
 export function catalogUrl(book: Book) {
-  return book === defaultBook ? '/' : bookPath(book);
+  return book === defaultBook ? homeUrl : bookPath(book);
 }
 
 export function lessonUrl(book: Book, lesson: Pick<Lesson, 'slug'>) {

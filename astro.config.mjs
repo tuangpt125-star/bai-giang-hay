@@ -4,4 +4,5 @@ import mdx from '@astrojs/mdx';
 export default defineConfig({
   integrations: [mdx()],
   trailingSlash: 'always',
+  base: process.env.ASTRO_BASE || '/',
 });
