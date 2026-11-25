@@ -1,0 +1,111 @@
+---
+interface Props {
+  sameMaterial: boolean;
+}
+
+const { sameMaterial } = Astro.props;
+const samples = sameMaterial ? [
+  { name: 'A', material: 'Sắt', volume: 10, mass: 79 },
+  { name: 'B', material: 'Sắt', volume: 20, mass: 158 },
+  { name: 'C', material: 'Sắt', volume: 30, mass: 237 },
+] : [
+  { name: 'D', material: 'Nhôm', volume: 10, mass: 27 },
+  { name: 'E', material: 'Sắt', volume: 10, mass: 79 },
+  { name: 'F', material: 'Đồng', volume: 10, mass: 89 },
+];
+const format = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 });
+const label = sameMaterial ? 'cùng vật liệu' : 'cùng thể tích';
+---
+<div class="density-investigation" data-density-investigation>
+  <form aria-label={`Ghi kết quả cân mẫu ${label}`}>
+    <table>
+      <caption>Bảng đo các mẫu {label}. Đây là số liệu mô phỏng.</caption>
+      <thead>
+        <tr><th scope="col">Mẫu</th><th scope="col">V (cm³)</th><th scope="col">m (g)</th><th scope="col">m/V (g/cm³)</th></tr>
+      </thead>
+      <tbody>
+        {samples.map(({ name, material, volume, mass }) => (
+          <tr>
+            <th scope="row">
+              <span class="sample-block" style={`--sample-height: ${0.55 + volume / 20}rem`} data-material={material} aria-hidden="true"></span>
+              <span>{name} · {material}</span>
+            </th>
+            <td>{volume}</td>
+            <td>
+              <details>
+                <summary aria-label={`Cân mẫu ${name}`}>Cân mẫu</summary>
+                <span>{mass} g</span>
+              </details>
+            </td>
+            <td>
+              <input data-expected={mass / volume} aria-label={`Tỉ số m trên V của mẫu ${name}, gam trên xentimét khối`} type="text" inputmode="decimal" autocomplete="off" />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    <div hidden data-check-controls>
+      <button type="submit">Kiểm tra bảng</button>
+      <p data-feedback role="status"></p>
+    </div>
+  </form>
+  <p>{sameMaterial
+    ? 'Khi thể tích tăng gấp hai hoặc gấp ba, khối lượng và tỉ số m/V thay đổi thế nào?'
+    : 'Khi thể tích bằng nhau, mẫu nào có khối lượng lớn nhất? Tỉ số m/V xếp theo thứ tự nào?'}</p>
+  <details class="answers">
+    <summary>Đối chiếu kết quả và nhận xét</summary>
+    <ul>
+      {samples.map(({ name, mass, volume }) => (
+        <li>Mẫu {name} có tỉ số {mass} : {volume} = {format.format(mass / volume)} g/cm³.</li>
+      ))}
+    </ul>
+    <p>{sameMaterial
+      ? 'Khối lượng tăng cùng tỉ lệ với thể tích, nên tỉ số m/V của ba mẫu sắt bằng nhau.'
+      : 'Mẫu đồng nặng nhất trong ba mẫu cùng thể tích. Tỉ số m/V tăng theo thứ tự nhôm, sắt, đồng.'}</p>
+  </details>
+</div>
+
+<script>
+  for (const activity of document.querySelectorAll('[data-density-investigation]')) {
+    const form = activity.querySelector('form')!;
+    const inputs = Array.from(form.querySelectorAll<HTMLInputElement>('[data-expected]'));
+    const feedback = form.querySelector('[data-feedback]')!;
+    form.querySelector<HTMLElement>('[data-check-controls]')!.hidden = false;
+
+    form.addEventListener('input', (event) => {
+      if (event.target instanceof HTMLInputElement) event.target.removeAttribute('aria-invalid');
+      feedback.textContent = '';
+    });
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      let correct = 0;
+      for (const input of inputs) {
+        const text = input.value.trim();
+        const value = Number(text.replace(',', '.'));
+        const matches = text !== '' && Math.abs(value - Number(input.dataset.expected)) < 0.001;
+        input.setAttribute('aria-invalid', String(!matches));
+        if (matches) correct++;
+      }
+      feedback.textContent = correct === inputs.length
+        ? 'Cả ba tỉ số đều đúng. Em hãy viết nhận xét rồi đối chiếu.'
+        : `Em đã tính đúng ${correct} trong ${inputs.length} ô. Hãy kiểm tra lại các ô được đánh dấu.`;
+    });
+  }
+</script>
+
+<style>
+  .density-investigation { margin: 1rem 0; padding: .75rem; border: 1px solid var(--border); border-radius: .6rem; background: #faf8ff; }
+  .density-investigation caption { color: var(--ink); }
+  th { background: #f0ebf9; }
+  th, td { overflow-wrap: anywhere; }
+  tbody th { width: 25%; }
+  summary { cursor: pointer; }
+  input { width: 100%; max-width: 4.5rem; min-height: 2.5rem; border: 1px solid #877399; border-radius: .35rem; padding: .2rem; text-align: center; font: inherit; }
+  input[aria-invalid="true"] { border: 2px solid #a12639; background: #fff2f4; }
+  button { min-height: 2.5rem; padding: .3rem .65rem; font: inherit; cursor: pointer; }
+  [data-feedback]:empty { display: none; }
+  .sample-block { display: block; width: 1.65rem; height: var(--sample-height); margin: .2rem auto; border: 1px solid #516178; border-radius: 50% / .24rem; background: linear-gradient(90deg, #6f8093, #aab9c8 45%, #607389); }
+  .sample-block[data-material="Nhôm"] { background: linear-gradient(90deg, #a0a8b3, #f2f5f8 45%, #a5adbb); }
+  .sample-block[data-material="Đồng"] { background: linear-gradient(90deg, #985539, #e2ab87 45%, #9e5539); }
+  .answers { padding: .4rem .6rem; border: 1px solid var(--border); border-radius: .35rem; background: white; }
+</style>
