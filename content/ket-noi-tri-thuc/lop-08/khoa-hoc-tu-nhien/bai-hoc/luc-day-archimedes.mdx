@@ -2,39 +2,64 @@
 title: "Lực đẩy Archimedes"
 ---
 
-<p className="callout"><strong>Mục tiêu.</strong> Dự đoán vật nổi, chìm hoặc lơ lửng. So độ giảm số chỉ lực kế với trọng lượng nước bị chiếm chỗ.</p>
+import BuoyancyLab from '../../../../../src/components/BuoyancyLab.astro';
 
-Khi nâng một vật dưới nước, em có thể thấy tay phải đỡ ít hơn lúc vật ở ngoài không khí. Nước tác dụng lên vật một lực hướng lên gọi là **lực đẩy Archimedes**.
+<div className="lesson-question">
+  <p><strong>Vì sao nắp chai nổi còn viên bi thép chìm?</strong></p>
+  <p>Nước tác dụng lực lên cả hai vật. Em cần so lực đó với lực nào để dự đoán vật đi lên hay xuống?</p>
+</div>
+
+<p className="callout"><strong>Mục tiêu.</strong> Phân tích điều kiện nổi, chìm và lơ lửng. So độ giảm số chỉ lực kế với trọng lượng chất lỏng bị chiếm chỗ, rồi dùng định luật Archimedes để giải thích kết quả.</p>
 
 ## Lực đẩy và điều kiện nổi, chìm
 
-Nếu lực đẩy nhỏ hơn trọng lượng, vật đang chìm trong chất lỏng có xu hướng đi xuống. Nếu lực đẩy lớn hơn trọng lượng, vật có xu hướng đi lên. Khi vật nổi yên trên mặt nước hoặc lơ lửng trong chất lỏng, lực đẩy cân bằng trọng lượng của vật.
+Chất lỏng tác dụng lên vật đặt trong nó một lực thẳng đứng hướng lên, gọi là **lực đẩy Archimedes** Fₐ. Khi thả một vật ngập hoàn toàn và bỏ qua các lực khác, so Fₐ với trọng lượng P hướng xuống.
 
-Khi vật đang ngập hoàn toàn và được thả tự do, so lực đẩy với trọng lượng để dự đoán nó đi lên, đi xuống hay lơ lửng. Với vật đồng chất đặc, cũng có thể so khối lượng riêng của vật với chất lỏng. Một tàu thép có nhiều khoảng rỗng chứa khí, nên khối lượng riêng trung bình của cả tàu có thể nhỏ hơn của nước. Tàu nổi khi lượng nước nó chiếm chỗ có trọng lượng bằng trọng lượng tàu.
+| So sánh hai lực | Điều xảy ra khi thả vật từ trạng thái đứng yên |
+| --- | --- |
+| Fₐ nhỏ hơn P | Vật bắt đầu đi xuống. |
+| Fₐ lớn hơn P | Vật bắt đầu đi lên. |
+| Fₐ bằng P | Vật có thể nằm lơ lửng. |
 
-## Đo lực đẩy bằng hai phép cân
+Khi vật nổi yên, nó chỉ ngập đến mức lực đẩy cân bằng trọng lượng. Một tàu bằng thép có nhiều khoang chứa không khí. Thể tích của cả tàu đủ lớn để khi nổi, tàu chiếm chỗ một lượng nước có trọng lượng bằng trọng lượng của nó.
 
-Chỉnh lực kế về 0, treo vật và ghi số chỉ trong không khí. Đổ nước đến miệng vòi cốc tràn và chờ nước ngừng chảy trước khi nhúng vật. Nhúng vật vào cốc tràn sao cho vật ngập và không chạm bình, rồi ghi chỉ số mới. Hứng lượng nước bị vật đẩy ra và tìm trọng lượng của nó. Trong phép đo ở lớp, hiệu hai số chỉ lực kế gần bằng trọng lượng nước tràn ra. Đặt cốc hứng lên cân và trừ khối lượng cốc rỗng trước khi đổi khối lượng nước thành trọng lượng.
+## Đo với lực kế và bình tràn
 
-| Số đo minh họa | Kết quả |
-| --- | ---: |
-| Lực kế khi vật ở ngoài nước | 2,4 N |
-| Lực kế khi vật chìm trong nước | 1,6 N |
-| Trọng lượng nước tràn ra | 0,8 N |
+**Dụng cụ.** Lực kế có giới hạn đo phù hợp, giá treo, khối mẫu, bình tràn, ống đong, cân điện tử, nước và nước muối đậm đặc.
+
+1. Chỉnh lực kế về 0. Treo vật trong không khí và ghi số chỉ **P**. Đổ nước đến miệng vòi tràn rồi chờ dòng nước dừng.
+2. Hạ vật trong khi vẫn treo trên lực kế. Giữ vật cách đáy và thành bình. Khi lượng nước tràn đạt từng mốc, đọc số chỉ **F**. Độ giảm **P − F** cho biết lực đẩy.
+3. Cân lượng nước tràn, đã trừ khối lượng ống đong hoặc cốc hứng. Đổi khối lượng nước sang trọng lượng. Có thể lấy khoảng 10 N cho mỗi kilôgam khi tính gần đúng.
+4. Lặp lại với nước muối. Giữ thể tích chất lỏng tràn ra bằng nhau khi so hai chất lỏng.
+
+<BuoyancyLab />
+
+| Thể tích tràn ra (cm³) | Lực đẩy trong nước (N) | Trọng lượng nước tràn (N) | Lực đẩy trong nước muối (N) | Trọng lượng nước muối tràn (N) |
+| ---: | ---: | ---: | ---: | ---: |
+| 20 | … | … | … | … |
+| 40 | … | … | … | … |
+| 60 | … | … | … | … |
+| 80 | … | … | … | … |
+
+Ở mỗi hàng, so hai số trong cùng một chất lỏng trước. Sau đó so lực đẩy giữa nước và nước muối ở cùng thể tích tràn ra. Khi vật đã ngập hẳn, thử hạ sâu hơn để xem điều gì thay đổi.
 
 ## Định luật Archimedes
 
-Mặt dưới của một khối chìm nằm sâu hơn mặt trên và chịu áp suất lớn hơn. Kết quả là chất lỏng tác dụng một lực tổng hợp hướng lên. Độ lớn của lực đẩy bằng **trọng lượng phần chất lỏng bị vật chiếm chỗ**. Có thể viết **Fₐ = d × V**, với d là trọng lượng riêng của chất lỏng (N/m³) và V là thể tích phần chìm (m³).
+Độ lớn của lực đẩy bằng **trọng lượng phần chất lỏng bị vật chiếm chỗ**. Ta viết **Fₐ = d × V**, trong đó d là trọng lượng riêng của chất lỏng tính bằng N/m³, còn V là thể tích phần chìm tính bằng m³.
 
-Ví dụ, một vật chiếm chỗ 80 cm³ nước có thể tích phần chìm là 0,000080 m³. Với trọng lượng riêng của nước lấy gần đúng là 10 000 N/m³, lực đẩy bằng 0,80 N. Trong cùng một chất lỏng, nhúng vật chìm dần làm thể tích phần chìm tăng và lực đẩy tăng. Khi vật đã ngập hoàn toàn mà chưa chạm đáy, đưa vật xuống sâu hơn không làm đổi thể tích phần chìm.
+Khối mẫu ngập hẳn chiếm chỗ 80 cm³, tức 0,000080 m³. Với nước có d ≈ 10 000 N/m³, lực đẩy là **0,80 N**. Trong cùng chất lỏng, hạ khối sâu hơn sau khi đã ngập hẳn không làm tăng thể tích phần chìm. Ở cùng phần thể tích chìm, chất lỏng có trọng lượng riêng lớn hơn tạo lực đẩy lớn hơn.
+
+**Vận dụng.** Nặn cùng một lượng đất nặn thành viên đặc rồi thành một chiếc thuyền rỗng. Dự đoán hình nào có thể làm dịch chuyển nhiều nước hơn trước khi nước tràn qua mép. So sánh để giải thích vì sao hình dạng ảnh hưởng đến khả năng nổi.
 
 ## Tự kiểm tra
 
-Một khối được nhúng ngập hoàn toàn trong hai lần, lần thứ hai sâu hơn lần thứ nhất. Cả hai lần đều dùng cùng một bình nước và vật không chạm đáy. So sánh lực đẩy.
+Lực kế chỉ 1,30 N khi khối mẫu treo trong không khí. Khi vật chiếm chỗ 40 cm³ nước, lực kế chỉ 0,90 N. Tính lực đẩy và so với trọng lượng nước tràn nếu lấy d của nước là 10 000 N/m³.
 
-<details>
+<details className="lesson-answer">
   <summary>Xem đáp án</summary>
-  <p>Lực đẩy bằng nhau vì hai lần khối chiếm chỗ cùng một thể tích nước. Em có thể kiểm tra bằng mũi tên lực trong mô phỏng bên dưới.</p>
+  <p>Lực đẩy là 1,30 − 0,90 = 0,40 N. Thể tích nước tràn là 0,000040 m³, có trọng lượng 10 000 × 0,000040 = 0,40 N. Hai giá trị bằng nhau trong mô hình.</p>
 </details>
 
-*Bài đọc tự biên soạn theo chủ đề Bài 17, trang 73–75, Khoa học tự nhiên 8, bộ Kết nối tri thức với cuộc sống.* [Đọc SGK từ trang 73](https://online.pubhtml5.com/ngvcn/wlly/#p=74).
+Có thể thử thêm hoạt động PhET ở cuối bài để thay loại vật và kiểm tra điều kiện nổi hoặc chìm.
+
+*Bài đọc theo mạch kiến thức Bài 17, trang 73–75, SGK Khoa học tự nhiên 8, bộ Kết nối tri thức với cuộc sống.* [Đọc SGK từ trang 73](https://online.pubhtml5.com/ngvcn/wlly/#p=74).

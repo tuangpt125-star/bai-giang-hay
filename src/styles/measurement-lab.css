@@ -1,0 +1,37 @@
+.measurement-lab {
+  margin: 1.15rem 0;
+  padding: clamp(.65rem, 2.4vw, 1.15rem);
+  border: 1px solid var(--lesson-rule);
+  border-radius: .85rem;
+  background: var(--lesson-tint);
+}
+.lesson-text .measurement-lab h3 { color: var(--lesson-deep); margin-top: 0; }
+.measurement-lab .lab-layout { display: grid; gap: .9rem; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+.measurement-lab .lab-panel { min-width: 0; border: 1px solid var(--lesson-rule); border-radius: .6rem; background: white; padding: .65rem .75rem; }
+.measurement-lab .lab-panel + .lab-panel { margin-top: .65rem; }
+.measurement-lab .lab-panel p:first-child { margin-top: 0; }
+.measurement-lab .lab-panel p:last-child { margin-bottom: 0; }
+.measurement-lab .lab-controls label { display: block; font-weight: 650; }
+.measurement-lab :is(select, input:not([type='range']), button) {
+  min-height: 2.65rem;
+  padding: .42rem .6rem;
+  border: 1px solid var(--lesson-rule);
+  border-radius: .45rem;
+  color: var(--ink);
+  background: white;
+  font: inherit;
+}
+.measurement-lab select { display: block; width: 100%; max-width: 16rem; margin: .3rem 0 .65rem; }
+.measurement-lab input[type='range'] { display: block; width: 100%; min-height: 2.5rem; margin: .2rem 0; accent-color: var(--lesson-accent); }
+.measurement-lab button { background: var(--lesson-accent); border-color: transparent; color: #fff; font-weight: 650; }
+.measurement-lab output, .measurement-lab .lab-value { font-family: var(--data-font); font-weight: 500; }
+.measurement-lab .lab-values { margin: 0; }
+.measurement-lab .lab-values div { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .3rem .7rem; padding: .3rem 0; }
+.measurement-lab .lab-values div + div { border-top: 1px solid var(--lesson-rule); }
+.measurement-lab .lab-values dd { margin: 0; color: var(--lesson-accent); }
+.measurement-lab summary { cursor: pointer; font-weight: 650; color: var(--lesson-accent); }
+.measurement-lab .lab-help { font-size: .9rem; color: var(--muted); }
+.measurement-lab .lab-status:empty { display: none; }
+@media (max-width: 620px) {
+  .measurement-lab .lab-layout { grid-template-columns: minmax(0, 1fr); }
+}

@@ -1,0 +1,88 @@
+---
+import '../styles/measurement-lab.css';
+---
+<section class="measurement-lab" data-buoyancy-lab hidden aria-labelledby="buoyancy-lab-title">
+  <h3 id="buoyancy-lab-title">Thí nghiệm ảo · Lực kế và bình tràn</h3>
+  <p>Khối mẫu cao 8 cm, thể tích 80 cm³. Hạ khối từ từ, ghi số chỉ lực kế và trọng lượng chất lỏng tràn ra. Lặp lại với nước muối đậm đặc.</p>
+  <div class="lab-layout">
+    <div class="lab-controls">
+      <label for="buoyancy-liquid">Chất lỏng</label>
+      <select id="buoyancy-liquid">
+        <option value="1000">Nước</option>
+        <option value="1200">Nước muối đậm đặc</option>
+      </select>
+      <label for="immersion-depth">Độ sâu của đáy khối <output data-immersion-depth for="immersion-depth">0 cm</output></label>
+      <input id="immersion-depth" type="range" min="0" max="24" step="2" value="0" />
+      <dl class="lab-values lab-panel" aria-live="polite">
+        <div><dt>Lực kế</dt><dd><output data-spring-reading>1,30 N</output></dd></div>
+        <div><dt>Thể tích tràn ra</dt><dd><output data-spill-volume>0 cm³</output></dd></div>
+        <div><dt>Trọng lượng chất lỏng tràn</dt><dd><output data-spill-weight>0,00 N</output></dd></div>
+      </dl>
+    </div>
+    <figure class="overflow-figure">
+      <div class="overflow-diagram" aria-hidden="true">
+        <div class="overflow-liquid"></div>
+        <div class="overflow-cord"></div>
+        <div class="overflow-block"></div>
+        <div class="overflow-surface"></div>
+      </div>
+      <figcaption>Mặt thoáng nằm ở miệng vòi tràn. Khối luôn treo tự do.</figcaption>
+    </figure>
+  </div>
+  <details class="lab-panel">
+    <summary>Kiểm tra độ giảm số chỉ lực kế</summary>
+    <p data-spring-difference>1,30 N − 1,30 N = 0,00 N.</p>
+  </details>
+  <p class="lab-help">Mô hình dùng g ≈ 10 N/kg và coi thể tích khối không đổi. Vạch vòi tràn giữ mực chất lỏng ở cùng một độ cao.</p>
+</section>
+
+<script>
+  const forceFormat = new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  for (const lab of document.querySelectorAll<HTMLElement>('[data-buoyancy-lab]')) {
+    const fluid = lab.querySelector<HTMLSelectElement>('#buoyancy-liquid')!;
+    const depth = lab.querySelector<HTMLInputElement>('#immersion-depth')!;
+    const diagram = lab.querySelector<HTMLElement>('.overflow-diagram')!;
+    const depthOutput = lab.querySelector<HTMLOutputElement>('[data-immersion-depth]')!;
+    const force = lab.querySelector<HTMLOutputElement>('[data-spring-reading]')!;
+    const volume = lab.querySelector<HTMLOutputElement>('[data-spill-volume]')!;
+    const displacedWeight = lab.querySelector<HTMLOutputElement>('[data-spill-weight]')!;
+    const difference = lab.querySelector<HTMLElement>('[data-spring-difference]')!;
+    const objectWeight = 1.3;
+
+    function update() {
+      const centimetres = depth.valueAsNumber;
+      const displacedVolume = Math.min(centimetres, 8) * 10;
+      const buoyancy = Number(fluid.value) * 10 * displacedVolume / 1_000_000;
+      depthOutput.value = centimetres + ' cm';
+      depth.setAttribute('aria-valuetext', depthOutput.value);
+      force.value = forceFormat.format(objectWeight - buoyancy) + ' N';
+      volume.value = displacedVolume + ' cm³';
+      displacedWeight.value = forceFormat.format(buoyancy) + ' N';
+      difference.textContent = '1,30 N − ' + force.value + ' = ' + displacedWeight.value + '.';
+      diagram.style.setProperty('--block-bottom', (33 + centimetres * 2.2) + '%');
+      diagram.dataset.salt = String(fluid.value === '1200');
+    }
+    depth.addEventListener('input', update);
+    fluid.addEventListener('change', update);
+    update();
+    lab.hidden = false;
+  }
+</script>
+
+<style>
+  .measurement-lab .overflow-figure { margin: 0; }
+  .overflow-diagram {
+    --block-bottom: 33%;
+    position: relative;
+    min-height: 12rem;
+    overflow: hidden;
+    border: 1px solid var(--lesson-rule);
+    border-radius: .65rem;
+    background: white;
+  }
+  .overflow-liquid { position: absolute; inset: 33% 15% 9%; border: 2px solid #317196; background: linear-gradient(#bde8fa, #65accf); }
+  .overflow-diagram[data-salt='true'] .overflow-liquid { background: linear-gradient(#c5e9e0, #68b39d); }
+  .overflow-cord { position: absolute; top: 0; left: 50%; height: calc(var(--block-bottom) - 17.6%); width: 2px; background: #52616f; }
+  .overflow-block { position: absolute; left: 50%; top: var(--block-bottom); width: 24%; height: 17.6%; transform: translate(-50%, -100%); border-radius: .25rem; border: 1px solid #8b461c; background: #e8984d; }
+  .overflow-surface { position: absolute; top: 33%; left: 14%; width: 76%; height: 2px; background: #317196; }
+</style>

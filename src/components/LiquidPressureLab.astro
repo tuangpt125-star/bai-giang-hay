@@ -1,0 +1,100 @@
+---
+import '../styles/measurement-lab.css';
+---
+<section class="measurement-lab" data-liquid-pressure hidden aria-labelledby="liquid-pressure-title">
+  <h3 id="liquid-pressure-title">Thí nghiệm ảo · Đo áp suất trong hai bình</h3>
+  <p>Hai bình đều mở. Dự đoán số đo khi hai đầu dò cùng sâu 20 cm. Sau đó thay riêng độ sâu của đầu dò B hoặc loại chất lỏng của cả hai bình.</p>
+  <div class="lab-layout">
+    <div class="lab-controls">
+      <label for="pressure-fluid">Chất lỏng trong hai bình</label>
+      <select id="pressure-fluid">
+        <option value="1000">Nước</option>
+        <option value="800">Dầu hỏa</option>
+      </select>
+      <label for="probe-b-depth">Độ sâu của đầu dò B <output data-probe-depth for="probe-b-depth">20 cm</output></label>
+      <input id="probe-b-depth" type="range" min="5" max="50" step="5" value="20" />
+      <details class="lab-panel">
+        <summary>Đọc áp suất do chất lỏng gây ra</summary>
+        <dl class="lab-values" aria-live="polite">
+          <div><dt>Bình A · 20 cm</dt><dd><output data-pressure-a>2 kPa</output></dd></div>
+          <div><dt>Bình B · <span data-depth-b>20 cm</span></dt><dd><output data-pressure-b>2 kPa</output></dd></div>
+        </dl>
+      </details>
+    </div>
+    <figure class="liquid-figure">
+      <div class="tank-diagram" aria-hidden="true">
+        <div class="tank" data-shape="straight"><span class="tank-probe"></span></div>
+        <div class="tank" data-shape="tapered" data-tank-b><span class="tank-probe"></span></div>
+        <div>Bình A</div><div>Bình B</div>
+      </div>
+      <figcaption>Hai hình dạng bình. Chấm đỏ là vị trí đầu dò.</figcaption>
+    </figure>
+  </div>
+  <p class="lab-help">Mô hình lấy g ≈ 10 N/kg. Số đo là phần áp suất do chất lỏng, tính từ mặt thoáng.</p>
+</section>
+
+<script>
+  const format = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 });
+  for (const lab of document.querySelectorAll<HTMLElement>('[data-liquid-pressure]')) {
+    const fluid = lab.querySelector<HTMLSelectElement>('#pressure-fluid')!;
+    const depth = lab.querySelector<HTMLInputElement>('#probe-b-depth')!;
+    const diagram = lab.querySelector<HTMLElement>('.tank-diagram')!;
+    const tank = lab.querySelector<HTMLElement>('[data-tank-b]')!;
+    const pressureA = lab.querySelector<HTMLOutputElement>('[data-pressure-a]')!;
+    const pressureB = lab.querySelector<HTMLOutputElement>('[data-pressure-b]')!;
+    const depthOutput = lab.querySelector<HTMLOutputElement>('[data-probe-depth]')!;
+    const depthLabel = lab.querySelector<HTMLElement>('[data-depth-b]')!;
+
+    function update() {
+      const density = Number(fluid.value);
+      const depthB = depth.valueAsNumber;
+      const pressure = (centimetres: number) => format.format(density * 10 * (centimetres / 100) / 1000) + ' kPa';
+      pressureA.value = pressure(20);
+      pressureB.value = pressure(depthB);
+      depthOutput.value = format.format(depthB) + ' cm';
+      depthLabel.textContent = depthOutput.value;
+      depth.setAttribute('aria-valuetext', depthOutput.value);
+      tank.style.setProperty('--probe-position', (depthB / 60 * 100) + '%');
+      diagram.dataset.oil = String(density === 800);
+    }
+    fluid.addEventListener('change', update);
+    depth.addEventListener('input', update);
+    update();
+    lab.hidden = false;
+  }
+</script>
+
+<style>
+  .measurement-lab .liquid-figure { margin: 0; }
+  .tank-diagram {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .4rem;
+    padding: .85rem;
+    border: 1px solid var(--lesson-rule);
+    border-radius: .65rem;
+    background: white;
+    font-weight: 650;
+  }
+  .tank {
+    --probe-position: 33.333%;
+    position: relative;
+    height: 8.5rem;
+    border-block: 2px solid #266288;
+    background: linear-gradient(#bde8fa, #65accf);
+    clip-path: polygon(9% 0, 91% 0, 91% 100%, 9% 100%);
+  }
+  .tank[data-shape='tapered'] { clip-path: polygon(0 0, 100% 0, 66% 100%, 34% 100%); }
+  .tank-diagram[data-oil='true'] .tank { background: linear-gradient(#fff0b1, #e9ac42); border-color: #865708; }
+  .tank-probe {
+    position: absolute;
+    left: 50%;
+    top: var(--probe-position);
+    width: .83rem;
+    height: .83rem;
+    border: 2px solid white;
+    border-radius: 100%;
+    background: #a8263a;
+    transform: translate(-50%, -50%);
+  }
+</style>

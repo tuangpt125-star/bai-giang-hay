@@ -1,0 +1,95 @@
+---
+import '../styles/measurement-lab.css';
+
+interface Props {
+  sample: 'wood' | 'water' | 'stone';
+}
+
+const { sample } = Astro.props;
+const scenarios = {
+  wood: {
+    title: 'Thực hành ảo · Khối gỗ',
+    labels: ['Chiều dài a (cm)', 'Chiều rộng b (cm)', 'Chiều cao c (cm)', 'Số chỉ cân (g)'],
+    trials: [[5.0, 4.0, 2.0, 25.8], [5.1, 4.0, 2.0, 26.0], [4.9, 4.0, 2.0, 26.2]],
+    density: 0.65,
+    explanation: 'Ba thể tích là 40; 40,8 và 39,2 cm³. Trung bình thể tích là 40 cm³, trung bình khối lượng là 26 g. Vì vậy D = 26 : 40 = 0,65 g/cm³.',
+  },
+  water: {
+    title: 'Thực hành ảo · Nước trong bình',
+    labels: ['Cân bình rỗng (g)', 'Cân bình có nước (g)', 'Vạch thể tích (mL)'],
+    trials: [[42, 92, 50], [42, 93, 51], [42, 91, 49]],
+    density: 1,
+    explanation: 'Trừ khối lượng bình rỗng cho từng lượt, ta được khối lượng nước lần lượt là 50 g, 51 g và 49 g. Khối lượng trung bình là 50 g, thể tích trung bình là 50 mL. D = 1 g/mL = 1 g/cm³.',
+  },
+  stone: {
+    title: 'Thực hành ảo · Viên sỏi',
+    labels: ['Cân sỏi khô (g)', 'Trước khi nhúng (mL)', 'Sau khi nhúng (mL)'],
+    trials: [[48, 36, 56], [48, 38, 57], [48, 40, 61]],
+    density: 2.4,
+    explanation: 'Mực nước dâng lần lượt 20 mL, 19 mL và 21 mL. Thể tích trung bình là 20 cm³, khối lượng trung bình là 48 g. D = 48 : 20 = 2,4 g/cm³.',
+  },
+};
+const data = scenarios[sample];
+const format = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 });
+---
+<section class="measurement-lab" aria-labelledby={`practice-${sample}`} data-density-practice={sample} data-density={data.density}>
+  <h3 id={`practice-${sample}`}>{data.title}</h3>
+  <p>Đọc ba lượt đo, ghi số liệu vào vở rồi tính <strong>D = m trung bình / V trung bình</strong>. Các số liệu dưới đây là số liệu mô phỏng.</p>
+  <div class="trial-list">
+    {data.trials.map((trial, index) => (
+      <details class="lab-panel">
+        <summary>Đọc số đo lượt {index + 1}</summary>
+        <dl class="lab-values">
+          {trial.map((value, item) => (
+            <div><dt>{data.labels[item]}</dt><dd class="lab-value">{format.format(value)}</dd></div>
+          ))}
+        </dl>
+      </details>
+    ))}
+  </div>
+  <form class="density-check" data-density-check hidden>
+    <label>Khối lượng riêng (g/cm³)<input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" /></label>
+    <button type="submit">Kiểm tra kết quả</button>
+    <p class="lab-status" role="status"></p>
+  </form>
+  <details class="lab-panel">
+    <summary>Đối chiếu cách tính</summary>
+    <p>{data.explanation}</p>
+  </details>
+</section>
+
+<script>
+  for (const practice of document.querySelectorAll<HTMLElement>('[data-density-practice]')) {
+    const form = practice.querySelector<HTMLFormElement>('[data-density-check]')!;
+    const answer = form.querySelector<HTMLInputElement>('input')!;
+    const status = form.querySelector<HTMLElement>('[role="status"]')!;
+    const expected = Number(practice.dataset.density);
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const text = answer.value.trim().replace(',', '.');
+      const decimal = /^\d+(?:\.\d+)?$/.test(text);
+      const correct = decimal && Math.abs(Number(text) - expected) < .005;
+      answer.setAttribute('aria-invalid', String(!correct));
+      status.textContent = correct
+        ? 'Đúng. Kết quả của em khớp với bộ số liệu này.'
+        : 'Hãy kiểm tra lại khối lượng và thể tích trung bình. Nhập một số theo g/cm³, chẳng hạn 0,75.';
+    });
+    answer.addEventListener('input', () => {
+      answer.removeAttribute('aria-invalid');
+      status.textContent = '';
+    });
+    form.hidden = false;
+  }
+</script>
+
+<style>
+  .trial-list { display: grid; gap: .45rem; }
+  .measurement-lab .trial-list .lab-panel { margin: 0; }
+  .trial-list dl { margin-top: .35rem; }
+  .density-check { display: flex; flex-wrap: wrap; gap: .4rem .6rem; align-items: end; margin: .65rem 0; }
+  .density-check label { font-weight: 650; font-size: .95rem; }
+  .density-check input { display: block; width: 100%; max-width: 13rem; margin-top: .2rem; font-family: var(--data-font); }
+  .density-check input[aria-invalid='true'] { border-color: #9a3046; }
+  .density-check .lab-status { flex-basis: 100%; margin: 0; }
+</style>

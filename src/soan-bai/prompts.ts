@@ -92,27 +92,27 @@ export const prompts: Record<string, LessonPrompt> = {
   },
   '8-14': {
     question: 'Làm sao đo thể tích của viên sỏi có hình dạng bất kì?',
-    activity: 'Cân sỏi khô, đọc mực nước trước và sau khi nhúng chìm. Ghi số đo, tính D và so với một lượt lặp.',
+    activity: 'Chia nhóm đo khối gỗ, nước và sỏi. Ghi ba lượt cho mỗi mẫu, tính khối lượng và thể tích trung bình rồi tính D.',
     takeaway: 'Thể tích sỏi bằng phần tăng của số chỉ bình chia độ. Dùng cùng hệ đơn vị để tính m/V.',
-    visual: 'Hình hai mực nước được ghi V₁, V₂ cùng bảng đo.',
+    visual: 'Bảng ba lượt đo và hình hai vạch nước trước, sau khi nhúng sỏi.',
   },
   '8-15': {
     question: 'Cùng khối hộp, đặt nằm hay đặt đứng làm lớp bột lún sâu hơn?',
-    activity: 'So độ lún khi giữ diện tích rồi tăng lực ép, sau đó khi giữ lực ép rồi giảm diện tích.',
+    activity: 'Dự đoán ba dấu lún rồi ghi F, S và p. So một khối nằm với hai khối chồng, sau đó so một khối nằm với một khối đứng.',
     takeaway: 'Áp suất p = F/S. Để xác định tác dụng của một yếu tố, giữ yếu tố còn lại như cũ.',
     visual: 'Ba cách đặt khối, có nhãn lực ép, diện tích và độ lún.',
   },
   '8-16': {
     question: 'Hai đầu đo cùng độ sâu trong hai bình nước có hình dạng khác nhau sẽ chỉ thế nào?',
-    activity: 'Vẽ hai bình có mặt thoáng chịu cùng áp suất, đặt đầu đo ở cùng độ sâu rồi đổi độ sâu. Giải thích giác mút bằng chênh lệch áp suất.',
+    activity: 'Dùng mô phỏng hai đầu dò. Lần lượt đổi hình dạng bình, độ sâu và loại chất lỏng. Giữ các yếu tố còn lại như cũ rồi so số chỉ.',
     takeaway: 'Trong cùng chất lỏng đứng yên, áp suất ở cùng độ sâu bằng nhau khi áp suất trên mặt thoáng như nhau.',
     visual: 'Hình hai bình với đường ngang đánh dấu cùng độ sâu và một sơ đồ giác mút.',
   },
   '8-17': {
     question: 'Đưa một vật đã chìm hẳn xuống sâu hơn có làm lực đẩy tăng không?',
-    activity: 'So mũi tên lực khi vật chìm một phần, chìm hẳn và chìm hẳn sâu hơn. Liên hệ với phép đo bằng lực kế.',
+    activity: 'Ghi số chỉ lực kế và trọng lượng chất lỏng tràn ở 20, 40, 60 và 80 cm³. Lặp lại với nước muối và so hai cột số liệu.',
     takeaway: 'Lực đẩy bằng trọng lượng phần chất lỏng bị chiếm chỗ. Với vật chìm hẳn trong cùng chất lỏng, thể tích đó giữ nguyên.',
-    visual: 'Ba hình vật ở các mức ngập, có phần chìm và mũi tên lực hướng lên.',
+    visual: 'Sơ đồ lực kế, bình tràn và bảng so sánh số đo trong nước với nước muối.',
   },
   '8-18': {
     question: 'Vì sao cùng một lực, đẩy cửa gần tay nắm thường dễ quay hơn đẩy gần bản lề?',

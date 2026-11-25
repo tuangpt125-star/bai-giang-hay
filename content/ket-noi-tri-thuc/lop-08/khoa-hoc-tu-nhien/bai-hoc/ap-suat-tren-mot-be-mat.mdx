@@ -7,7 +7,10 @@ import PressureSimulation from '../../../../../src/components/PressureSimulation
 
 <p className="callout"><strong>Mục tiêu.</strong> Nhận ra áp lực, dùng thí nghiệm độ lún để tìm hai yếu tố chi phối áp suất và tính áp suất theo p = F/S.</p>
 
-Cùng một khối hộp có thể đặt nằm hoặc đặt đứng trên cát. Em dự đoán ở tư thế nào khối lún sâu hơn?
+<div className="lesson-question">
+  <p><strong>Cùng một khối hộp, đặt nằm hay đặt đứng sẽ lún sâu hơn?</strong></p>
+  <p>Khối hộp có khối lượng như cũ khi lật sang mặt khác. Hãy dự đoán vì sao dấu lún trên cát vẫn có thể thay đổi.</p>
+</div>
 
 ## Áp lực
 
@@ -22,9 +25,29 @@ Làm phẳng một khay bột hoặc cát mịn trước mỗi lượt. Đặt m
 <PressureSetups />
 <PressureSimulation />
 
+Ghi ba kết quả khi đổi từng yếu tố. Có thể đo độ lún trên khay bột thật. Với mô phỏng, ghi so sánh độ lún và số chỉ áp suất.
+
+| Cách đặt | Áp lực (N) | Diện tích (cm²) | Áp suất (kPa) |
+| --- | ---: | ---: | ---: |
+| a · Một khối nằm | 40 | 80 | … |
+| b · Hai khối chồng nhau | 80 | 80 | … |
+| c · Một khối đứng | 40 | 40 | … |
+
+<details className="lesson-answer">
+  <summary>Đối chiếu kết quả quan sát</summary>
+  <p>Từ a sang b, diện tích giữ nguyên và áp lực tăng gấp đôi. Từ a sang c, áp lực giữ nguyên và diện tích giảm một nửa. Trong mô phỏng, cả b và c đều lún sâu hơn a. Ba số chỉ áp suất lần lượt là 5, 10 và 10 kPa.</p>
+</details>
+
 ## Công thức và đơn vị áp suất
 
-**Áp suất** cho biết áp lực trên một đơn vị diện tích. Kí hiệu áp lực là F, diện tích bị ép là S, ta có **p = F/S**. Với F tính bằng niutơn (N) và S tính bằng m², p có đơn vị pascal (Pa), trong đó 1 Pa = 1 N/m².
+**Áp suất** cho biết áp lực trên một đơn vị diện tích. Kí hiệu áp lực là F, diện tích bị ép là S, ta có công thức dưới đây. Với F tính bằng niutơn (N) và S tính bằng m², p có đơn vị pascal (Pa), trong đó 1 Pa = 1 N/m².
+
+<div className="lesson-formula">
+  <math display="block" aria-label="p bằng F chia S">
+    <mi>p</mi><mo>=</mo><mfrac><mi>F</mi><mi>S</mi></mfrac>
+  </math>
+  <p><strong>F</strong> là độ lớn áp lực. <strong>S</strong> là diện tích bị ép.</p>
+</div>
 
 Ngoài Pa, áp suất còn được ghi bằng **kPa**, **atm** hoặc **mmHg**. Có thể dùng các quy đổi 1 kPa = 1 000 Pa, 1 atm ≈ 101,3 kPa và 1 mmHg ≈ 133,3 Pa. Với diện tích, 1 cm² = 0,0001 m².
 

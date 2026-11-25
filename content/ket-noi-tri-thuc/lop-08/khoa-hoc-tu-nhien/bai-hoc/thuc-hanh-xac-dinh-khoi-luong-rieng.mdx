@@ -2,47 +2,66 @@
 title: "Thực hành xác định khối lượng riêng"
 ---
 
-<p className="callout"><strong>Mục tiêu.</strong> Đo khối lượng riêng của khối hộp, chất lỏng và vật rắn không thấm nước có hình dạng bất kì.</p>
+import DensityPractice from '../../../../../src/components/DensityPractice.astro';
 
-Muốn xác định khối lượng riêng của một hòn sỏi, cần cân sỏi và tìm thể tích của nó. Bình chia độ giúp đo thể tích ngay cả khi hòn sỏi có hình dạng không đều.
+<div className="lesson-question">
+  <p><strong>Một viên sỏi méo thì đo thể tích bằng cách nào?</strong></p>
+  <p>Cân được cả viên sỏi lẫn khối gỗ. Thể tích của chúng lại cần hai cách đo khác nhau. Em sẽ dùng dụng cụ nào cho mỗi mẫu?</p>
+</div>
+
+<p className="callout"><strong>Mục tiêu.</strong> Đo khối lượng riêng của một khối hộp, một lượng nước và một vật rắn không thấm nước có hình dạng bất kì. Biết ghi số liệu, tính trung bình và báo cáo kết quả.</p>
 
 ## Đo mẫu hình hộp chữ nhật
 
-Chỉnh cân về 0 rồi cân khối hộp khô. Đo chiều dài, rộng và cao, dùng cùng đơn vị rồi nhân để có thể tích. Tính **D = m/V**. Ví dụ, khối hộp 5 cm × 4 cm × 2 cm có thể tích 40 cm³. Nếu mẫu nặng 28 g, khối lượng riêng là 0,70 g/cm³.
+**Dụng cụ.** Cân điện tử, thước có vạch đến milimét và khối gỗ hình hộp.
 
-## Đo một lượng chất lỏng
+1. Đo chiều dài a, chiều rộng b và chiều cao c. Dùng cùng đơn vị rồi tính **V = a × b × c**.
+2. Đưa cân về 0 và cân khối gỗ khô. Ghi a, b, c, V và m của mỗi lượt.
+3. Làm ba lượt. Tính riêng khối lượng trung bình và thể tích trung bình, rồi chia hai giá trị đó để tìm **D**.
 
-Cân bình rỗng rồi cân bình chứa chất lỏng. Hiệu hai số cân là khối lượng chất lỏng. Đọc thể tích ở vạch ngang tầm mắt rồi lấy khối lượng chia cho thể tích. Ghi cả hai số chỉ cân và đơn vị.
+<DensityPractice sample="wood" />
+
+## Đo một lượng nước
+
+**Dụng cụ.** Cân điện tử, bình chia độ và nước sạch.
+
+1. Cân bình rỗng để ghi m₁. Rót nước vào bình, đọc thể tích V ở đáy mặt cong của nước ngang tầm mắt.
+2. Cân bình có nước để ghi m₂. Khối lượng nước là **m = m₂ − m₁**.
+3. Đo thêm hai lượt. Tính khối lượng nước trung bình và thể tích nước trung bình. Có thể dùng mL hoặc cm³ vì **1 mL = 1 cm³**.
+
+<DensityPractice sample="water" />
 
 ## Đo vật rắn có hình dạng bất kì
 
-Chọn một mẫu không thấm nước và có thể chìm hoàn toàn trong bình chia độ.
+Chọn viên sỏi không thấm nước và lọt qua miệng bình chia độ. Cần cân, bình chia độ, nước và sợi chỉ mảnh để nhúng sỏi.
 
-1. Chỉnh cân về 0 rồi cân mẫu khô. Ghi khối lượng m.
-2. Rót nước vào bình chia độ. Đặt bình trên mặt phẳng, đưa mắt ngang mực nước và đọc đáy mặt cong của nước để ghi V₁.
-3. Thả mẫu chìm hẳn, tránh bọt khí và nước tràn. Đọc V₂. Thể tích mẫu bằng V₂ − V₁.
-4. Đổi đơn vị cho nhất quán và tính **D = m/V**. Lặp lại phép đo nếu hai kết quả chênh nhiều.
+1. Cân sỏi khô. Cho nước vào bình rồi ghi mực ban đầu **V₁**.
+2. Hạ sỏi đến khi chìm hẳn. Tránh bọt khí bám vào sỏi và tránh làm nước tràn. Ghi vạch **V₂** sau khi nước đứng yên.
+3. Lấy **V₂ − V₁** làm thể tích sỏi. Nhấc sỏi ra, lau khô rồi lặp lại để có ba lượt đo.
 
-## Ghi số liệu và so độ lặp lại
+<DensityPractice sample="stone" />
 
-Mỗi nhóm đo từ hai đến ba lượt bằng cùng dụng cụ, ghi số đo ngay khi đọc. Dùng bảng riêng cho từng mẫu. Với khối hộp, ghi ba kích thước. Với vật hình dạng bất kì, ghi hai mực nước. Với chất lỏng, ghi hai số chỉ cân và thể tích đã rót. Sau đó chuyển kết quả vào bảng chung.
+## Viết báo cáo thực hành
 
-| Lượt | Khối lượng mẫu (g) | Thể tích mẫu (cm³) | Khối lượng riêng (g/cm³) |
+Ghi mục đích, dụng cụ và cách đo cho từng mẫu. Trong mỗi bảng, giữ cả số đọc ban đầu như ba cạnh của khối gỗ, hai số cân của bình hoặc hai vạch nước của viên sỏi. Dùng một bảng tổng hợp như sau để ghi kết quả cuối cùng.
+
+| Mẫu | Khối lượng trung bình (g) | Thể tích trung bình (cm³) | Khối lượng riêng (g/cm³) |
 | --- | ---: | ---: | ---: |
-| 1, minh họa | 69 | 26 | 2,65 |
-| 2, minh họa | 69 | 25 | 2,76 |
+| Khối gỗ | … | … | … |
+| Nước | … | … | … |
+| Viên sỏi | … | … | … |
 
-Hai kết quả chênh nhẹ vì thể tích đọc từ bình có độ chia hữu hạn. Kiểm tra cách đọc đáy mặt cong và bọt khí nếu số đo lệch nhiều. Khi các lượt đủ gần nhau, có thể lấy trung bình và làm tròn theo độ chính xác của dụng cụ.
+Các lượt đo có thể chênh nhẹ vì dụng cụ có độ chia hữu hạn. Nếu chênh nhiều, kiểm tra lại cách đọc vạch, cân bằng 0 và bọt khí trước khi kết luận. Khi cần ghi theo kg/m³, dùng **1 g/cm³ = 1 000 kg/m³**.
 
-Một dụng cụ khác cho chất lỏng là tỷ trọng kế. Thả nó nổi tự do trong bình đủ cao. Sau khi nó đứng yên, đọc thang chia ngang mặt chất lỏng theo hướng dẫn của dụng cụ. Trong chất lỏng có khối lượng riêng lớn hơn, cùng một tỷ trọng kế thường nổi cao hơn.
+**Tìm hiểu thêm.** Tỉ trọng kế nổi trong chất lỏng và cho phép đọc khối lượng riêng theo vạch trên thân. Đợi nó nổi yên, tránh chạm thành bình rồi đọc theo hướng dẫn của dụng cụ.
 
 ## Tự kiểm tra
 
-Một viên sỏi nặng 48 g làm mực nước tăng từ 35 mL lên 55 mL. Tính khối lượng riêng của viên sỏi.
+Một viên sỏi khác nặng 55 g làm mực nước tăng từ 40 mL lên 62 mL. Tính khối lượng riêng của viên sỏi theo g/cm³ và kg/m³.
 
-<details>
+<details className="lesson-answer">
   <summary>Xem đáp án</summary>
-  <p>Thể tích viên sỏi là 55 − 35 = 20 mL = 20 cm³. Khối lượng riêng là 48 : 20 = 2,4 g/cm³.</p>
+  <p>Thể tích sỏi là 62 − 40 = 22 mL = 22 cm³. Khối lượng riêng là 55 : 22 = 2,5 g/cm³ = 2 500 kg/m³.</p>
 </details>
 
-*Bài đọc tự biên soạn theo chủ đề Bài 14, trang 59–63, Khoa học tự nhiên 8, bộ Kết nối tri thức với cuộc sống.* [Đọc SGK từ trang 59](https://online.pubhtml5.com/ngvcn/wlly/#p=60).
+*Bài đọc theo mạch kiến thức Bài 14, trang 59–63, SGK Khoa học tự nhiên 8, bộ Kết nối tri thức với cuộc sống.* [Đọc SGK từ trang 59](https://online.pubhtml5.com/ngvcn/wlly/#p=60).
