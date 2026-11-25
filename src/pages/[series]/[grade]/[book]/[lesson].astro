@@ -72,8 +72,8 @@ const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pag
         </section>
       )}
     </div>
-    {!Content && showSimulation && <><PressureSetups /><PressureSimulation /></>}
-    {!Content && circuitLesson && <CircuitDiagram />}
+    {showSimulation && <><PressureSetups /><PressureSimulation /></>}
+    {circuitLesson && <CircuitDiagram />}
     {book.grade === 7 && lesson.slug === 'do-thi-quang-duong-thoi-gian' && <DistanceTimeSimulation />}
     {book.grade === 8 && lesson.slug === 'luc-day-archimedes' && (
       <PhetActivity
@@ -104,7 +104,7 @@ const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pag
           : 'Nếu chuyển ampe kế sang phía còn lại của đèn trong cùng vòng mạch, số chỉ có đổi không? Hãy đo để kiểm tra.'}
       />
     )}
-    {!Content && book.grade === 7 && lesson.slug === 'su-phan-xa-anh-sang' && <ReflectionDiagram />}
+    {book.grade === 7 && lesson.slug === 'su-phan-xa-anh-sang' && <ReflectionDiagram />}
     <nav class="lesson-navigation" aria-label="Chuyển bài">
       {previous && <a href={lessonUrl(book, previous)}><small>Bài trước · {previous.number}</small><strong>{previous.title}</strong></a>}
       {next && <a href={lessonUrl(book, next)}><small>Bài sau · {next.number}</small><strong>{next.title}</strong></a>}
