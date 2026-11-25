@@ -382,3 +382,18 @@ h2 { font-size: clamp(1.25rem, 2.2vw, 1.6rem); letter-spacing: -.055em; margin: 
   text-decoration: underline;
   text-underline-offset: .16em;
 }
+
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; }
+.workspace-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.7rem;
+  padding: .4rem .75rem;
+  color: #0c574c;
+  background: #ecf6f2;
+  border: 1px solid #aacfc4;
+  border-radius: .5rem;
+  font-weight: 650;
+}
+.workspace-link:hover { background: #e0f0e9; }
+.reading-header .workspace-link { margin-top: .65rem; }

@@ -1,7 +1,7 @@
 ---
 import Shell from '../layouts/Shell.astro';
 import Icon from './Icon.astro';
-import { physicsChapters, physicsLessons, lessonId, lessonUrl, loadBookLessons, type Book } from '../book';
+import { physicsChapters, physicsLessons, workspaceUrl, lessonId, lessonUrl, loadBookLessons, type Book } from '../book';
 
 interface Props { book: Book }
 const { book } = Astro.props;
@@ -18,7 +18,10 @@ const hasAll = lessons.every((lesson) => hasText(lesson.slug));
       <span class="hero-label"><Icon name="book" size={16} /> {book.title}</span>
       <h1 id="hero-title">Vật lí lớp {book.grade}</h1>
       <p>{book.series}</p>
-      <a class="primary-button" href="#muc-luc">Xem mục lục</a>
+      <div class="hero-actions">
+        <a class="primary-button" href="#muc-luc">Xem mục lục</a>
+        <a class="workspace-link" href={workspaceUrl + '?bai=' + book.grade + '-' + lessons[0].number}>Soạn bài</a>
+      </div>
     </div>
     <img class="hero-image" src={`${import.meta.env.BASE_URL}images/vat-li-${book.grade}.webp`} width="920" height="613" alt="" fetchpriority="high" />
   </section>

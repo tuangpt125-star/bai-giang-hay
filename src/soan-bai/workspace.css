@@ -1,0 +1,94 @@
+.planner { max-width: 76rem; margin-inline: auto; }
+.planner [hidden] { display: none !important; }
+.planner-header { padding-block: clamp(.5rem, 2vw, 1.5rem); }
+.planner h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.1rem); }
+.planner-header p, .preview-header p, .planner-hint, .save-status { margin: .3rem 0; color: var(--muted); }
+.planner-setup, .editor-panel, .preview-panel { background: #fff; border: 1px solid var(--border); border-radius: .9rem; padding: clamp(.7rem, 2vw, 1.15rem); }
+.planner-setup { display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 1rem; margin-bottom: 1rem; }
+.planner-lesson { min-width: 0; }
+.planner-lesson > a { display: inline-block; margin-top: .4rem; color: var(--purple); text-decoration: underline; }
+.planner-mode { display: flex; gap: .65rem; flex-wrap: wrap; border: 0; padding: 0; margin: 0; }
+.planner-mode legend { margin-bottom: .35rem; font-size: .88rem; font-weight: 650; }
+.planner-mode label { display: flex; align-items: center; gap: .35rem; border: 1px solid var(--border); border-radius: .45rem; padding: .5rem; }
+.planner-mode input { width: auto; min-height: auto; accent-color: #12665a; }
+.planner-grid { display: grid; grid-template-columns: minmax(19rem, .9fr) minmax(22rem, 1.1fr); gap: 1rem; align-items: start; }
+.planner label { display: block; font-size: .875rem; font-weight: 650; }
+.planner-mode label { display: flex; }
+.planner input:not([type='radio']), .planner textarea, .planner select {
+  display: block; width: 100%; min-height: 2.5rem; padding: .45rem .55rem; margin-top: .25rem;
+  border: 1px solid #9aa6b8; border-radius: .4rem; background: white; color: var(--ink); font: inherit;
+}
+.planner select { max-width: 37rem; }
+.planner textarea { resize: vertical; }
+.planner button { min-height: 2.55rem; padding: .4rem .65rem; border: 1px solid #9aa6b8; border-radius: .45rem; color: var(--ink); background: #fff; font: inherit; font-size: .88rem; cursor: pointer; }
+.planner button:disabled { opacity: .6; cursor: default; }
+.planner .planner-primary, .planner button[aria-pressed='true'] { border-color: #12665a; background: #12665a; color: white; }
+.editor-header, .preview-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: .4rem .6rem; margin-bottom: .65rem; }
+.editor-header h2, .preview-header h2 { margin: 0; font-size: 1.2rem; }
+.save-status, .planner-hint, .preview-header p { font-size: .85rem; }
+.planner-hint { white-space: pre-wrap; overflow-wrap: anywhere; }
+.editor-metadata { display: flex; gap: .55rem; flex-wrap: wrap; align-items: start; }
+.editor-metadata > label { flex: 1 1 9rem; min-width: 0; margin: 0; }
+.editor-field, .editor-image, .planner-help { margin: .65rem 0; }
+.editor-card-actions { display: flex; gap: .45rem; flex-wrap: wrap; }
+.planner-help { border-top: 1px solid var(--border); padding-top: .6rem; }
+.planner-help summary { cursor: pointer; font-weight: 650; }
+.planner-help dl { margin: .55rem 0; }
+.planner-help dt { font-weight: 650; }
+.planner-help dd { margin: .2rem 0 .6rem; }
+.editor-image label { margin-bottom: .35rem; }
+.editor-image p { font-size: .875rem; margin: .4rem 0; }
+.editor-image p:empty { display: none; }
+.planner-card-nav { display: flex; gap: .35rem; flex-wrap: wrap; margin: .75rem 0 .35rem; }
+.planner-card-nav button { max-width: 100%; overflow-wrap: anywhere; text-align: left; }
+.preview-panel { position: sticky; top: 5.1rem; }
+.preview-card {
+  display: flex; min-height: clamp(16rem, 31vw, 28rem); flex-direction: column; gap: .8rem;
+  overflow-wrap: anywhere; padding: clamp(.8rem, 3vw, 1.35rem); border: 1px solid #c5d8d2; border-radius: .75rem;
+  background: #f2f8f5; color: #142d28;
+}
+.preview-card header, .preview-card footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .3rem .8rem; font-size: .8rem; color: #2c6257; }
+.preview-card header { border-bottom: 1px solid #b9d3c9; padding-bottom: .45rem; }
+.preview-card footer { margin-top: auto; }
+.preview-card-content { display: grid; align-items: start; gap: .8rem; }
+.preview-card-content:has(figure:not([hidden])) { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); }
+.preview-card h3 { font-size: clamp(1.22rem, 2.5vw, 1.95rem); line-height: 1.16; margin: 0 0 .55rem; }
+.preview-card p { margin: 0; white-space: pre-wrap; }
+.preview-card figure { margin: 0; min-width: 0; }
+.preview-card figure img { display: block; width: 100%; max-height: 21rem; object-fit: contain; border-radius: .45rem; background: #fff; }
+.preview-card figcaption { font-size: .85rem; margin: .35rem 0; }
+.presentation {
+  width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: clamp(.65rem, 2.4vw, 2rem);
+  background: #142d28; color: white; border: none; overflow: auto;
+}
+.presentation[open] { display: flex; flex-direction: column; gap: .7rem; }
+.presentation-sheet { flex: 1; display: grid; }
+.presentation .preview-card { min-height: 100%; padding: clamp(.85rem, 4vw, 4rem); border-radius: .8rem; }
+.presentation .preview-card h3 { font-size: clamp(1.65rem, 4.5vw, 4rem); }
+.presentation .preview-card p { font-size: clamp(1.05rem, 2.2vw, 2rem); }
+.presentation .preview-card header, .presentation .preview-card footer { font-size: clamp(.85rem, 1.5vw, 1.2rem); }
+.presentation .preview-card figure img { max-height: 53vh; }
+.presentation-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .6rem; }
+.print-area { display: none; }
+
+@media (max-width: 1120px) {
+  .planner-grid { grid-template-columns: 1fr; }
+  .preview-panel { position: static; }
+}
+@media (max-width: 580px) {
+  .planner-setup, .preview-card-content:has(figure:not([hidden])) { grid-template-columns: minmax(0, 1fr); }
+}
+@media print {
+  .sidebar, .topbar, .footer, .skip-link, .planner > :not(.print-area) { display: none !important; }
+  .app, .main { display: block; margin: 0; padding: 0; max-width: none; }
+  .print-area { display: block; }
+  .print-area h1 { font-size: 20pt; margin: 0 0 .4rem; }
+  .print-card { margin: .6rem 0; break-inside: avoid; }
+  .print-area[data-mode='student'] .print-card { break-after: page; margin: 0; }
+  .print-area[data-mode='student'] .print-card:last-child { break-after: auto; }
+  .print-area[data-mode='student'] .preview-card { padding: 1cm; min-height: 12cm; }
+  .print-area .preview-card { color: black; background: white; min-height: auto; padding: .5rem; }
+  .print-area .preview-card h3 { font-size: 17pt; }
+  .print-area .preview-card figure img { max-height: 9cm; }
+  .print-area .preview-card header, .print-area .preview-card footer { color: #222; }
+}

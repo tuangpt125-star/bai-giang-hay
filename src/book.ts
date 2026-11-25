@@ -49,6 +49,12 @@ export function bookRoute(book: Book) {
 
 export const homeUrl = import.meta.env.BASE_URL;
 
+export const workspaceUrl = homeUrl + 'soan-bai/';
+
+export function lessonWorkspaceUrl(book: Book, lesson: Pick<Lesson, 'number'>) {
+  return workspaceUrl + '?bai=' + book.grade + '-' + lesson.number;
+}
+
 function bookPath(book: Book) {
   const route = bookRoute(book);
   return `${homeUrl}${route.series}/${route.grade}/${route.book}/`;

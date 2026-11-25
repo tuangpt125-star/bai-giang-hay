@@ -1,0 +1,119 @@
+---
+import Shell from '../layouts/Shell.astro';
+import { books, lessonUrl, physicsLessons } from '../book';
+import { prompts } from '../soan-bai/prompts';
+import '../soan-bai/workspace.css';
+---
+<Shell title="Soạn bài và thuyết trình">
+  <div class="planner" data-planner>
+    <header class="planner-header">
+      <h1>Soạn bài</h1>
+      <p>Chọn một bài Vật lí để thiết kế tiết dạy hoặc chuẩn bị bài thuyết trình.</p>
+    </header>
+    <noscript><p>Hãy bật JavaScript để mở trình soạn bài.</p></noscript>
+    <div class="planner-setup" data-setup hidden>
+      <div class="planner-lesson">
+        <label for="lesson-select">Bài học</label>
+        <select id="lesson-select" data-lesson>
+          {books.map((book) => (
+            <optgroup label={`Vật lí lớp ${book.grade}`}>
+              {physicsLessons(book).map((lesson) => {
+                const key = `${book.grade}-${lesson.number}`;
+                const prompt = prompts[key];
+                return (
+                  <option value={key} data-title={lesson.title} data-pages={lesson.pages.join('–')} data-url={lessonUrl(book, lesson)}
+                    data-question={prompt.question} data-activity={prompt.activity} data-takeaway={prompt.takeaway} data-visual={prompt.visual}>
+                    {lesson.number}. {lesson.title}
+                  </option>
+                );
+              })}
+            </optgroup>
+          ))}
+        </select>
+        <a data-reading-link>Đọc bài học</a>
+      </div>
+      <fieldset class="planner-mode">
+        <legend>Chế độ soạn</legend>
+        <label><input type="radio" name="mode" value="teacher" /> Giáo án giáo viên</label>
+        <label><input type="radio" name="mode" value="student" checked /> Slide học sinh</label>
+      </fieldset>
+    </div>
+
+    <div class="planner-grid" data-editor hidden>
+      <section class="editor-panel" aria-labelledby="editor-heading">
+        <header class="editor-header">
+          <div><h2 id="editor-heading" data-editor-heading>Soạn slide</h2><p class="save-status" role="status" data-save-status></p></div>
+          <button type="button" data-print>In hoặc lưu PDF</button>
+        </header>
+        <div class="editor-metadata">
+          <label><span data-name-label>Nhóm hoặc người trình bày</span><input data-name maxlength="100" /></label>
+          <label><span data-date-label>Ngày trình bày</span><input type="date" data-date /></label>
+        </div>
+        <label class="editor-field">Tên bài soạn<input data-document-title maxlength="145" /></label>
+        <label class="editor-field" data-materials-field hidden>Dụng cụ và học liệu<textarea data-materials rows="2" maxlength="400"></textarea></label>
+        <nav class="planner-card-nav" aria-label="Chọn phần soạn" data-card-nav></nav>
+        <div class="editor-field editor-card-actions" data-slide-actions>
+          <button type="button" data-add>Thêm slide</button>
+          <button type="button" data-move-earlier>Đưa lên trước</button>
+          <button type="button" data-move-later>Đưa ra sau</button>
+          <button type="button" data-remove>Xóa slide</button>
+        </div>
+        <label class="editor-field">Tiêu đề<input data-card-title maxlength="100" /></label>
+        <label class="editor-field">Nội dung<textarea data-card-body rows="5" maxlength="700" placeholder="Viết các ý cần đọc trên màn hình hoặc đưa vào giáo án."></textarea></label>
+        <div class="editor-metadata">
+          <label data-minutes-field hidden>Thời lượng (phút)<input type="number" data-minutes min="0" max="240" /></label>
+          <label class="editor-field"><span data-notes-label>Ghi chú khi nói</span><textarea data-card-notes rows="2" maxlength="450"></textarea></label>
+        </div>
+        <div class="editor-image">
+          <label>Thêm ảnh minh họa<input type="file" data-image-input accept="image/jpeg,image/png,image/webp,image/gif" /></label>
+          <button type="button" data-remove-image hidden>Gỡ ảnh</button>
+          <p data-file-status role="status"></p>
+          <label data-caption-field hidden>Mô tả hoặc nguồn ảnh<input data-caption maxlength="150" /></label>
+        </div>
+        <details class="planner-help">
+          <summary>Gợi ý theo bài học</summary>
+          <dl>
+            <dt>Câu hỏi mở đầu</dt><dd data-prompt-question></dd>
+            <dt>Hoạt động</dt><dd data-prompt-activity></dd>
+            <dt>Kết luận cần làm rõ</dt><dd data-prompt-takeaway></dd>
+            <dt>Hình nên chuẩn bị</dt><dd data-prompt-visual></dd>
+          </dl>
+        </details>
+      </section>
+      <section class="preview-panel" aria-labelledby="preview-heading">
+        <header class="preview-header">
+          <div><h2 id="preview-heading">Xem trước</h2><p data-preview-count></p></div>
+          <button type="button" class="planner-primary" data-present>Trình chiếu</button>
+        </header>
+        <div data-preview></div>
+        <p class="planner-hint" data-preview-notes></p>
+      </section>
+    </div>
+
+    <dialog class="presentation" data-presentation aria-label="Trình chiếu bài soạn">
+      <div class="presentation-sheet" data-presentation-slide></div>
+      <div class="presentation-controls">
+        <button type="button" data-previous aria-label="Slide trước">← Trước</button>
+        <span data-presentation-count aria-live="polite"></span>
+        <button type="button" data-next aria-label="Slide sau">Sau →</button>
+        <button type="button" data-close>Thoát</button>
+      </div>
+    </dialog>
+    <section class="print-area" data-print-area aria-label="Bản in"></section>
+
+    <template data-card-template>
+      <article class="preview-card">
+        <header><span data-output-lesson></span><span data-output-stage></span></header>
+        <div class="preview-card-content">
+          <div><h3 data-output-title></h3><p data-output-body></p></div>
+          <figure hidden data-output-figure><img alt="" data-output-image /><figcaption data-output-caption></figcaption></figure>
+        </div>
+        <footer><span data-output-name></span><span data-output-date></span></footer>
+      </article>
+    </template>
+  </div>
+</Shell>
+
+<script>
+  import '../soan-bai/workspace';
+</script>

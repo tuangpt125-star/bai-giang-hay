@@ -9,7 +9,7 @@ import PressureSetups from '../../../../components/PressureSetups.astro';
 import PressureSimulation from '../../../../components/PressureSimulation.astro';
 import DistanceTimeSimulation from '../../../../components/DistanceTimeSimulation.astro';
 import PhetActivity from '../../../../components/PhetActivity.astro';
-import { bookRoute, books, catalogUrl, lessonId, lessonUrl, loadBookLessons, physicsLessons, type Book, type Chapter, type Lesson } from '../../../../book';
+import { bookRoute, books, catalogUrl, lessonId, lessonUrl, lessonWorkspaceUrl, loadBookLessons, physicsLessons, type Book, type Chapter, type Lesson } from '../../../../book';
 
 export async function getStaticPaths() {
   const entries = await loadBookLessons();
@@ -52,6 +52,7 @@ const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pag
     <header class="reading-header">
       <p class="reading-meta">Bài {lesson.number} <span aria-hidden="true">·</span> Trang {pages} trong sách</p>
       <h1>{lesson.title}</h1>
+      <a class="workspace-link" href={lessonWorkspaceUrl(book, lesson)}>Soạn giáo án hoặc slide cho bài này</a>
     </header>
     <div class:list={['reading-grid', { 'has-text': Content }]}>
       {Content ? (
