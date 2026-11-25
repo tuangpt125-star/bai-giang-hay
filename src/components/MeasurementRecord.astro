@@ -1,0 +1,53 @@
+---
+import '../styles/measurement-lab.css';
+import '../styles/investigation-lab.css';
+
+interface Props { fields: [label: string, selector: string][] }
+const { fields } = Astro.props;
+---
+<div class="measurement-lab measurement-record" data-measurement-record={JSON.stringify(fields)} hidden>
+  <label class="investigation-prediction">
+    Dự đoán của em <span>(tùy chọn)</span>
+    <input type="text" maxlength="160" data-record-prediction />
+  </label>
+  <button type="button" data-record-current>Ghi số đo hiện tại</button>
+  <details class="investigation-notebook" data-record-table hidden>
+    <summary>Bảng kết quả <span data-record-total></span></summary>
+    <div class="investigation-table-wrap" tabindex="0" role="region" aria-label="Bảng kết quả có thể cuộn">
+      <table>
+        <thead><tr><th scope="col">Dự đoán</th><th scope="col">Số đo</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </details>
+</div>
+
+<script>
+  for (const record of document.querySelectorAll<HTMLElement>('[data-measurement-record]')) {
+    const section = record.closest('section')!;
+    const fields: [string, string][] = JSON.parse(record.dataset.measurementRecord!);
+    const table = record.querySelector<HTMLDetailsElement>('[data-record-table]')!;
+    const body = table.querySelector<HTMLTableSectionElement>('tbody')!;
+    const prediction = record.querySelector<HTMLInputElement>('[data-record-prediction]')!;
+    record.querySelector('[data-record-current]')!.addEventListener('click', () => {
+      const values = fields.map(([title, selector]) => {
+        const element = section.querySelector(selector);
+        const value = element instanceof HTMLSelectElement ? element.selectedOptions[0]?.textContent
+          : element instanceof HTMLOutputElement ? element.value : element?.textContent;
+        return title + ' ' + (value?.trim() ?? '—');
+      });
+      const row = body.insertRow();
+      row.insertCell().textContent = prediction.value.trim() || '—';
+      row.insertCell().textContent = values.join(' · ');
+      record.querySelector('[data-record-total]')!.textContent = '(' + body.rows.length + ' lượt)';
+      prediction.value = '';
+      table.hidden = false;
+      table.open = true;
+    });
+    record.hidden = false;
+  }
+</script>
+
+<style>
+  .measurement-record { margin: .8rem 0 0; padding: .55rem .7rem; background: white; }
+</style>

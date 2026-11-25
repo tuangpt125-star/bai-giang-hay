@@ -240,6 +240,7 @@ for (const planner of document.querySelectorAll<HTMLElement>('[data-planner]')) 
     find('minutes-field').hidden = !teacher;
     find('materials-field').hidden = !teacher;
     find<HTMLAnchorElement>('reading-link').href = value('url');
+    find<HTMLAnchorElement>('investigation-link').href = value('url') + '#thuc-hanh-truc-quan';
     for (const item of ['question', 'activity', 'takeaway', 'visual']) {
       find('prompt-' + item).textContent = value(item);
     }
