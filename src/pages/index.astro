@@ -51,7 +51,7 @@ const hasText = (slug: string) => [...entries.keys()].some((id) => id.endsWith(`
       <a class="featured" href={lessonUrl(sample)}>
         <span class="featured-icon"><Icon name="document" size={25} /></span>
         <span><small>Bài đọc HTML</small><strong>Bài {sample.number}. {sample.title}</strong></span>
-        <span class="featured-action">Đọc bài mẫu</span>
+        <span class="featured-action">Đọc bài</span>
       </a>
     )}
 
@@ -65,7 +65,7 @@ const hasText = (slug: string) => [...entries.keys()].some((id) => id.endsWith(`
                 <a class="lesson-row" href={lessonUrl(lesson)}>
                   <span class="lesson-number">Bài {lesson.number}</span>
                   <span class="lesson-name">{lesson.title}</span>
-                  {hasText(lesson.slug) && <span class="html-tag">Đọc HTML</span>}
+                  {entries.size < lessons.length && hasText(lesson.slug) && <span class="html-tag">Đọc HTML</span>}
                   <span class="lesson-page">Trang {lesson.pages[0]}</span>
                 </a>
               </li>
