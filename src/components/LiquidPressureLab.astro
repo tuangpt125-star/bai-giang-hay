@@ -1,7 +1,8 @@
 ---
+import MeasurementRecord from "./MeasurementRecord.astro";
 import '../styles/measurement-lab.css';
 ---
-<section class="measurement-lab" data-liquid-pressure hidden aria-labelledby="liquid-pressure-title">
+<section id="thuc-hanh-truc-quan" class="measurement-lab" data-liquid-pressure hidden aria-labelledby="liquid-pressure-title">
   <h3 id="liquid-pressure-title">Thí nghiệm ảo · Đo áp suất trong hai bình</h3>
   <p>Hai bình đều mở. Dự đoán số đo khi hai đầu dò cùng sâu 20 cm. Sau đó thay riêng độ sâu của đầu dò B hoặc loại chất lỏng của cả hai bình.</p>
   <div class="lab-layout">
@@ -31,6 +32,7 @@ import '../styles/measurement-lab.css';
     </figure>
   </div>
   <p class="lab-help">Mô hình lấy g ≈ 10 N/kg. Số đo là phần áp suất do chất lỏng, tính từ mặt thoáng.</p>
+  <MeasurementRecord fields={[["Chất lỏng", "#pressure-fluid"], ["Độ sâu ở B", "[data-probe-depth]"], ["Áp suất ở A", "[data-pressure-a]"], ["Áp suất ở B", "[data-pressure-b]"]]} />
 </section>
 
 <script>

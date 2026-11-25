@@ -1,0 +1,58 @@
+.investigation-lab { container: investigation / inline-size; }
+.investigation-task { line-height: 1.55; }
+.investigation-workbench { display: grid; align-items: start; gap: .75rem; }
+.investigation-stage { min-width: 0; background: var(--lesson-tint); padding-block: .15rem; }
+.investigation-board {
+  position: relative;
+  background: linear-gradient(150deg, #fcfdff, #eaf3fb);
+  border: 1px solid var(--lesson-rule);
+  border-radius: .65rem;
+  width: min(100%, 32rem, 78svh);
+  margin-inline: auto;
+}
+.investigation-board canvas { display: block; width: 100%; height: auto; }
+.investigation-status { font-size: .86rem; font-weight: 650; line-height: 1.4; margin: .4rem 0; min-height: 2.65em; color: var(--lesson-deep); }
+.investigation-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr)); gap: .35rem; margin: 0; }
+.investigation-results div { background: white; border: 1px solid var(--lesson-rule); border-radius: .4rem; padding: .35rem .45rem; }
+.investigation-results dt { font-size: .73rem; line-height: 1.35; color: var(--muted); }
+.investigation-results dd { font-family: var(--data-font); font-size: .87rem; line-height: 1.4; margin: .15rem 0 0; }
+.investigation-console { min-width: 0; }
+.investigation-controls { display: grid; gap: .4rem; }
+.investigation-controls label { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: baseline; column-gap: .35rem; font-size: .87rem; font-weight: 650; }
+.investigation-controls :is(select,input) { grid-column: 1 / -1; max-width: 100%; }
+.investigation-controls input[type='range'] { min-height: 2rem; }
+.investigation-controls select { width: 100%; margin: 0 0 .35rem; }
+.investigation-prediction { display: block; margin: .55rem 0; font-size: .85rem; font-weight: 650; }
+.investigation-prediction span { color: var(--muted); font-weight: 400; }
+.investigation-prediction input { width: 100%; display: block; }
+.investigation-actions { display: flex; flex-wrap: wrap; gap: .35rem; }
+.investigation-actions button { font-size: .83rem; min-height: 2.75rem; }
+.investigation-lab .investigation-actions button + button,
+.investigation-lab .investigation-hole {
+  border-color: var(--lesson-rule);
+  color: var(--lesson-deep);
+  background: white;
+}
+.investigation-actions button:disabled { opacity: .52; cursor: default; }
+.investigation-weight {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  touch-action: none;
+  z-index: 1;
+  cursor: grab;
+}
+.investigation-lab .investigation-weight { font-size: .74rem; padding-inline: .4rem; min-height: 2.75rem; }
+.investigation-lab .investigation-meter { background: #126b54; }
+.investigation-weight.is-moving { cursor: grabbing; }
+.investigation-hole-controls { grid-template-columns: repeat(auto-fit,minmax(3.6rem,1fr)); }
+.investigation-hole { display: grid; justify-items: center; line-height: 1.35; }
+.investigation-hole span { font-size: .72rem; white-space: nowrap; }
+.investigation-notebook { margin-top: .8rem; background: white; padding: .45rem .65rem; border: 1px solid var(--lesson-rule); border-radius: .6rem; }
+.investigation-table-wrap { overflow: auto; }
+.investigation-table-wrap table { margin: .45rem 0; min-width: 18rem; }
+.investigation-table-wrap :is(th,td) { text-align: left; vertical-align: top; }
+.investigation-question { margin: .8rem 0 .15rem; font-size: .9rem; }
+@media (min-height: 420px) { .investigation-stage { position: sticky; top: 4.5rem; z-index: 3; } }
+@container investigation (min-width: 36rem) {
+  .investigation-workbench { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+}

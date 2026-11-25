@@ -55,7 +55,10 @@ const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pag
         <p class="reading-chapter">Chương {lesson.chapter.number} · {lesson.chapter.title}</p>
         <h1>{lesson.title}</h1>
         <p class="reading-meta">Bài {lesson.number} <span aria-hidden="true">·</span> SGK trang {pages}</p>
-        <a class="workspace-link" href={lessonWorkspaceUrl(book, lesson)}>Soạn giáo án hoặc slide cho bài này</a>
+        <div class="hero-actions">
+          {Content && <a class="workspace-link" href="#thuc-hanh-truc-quan">Mở thí nghiệm</a>}
+          <a class="workspace-link" href={lessonWorkspaceUrl(book, lesson)}>Soạn giáo án hoặc slide cho bài này</a>
+        </div>
       </div>
       {densityCover && (
         <figure class="reading-visual">

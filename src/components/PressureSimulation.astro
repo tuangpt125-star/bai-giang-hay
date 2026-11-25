@@ -1,4 +1,5 @@
 ---
+import MeasurementRecord from "./MeasurementRecord.astro";
 const presets = [
   { force: 40, area: 80, label: 'a) Một khối đặt nằm' },
   { force: 80, area: 80, label: 'b) Hai khối đặt nằm' },
@@ -6,7 +7,7 @@ const presets = [
 ];
 const initial = presets[0];
 ---
-<section class="pressure-simulation" data-pressure-simulation hidden aria-labelledby="pressure-simulation-title">
+<section id="thuc-hanh-truc-quan" class="pressure-simulation" data-pressure-simulation hidden aria-labelledby="pressure-simulation-title">
   <header>
     <h3 id="pressure-simulation-title">Mô phỏng áp suất</h3>
     <p>Thay đổi lực ép hoặc diện tích tiếp xúc rồi so sánh áp suất.</p>
@@ -37,6 +38,7 @@ const initial = presets[0];
     </figure>
   </div>
   <p class="pressure-question">Giữ nguyên áp lực. Nếu diện tích tiếp xúc giảm một nửa, áp suất thay đổi thế nào?</p>
+  <MeasurementRecord fields={[["Áp lực", "[data-force-value]"], ["Diện tích", "[data-area-value]"], ["Áp suất", "[data-pressure-value]"]]} />
 </section>
 
 <script>

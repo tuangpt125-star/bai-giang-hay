@@ -1,7 +1,8 @@
 ---
+import MeasurementRecord from "./MeasurementRecord.astro";
 import '../styles/measurement-lab.css';
 ---
-<section class="measurement-lab" data-buoyancy-lab hidden aria-labelledby="buoyancy-lab-title">
+<section id="thuc-hanh-truc-quan" class="measurement-lab" data-buoyancy-lab hidden aria-labelledby="buoyancy-lab-title">
   <h3 id="buoyancy-lab-title">Thí nghiệm ảo · Lực kế và bình tràn</h3>
   <p>Khối mẫu cao 8 cm, thể tích 80 cm³. Hạ khối từ từ, ghi số chỉ lực kế và trọng lượng chất lỏng tràn ra. Lặp lại với nước muối đậm đặc.</p>
   <div class="lab-layout">
@@ -34,6 +35,7 @@ import '../styles/measurement-lab.css';
     <p data-spring-difference>1,30 N − 1,30 N = 0,00 N.</p>
   </details>
   <p class="lab-help">Mô hình dùng g ≈ 10 N/kg và coi thể tích khối không đổi. Vạch vòi tràn giữ mực chất lỏng ở cùng một độ cao.</p>
+  <MeasurementRecord fields={[["Chất lỏng", "#buoyancy-liquid"], ["Độ sâu của đáy khối", "[data-immersion-depth]"], ["Lực kế", "[data-spring-reading]"], ["Thể tích tràn", "[data-spill-volume]"], ["Trọng lượng chất lỏng tràn", "[data-spill-weight]"]]} />
 </section>
 
 <script>

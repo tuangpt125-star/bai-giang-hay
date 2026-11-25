@@ -116,13 +116,13 @@ export const prompts: Record<string, LessonPrompt> = {
   },
   '8-18': {
     question: 'Vì sao cùng một lực, đẩy cửa gần tay nắm thường dễ quay hơn đẩy gần bản lề?',
-    activity: 'Treo cùng một quả nặng ở hai phía và tại trục O. Đổi lỗ móc lực kế, giữ kéo rồi nhả tay. Ghi chiều quay và giải thích vì sao thanh có thể quay tiếp một lúc khi lực kéo về 0.',
+    activity: 'Treo cùng một quả nặng lần lượt tại A, O và C. Dự đoán rồi thả thanh. Làm thêm ba cấu hình của Bảng 18.1 và ghi trạng thái của thanh.',
     takeaway: 'Moment bằng độ lớn của lực nhân với cánh tay đòn. Đường tác dụng đi qua trục cho moment bằng 0.',
     visual: 'Sơ đồ trục O, mũi tên F, giá lực nét đứt và đoạn d vuông góc với giá lực.',
   },
   '8-19': {
     question: 'Bạn nhẹ hơn cần ngồi ở đâu để cân bằng bập bênh?',
-    activity: 'Treo tải 18 N, thử giữ rồi nhả lực tay. Đưa thanh về ngang, tìm lực cân bằng và so với hai cách bố trí loại 2.',
+    activity: 'Giữ nguyên tải, móc lực kế lần lượt ở 20, 40 và 60 cm. Ghi số chỉ khi cân bằng và giải thích tại sao ở xa điểm tựa lại cần ít lực hơn.',
     takeaway: 'Khi cân bằng, hai moment ngược chiều bằng nhau. Cánh tay đòn của lực tay dài hơn cánh tay đòn của tải thì lợi về lực.',
     visual: 'Ba sơ đồ với điểm tựa O, tải P và lực tay F. Ghi số đo của ba vị trí tay.',
   },

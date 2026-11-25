@@ -1,0 +1,286 @@
+---
+import { controlValue, investigations } from '../physics/investigations/definitions';
+import '../styles/measurement-lab.css';
+import '../styles/investigation-lab.css';
+
+interface Props { lesson: string }
+const { lesson } = Astro.props;
+const definition = investigations[lesson];
+const weighing = definition.model === 'weights';
+const scale = definition.model === 'scale';
+const audible = ['sound', 'pitch', 'echo'].includes(definition.model);
+---
+<section class="measurement-lab investigation-lab" id="thuc-hanh-truc-quan" data-investigation={lesson} aria-labelledby="investigation-title">
+  <h3 id="investigation-title">{definition.title}</h3>
+  <p class="investigation-task">{definition.task}</p>
+  <noscript><p>Mô phỏng cần JavaScript. Em có thể đọc quy trình thực hành ở trên và ghi kết quả vào vở.</p></noscript>
+  <div class="investigation-workbench" data-investigation-ui hidden>
+    <div class="investigation-stage">
+      <div class="investigation-board">
+        <canvas width="560" height="300" role="img" aria-label={definition.title}></canvas>
+        {weighing && <button type="button" class="investigation-weight" data-investigation-weight aria-label="Quả nặng 2 N. Kéo vào lỗ, hoặc dùng các nút A, B, O, C.">Quả 2 N</button>}
+        {scale && <button type="button" class="investigation-weight investigation-meter" data-investigation-meter aria-label="Lực kế. Kéo đến lỗ khác hoặc dùng thanh chọn vị trí.">Lực kế</button>}
+      </div>
+      <p class="investigation-status" role="status" data-investigation-status>Đặt dụng cụ rồi thử.</p>
+      <dl class="investigation-results" data-investigation-results aria-label="Kết quả lần thử"></dl>
+    </div>
+    <div class="investigation-console">
+      <div class:list={['investigation-controls', { 'investigation-hole-controls': weighing }]}>
+        {definition.controls.map((control) => weighing ? (
+          <button type="button" class="investigation-hole" data-investigation-hook={control.key}>
+            <strong>Lỗ {control.key}</strong>
+            <span data-investigation-value={control.key}>0 quả</span>
+          </button>
+        ) : (
+          <label data-investigation-control={control.key}>
+            <span>{control.label}</span>
+            {'options' in control ? (
+              <select data-investigation-input={control.key}>
+                {control.options.map(option => <option value={option.value} selected={option.value === control.initial}>{option.label}</option>)}
+              </select>
+            ) : (
+              <>
+                <output data-investigation-value={control.key}>{controlValue(control, control.initial)}</output>
+                <input type="range" min={control.min} max={control.max} step={control.step} value={control.initial}
+                  data-investigation-input={control.key} />
+              </>
+            )}
+          </label>
+        ))}
+      </div>
+      {weighing && <p class="lab-help">Các nút lỗ cũng thêm quả theo vòng 0 → 1 → 2 → 0. Chọn <strong>Về ban đầu</strong> để tháo hết.</p>}
+      {scale && <p class="lab-help">Bàn đo dùng thanh nhẹ và lực kéo được điều chỉnh để thanh nằm ngang.</p>}
+      <label class="investigation-prediction">
+        Dự đoán của em <span>(tùy chọn)</span>
+        <input type="text" data-investigation-prediction maxlength="160" placeholder="Em nghĩ sẽ xảy ra điều gì?" />
+      </label>
+      <div class="investigation-actions">
+        <button type="button" data-investigation-start>{definition.action ?? 'Chạy thử'}</button>
+        <button type="button" data-investigation-reset>Về ban đầu</button>
+        <button type="button" data-investigation-record disabled>Ghi kết quả</button>
+        {audible && <button type="button" data-investigation-audio disabled>Nghe âm minh họa</button>}
+      </div>
+    </div>
+  </div>
+  <details class="investigation-notebook" data-investigation-notebook hidden>
+    <summary>Bảng kết quả <span data-investigation-count></span></summary>
+    <div class="investigation-table-wrap" tabindex="0" role="region" aria-label="Bảng kết quả có thể cuộn">
+      <table>
+        <thead><tr><th scope="col">Thiết lập</th><th scope="col">Quan sát và số đo</th></tr></thead>
+        <tbody data-investigation-rows></tbody>
+      </table>
+    </div>
+  </details>
+  <p class="investigation-question"><strong>Rút ra nhận xét.</strong> {definition.question}</p>
+</section>
+
+<script>
+  import { controlValue, investigations } from '../physics/investigations/definitions';
+  import { drawExperiment, hookX } from '../physics/investigations/draw';
+  import { hookArms, observe, type Inputs, type Result } from '../physics/investigations/models';
+  import { playSound } from '../physics/investigations/sound';
+  import { dragHandle, keepLabControlVisible, positionHandle, revealLabResult } from '../physics/lab-diagram';
+
+  for (const lab of document.querySelectorAll<HTMLElement>('[data-investigation]')) {
+    const definition = investigations[lab.dataset.investigation!];
+    const find = <T extends HTMLElement>(selector: string) => lab.querySelector<T>(selector)!;
+    const ui = find<HTMLElement>('[data-investigation-ui]');
+    const canvas = find<HTMLCanvasElement>('canvas');
+    const pen = canvas.getContext('2d');
+    const stage = find('.investigation-stage');
+    const consolePanel = find('.investigation-console');
+    const status = find<HTMLElement>('[data-investigation-status]');
+    const results = find<HTMLElement>('[data-investigation-results]');
+    const record = find<HTMLButtonElement>('[data-investigation-record]');
+    const starting = find<HTMLButtonElement>('[data-investigation-start]');
+    const prediction = find<HTMLInputElement>('[data-investigation-prediction]');
+    const notebook = find<HTMLDetailsElement>('[data-investigation-notebook]');
+    const rows = find<HTMLTableSectionElement>('[data-investigation-rows]');
+    const inputs = lab.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-investigation-input]');
+    const movingWeight = lab.querySelector<HTMLButtonElement>('[data-investigation-weight]');
+    const movingMeter = lab.querySelector<HTMLButtonElement>('[data-investigation-meter]');
+    const audioButton = lab.querySelector<HTMLButtonElement>('[data-investigation-audio]');
+    const waterLevel = modelControl('level');
+    function modelControl(key: string) {
+      return lab.querySelector<HTMLElement>(`[data-investigation-control="${key}"]`);
+    }
+    const initial = Object.fromEntries(definition.controls.map(control => [control.key, control.initial]));
+    const model = definition.model;
+    const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+    let values: Inputs = { ...initial };
+    let latest: Result | null = null;
+    let trialPrediction = '';
+    let frame = 0;
+    let dropPoint: [number, number] | null = null;
+    let audio: AudioContext | undefined;
+
+    function draw(progress: number) {
+      if (pen) drawExperiment(pen, model, values, progress);
+    }
+
+    function prepare(message = 'Đặt dụng cụ rồi thử.') {
+      cancelAnimationFrame(frame);
+      latest = null;
+      record.disabled = true;
+      if (audioButton) audioButton.disabled = true;
+      results.replaceChildren();
+      status.textContent = message;
+      lab.dataset.investigationState = 'ready';
+      for (const input of inputs) input.value = String(values[input.dataset.investigationInput!]);
+      for (const control of definition.controls) {
+        const output = lab.querySelector<HTMLElement>(`[data-investigation-value="${control.key}"]`);
+        if (output) output.textContent = controlValue(control, values[control.key]);
+      }
+      if (waterLevel) waterLevel.hidden = values.sample !== 2;
+      if (movingMeter) positionHandle(movingMeter, canvas, hookX(values.arm), 222);
+      draw(0);
+    }
+
+    function showResult() {
+      latest = observe(model, values);
+      status.textContent = latest.note;
+      for (const [label, measure] of latest.measures) {
+        const item = document.createElement('div');
+        const term = document.createElement('dt');
+        const description = document.createElement('dd');
+        term.textContent = label;
+        description.textContent = measure;
+        item.append(term, description);
+        results.append(item);
+      }
+      record.disabled = false;
+      if (audioButton) audioButton.disabled = false;
+      lab.dataset.investigationState = 'observed';
+    }
+
+    function run() {
+      prepare('Đang làm thí nghiệm…');
+      trialPrediction = prediction.value.trim();
+      lab.dataset.investigationState = 'running';
+      revealLabResult(stage);
+      const duration = motionPreference.matches || !pen ? 0 : model === 'graph' || model === 'gates' ? 2200 : 1450;
+      if (!duration) {
+        draw(1);
+        showResult();
+        return;
+      }
+      const started = performance.now();
+      const animate = (now: number) => {
+        const progress = Math.min(1, (now - started) / duration);
+        draw(progress);
+        if (progress < 1) frame = requestAnimationFrame(animate);
+        else showResult();
+      };
+      frame = requestAnimationFrame(animate);
+    }
+
+    function addWeight(key: string, fromTray = false) {
+      if (fromTray && values[key] === 2) {
+        status.textContent = 'Lỗ ' + key + ' đã có 2 quả. Chạm lỗ để tháo ra.';
+        return;
+      }
+      values[key] = (values[key] + 1) % 3;
+      prepare('Lỗ ' + key + ' có ' + values[key] + ' quả. Bấm Thả thanh để xem.');
+    }
+
+    function hookAt(x: number, y: number) {
+      if (Math.abs(y - 127) > 46) return;
+      if (model === 'weights') return Object.entries(hookArms).find(([, cm]) => Math.abs(hookX(cm) - x) < 20)?.[0];
+      return [20, 40, 60].find(cm => Math.abs(hookX(cm) - x) < 25);
+    }
+
+    if (model === 'weights' || model === 'scale') {
+      canvas.addEventListener('click', event => {
+        const bounds = canvas.getBoundingClientRect();
+        const x = (event.clientX - bounds.left) * canvas.width / bounds.width;
+        const y = (event.clientY - bounds.top) * canvas.height / bounds.height;
+        const hook = hookAt(x,y);
+        if (typeof hook === 'string') addWeight(hook);
+        if (typeof hook === 'number') moveMeter(hook);
+      });
+    }
+
+    if (movingWeight) {
+      const home = () => positionHandle(movingWeight, canvas, 442, 233);
+      home();
+      dragHandle(movingWeight, canvas, {
+        start() { movingWeight.classList.add('is-moving'); },
+        move(x, y) {
+          dropPoint = [x, y];
+          positionHandle(movingWeight, canvas, Math.max(28, Math.min(532, x)), Math.max(21, Math.min(278, y)));
+        },
+        end(cancelled) {
+          const hook = dropPoint && hookAt(...dropPoint);
+          if (!cancelled && typeof hook === 'string') addWeight(hook, true);
+          dropPoint = null;
+          movingWeight.classList.remove('is-moving');
+          home();
+        },
+        tap() { status.textContent = 'Kéo quả 2 N vào lỗ hoặc bấm một nút lỗ bên dưới.'; },
+      });
+    }
+
+    function moveMeter(arm: number) {
+      values.arm = arm;
+      prepare('Đã móc lực kế ở ' + arm + ' cm.');
+    }
+
+    if (movingMeter) {
+      dragHandle(movingMeter, canvas, {
+        start() { movingMeter.classList.add('is-moving'); },
+        move(x, y) {
+          dropPoint = [x, y];
+          positionHandle(movingMeter, canvas, Math.max(28, Math.min(510, x)), Math.max(21, Math.min(278, y)));
+        },
+        end(cancelled) {
+          const hook = dropPoint && hookAt(...dropPoint);
+          movingMeter.classList.remove('is-moving');
+          dropPoint = null;
+          if (!cancelled && typeof hook === 'number') moveMeter(hook);
+          else positionHandle(movingMeter, canvas, hookX(values.arm), 222);
+        },
+        tap() { status.textContent = 'Kéo lực kế đến lỗ 20, 40 hoặc 60 cm, hoặc dùng thanh chọn vị trí.'; },
+      });
+    }
+
+    for (const input of inputs) input.addEventListener('input', () => {
+      values[input.dataset.investigationInput!] = Number(input.value);
+      prepare();
+    });
+    for (const hook of lab.querySelectorAll<HTMLButtonElement>('[data-investigation-hook]')) {
+      hook.addEventListener('click', () => addWeight(hook.dataset.investigationHook!));
+    }
+
+    audioButton?.addEventListener('click', async () => {
+      try {
+        const snapshot = { ...values };
+        audio ??= new AudioContext();
+        await audio.resume();
+        playSound(audio, model, snapshot);
+      } catch {
+        status.textContent = 'Không phát được âm thanh trong trình duyệt này.';
+      }
+    });
+    starting.addEventListener('click', run);
+    find('[data-investigation-reset]').addEventListener('click', () => {
+      values = { ...initial };
+      prediction.value = '';
+      prepare();
+    });
+    record.addEventListener('click', () => {
+      if (!latest) return;
+      const row = rows.insertRow();
+      const setup = definition.controls.filter(control => !modelControl(control.key)?.hidden).map(control => control.label + ' ' + controlValue(control, values[control.key])).join(' · ');
+      row.insertCell().textContent = trialPrediction ? setup + ' · Dự đoán: ' + trialPrediction : setup;
+      row.insertCell().textContent = latest.measures.map(([term, value]) => term + ' ' + value).join(' · ') + '. ' + latest.note;
+      find('[data-investigation-count]').textContent = '(' + rows.rows.length + ' lượt)';
+      notebook.hidden = false;
+      notebook.open = true;
+      record.disabled = true;
+    });
+    if (!pen) find('.investigation-board').hidden = true;
+    keepLabControlVisible(consolePanel, stage);
+    prepare();
+    ui.hidden = false;
+  }
+</script>
