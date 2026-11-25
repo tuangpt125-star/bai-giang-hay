@@ -1,8 +1,8 @@
 ---
 const presets = [
-  { force: 40, area: 80, label: 'Một khối đặt nằm' },
-  { force: 80, area: 80, label: 'Hai khối đặt nằm' },
-  { force: 40, area: 40, label: 'Một khối đặt đứng' },
+  { force: 40, area: 80, label: 'a) Một khối đặt nằm' },
+  { force: 80, area: 80, label: 'b) Hai khối đặt nằm' },
+  { force: 40, area: 40, label: 'c) Một khối đặt đứng' },
 ];
 const initial = presets[0];
 ---
@@ -30,6 +30,7 @@ const initial = presets[0];
     <figure class="pressure-figure">
       <div class="pressure-diagram" aria-hidden="true">
         <div class="pressure-sand"></div>
+        <div class="pressure-tray"></div>
         <div class="pressure-weight"></div>
       </div>
       <figcaption>Mức lún minh họa trên cùng một lớp bột</figcaption>
@@ -65,7 +66,8 @@ const initial = presets[0];
       illustration.style.setProperty('--block-width', (28 + areaCm2 * 0.39) + '%');
       const stacked = forceNewtons === 80 && areaCm2 === 80;
       illustration.dataset.stacked = String(stacked);
-      illustration.style.setProperty('--block-height', (stacked ? 5 : 2 + forceNewtons / areaCm2) + 'rem');
+      const blockHeight = stacked ? 5 : Math.min(4.75, 200 / areaCm2);
+      illustration.style.setProperty('--block-height', blockHeight + 'rem');
       illustration.style.setProperty('--sink-depth', Math.min(2.4, pressureKPa * 0.075) + 'rem');
 
       for (const preset of presets) {
@@ -149,7 +151,15 @@ const initial = presets[0];
     inset: auto 8% 0;
     height: 32%;
     border-radius: .35rem .35rem 0 0;
-    background: radial-gradient(circle at 2px 2px, #986b52 0.6px, transparent .8px) 0 0/5px 5px, #dfb695;
+    background: radial-gradient(circle at 2px 2px, #bdcfdb 0.55px, transparent .8px) 0 0/5px 5px, #e5eff6;
+  }
+  .pressure-tray {
+    position: absolute;
+    inset: auto 8% 0;
+    height: 43%;
+    border: 3px solid #548da5;
+    border-top: 0;
+    border-radius: 0 0 .35rem .35rem;
   }
   .pressure-weight {
     position: absolute;
@@ -163,6 +173,7 @@ const initial = presets[0];
     border-radius: .3rem;
     background: linear-gradient(180deg, #aab4d0, #626d89 28%, #4f5872);
     box-shadow: 0 3px 7px #3c435d3b;
+    transition: width .2s, height .2s, bottom .2s;
   }
   .pressure-diagram[data-stacked="true"] .pressure-weight::after {
     content: '';
@@ -172,6 +183,7 @@ const initial = presets[0];
     box-shadow: 0 1px #b3bed0;
   }
   .pressure-question { font-size: .9rem; }
+  @media (prefers-reduced-motion: reduce) { .pressure-weight { transition: none; } }
   @container (min-width: 33rem) {
     .pressure-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .pressure-simulation .pressure-figure { margin-top: 0; }

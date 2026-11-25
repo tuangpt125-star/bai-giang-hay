@@ -1,0 +1,72 @@
+---
+interface Props { caption?: string }
+const { caption = 'Thí nghiệm về hiện tượng phản xạ ánh sáng' } = Astro.props;
+const ticks = Array.from({ length: 19 }, (_, i) => (i - 9) * 10);
+---
+<figure class="reflection" data-reflection>
+  <svg viewBox="0 0 360 212" role="img" aria-labelledby="reflection-title">
+    <title id="reflection-title">Đèn chiếu tia tới lên gương phẳng. Tia phản xạ nằm phía bên kia pháp tuyến và tạo góc bằng góc tới.</title>
+    <rect x="1" y="1" width="358" height="210" rx="16" fill="#f2fafd" />
+    <path d="M40 167a140 140 0 0 1 280 0Z" fill="#fff5cf" stroke="#5b9fb4" stroke-width="2" />
+    <path d="M61 167a119 119 0 0 1 238 0" fill="none" stroke="#5b9fb4" stroke-width="1.5" />
+    {ticks.map((tick) => (
+      <line x1="180" y1="48" x2="180" y2={tick % 30 === 0 ? 64 : 56} transform={`rotate(${tick} 180 167)`} stroke="#5b9fb4" />
+    ))}
+    <text x="180" y="44" text-anchor="middle">0°</text>
+    <text x="116" y="66" text-anchor="middle">30°</text><text x="244" y="66" text-anchor="middle">30°</text>
+    <text x="79" y="107" text-anchor="middle">60°</text><text x="281" y="107" text-anchor="middle">60°</text>
+    <text x="51" y="161" text-anchor="middle">90°</text><text x="309" y="161" text-anchor="middle">90°</text>
+    <path d="M180 50v117" stroke="#326b88" stroke-width="2" stroke-dasharray="5 4" />
+    <text x="195" y="83">A</text>
+    <g class="incident">
+      <path d="M180 31v136" stroke="#ad412e" stroke-width="3" />
+      <path d="m175 89 5 10 5-10" fill="none" stroke="#ad412e" stroke-width="3" />
+      <rect x="174" y="18" width="12" height="24" rx="2" fill="#b37451" stroke="#774732" />
+    </g>
+    <g class="reflected">
+      <path d="M180 48v119" stroke="#ad412e" stroke-width="3" />
+      <path d="m175 91 5-10 5 10" fill="none" stroke="#ad412e" stroke-width="3" />
+    </g>
+    <path class="angle-arcs" d="M156.3 147.1A31 31 0 0 1 180 136M180 136A31 31 0 0 1 203.7 147.1" fill="none" stroke="#a56314" stroke-width="2" />
+    <path d="M125 168h110" stroke="#397887" stroke-width="5" stroke-linecap="round" />
+    <circle cx="180" cy="167" r="4" fill="#2a5264" />
+    <text x="180" y="198" text-anchor="middle">Gương phẳng</text>
+  </svg>
+  <figcaption>{caption}<span class="diagram-labels">Đèn chiếu · Bảng chia độ · Gương phẳng</span></figcaption>
+  <div class="reflection-controls" hidden>
+    <label for="incident-angle">Góc tới</label>
+    <input id="incident-angle" type="range" min="0" max="80" value="50" />
+    <output for="incident-angle" aria-live="polite">Góc tới 50° · Góc phản xạ 50°</output>
+  </div>
+</figure>
+<script>
+  for (const figure of document.querySelectorAll<HTMLElement>('[data-reflection]')) {
+    const controls = figure.querySelector<HTMLElement>('.reflection-controls')!;
+    const angle = controls.querySelector('input')!;
+    const output = controls.querySelector('output')!;
+    const arcs = figure.querySelector('.angle-arcs')!;
+    controls.hidden = false;
+    angle.addEventListener('input', () => {
+      const degrees = angle.valueAsNumber;
+      figure.style.setProperty('--angle', degrees + 'deg');
+      const radians = degrees * Math.PI / 180;
+      const offset = 31 * Math.sin(radians);
+      const y = 167 - 31 * Math.cos(radians);
+      arcs.setAttribute('d', `M${180-offset} ${y}A31 31 0 0 1 180 136M180 136A31 31 0 0 1 ${180+offset} ${y}`);
+      angle.setAttribute('aria-valuetext', degrees + ' độ');
+      output.value = `Góc tới ${degrees}° · Góc phản xạ ${degrees}°`;
+    });
+  }
+</script>
+<style>
+  .reflection { margin: 1.15rem 0; text-align: center; }
+  svg { display: block; width: min(100%, 30rem); margin-inline: auto; }
+  svg text { font: 600 13px system-ui; fill: #345869; }
+  .incident, .reflected { transform-origin: 180px 167px; }
+  .incident { transform: rotate(calc(-1 * var(--angle, 50deg))); }
+  .reflected { transform: rotate(var(--angle, 50deg)); }
+  .diagram-labels { display: block; font-size: .875rem; color: #605a71; }
+  .reflection-controls { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: .2rem .8rem; max-width: 26rem; margin: .6rem auto 0; }
+  input { width: 100%; min-height: 2.75rem; accent-color: #5937ae; }
+  output { grid-column: 1 / -1; color: #42306c; font-weight: 650; }
+</style>

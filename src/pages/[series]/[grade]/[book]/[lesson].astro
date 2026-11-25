@@ -3,6 +3,9 @@ import type { MarkdownHeading } from 'astro';
 import { render, type CollectionEntry } from 'astro:content';
 import Shell from '../../../../layouts/Shell.astro';
 import Icon from '../../../../components/Icon.astro';
+import CircuitDiagram from '../../../../components/CircuitDiagram.astro';
+import ReflectionDiagram from '../../../../components/ReflectionDiagram.astro';
+import PressureSetups from '../../../../components/PressureSetups.astro';
 import PressureSimulation from '../../../../components/PressureSimulation.astro';
 import { bookRoute, books, catalogUrl, lessonId, lessonUrl, loadBookLessons, physicsLessons, type Book, type Chapter, type Lesson } from '../../../../book';
 
@@ -62,7 +65,9 @@ const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pag
         </section>
       )}
     </div>
-    {!Content && showSimulation && <PressureSimulation />}
+    {!Content && showSimulation && <><PressureSetups /><PressureSimulation /></>}
+    {!Content && book.grade === 8 && lesson.slug === 'mach-dien-don-gian' && <CircuitDiagram />}
+    {!Content && book.grade === 7 && lesson.slug === 'su-phan-xa-anh-sang' && <ReflectionDiagram />}
     <nav class="lesson-navigation" aria-label="Chuyển bài">
       {previous && <a href={lessonUrl(book, previous)}><small>Bài trước · {previous.number}</small><strong>{previous.title}</strong></a>}
       {next && <a href={lessonUrl(book, next)}><small>Bài sau · {next.number}</small><strong>{next.title}</strong></a>}
