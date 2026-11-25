@@ -67,8 +67,8 @@
   border-radius: 50%;
   box-shadow: 0 0 0 1px white;
 }
-.measurement-lab .lab-board .lab-grab[data-grab-force] { color: #a32d42; }
-.measurement-lab .lab-board .lab-grab[data-grab-hand] { color: #145e52; }
+.measurement-lab .lab-board .lab-grab:is([data-grab-force], [data-grab-weight]) { color: #a32d42; }
+.measurement-lab .lab-board .lab-grab:is([data-grab-hand], [data-grab-pressure]) { color: #145e52; }
 .measurement-lab .lab-board .lab-grab:active { cursor: grabbing; }
 .measurement-lab .lab-actions { display: flex; flex-wrap: wrap; gap: .55rem; margin: .8rem 0; }
 .measurement-lab .lab-actions button + button { background: white; color: var(--lesson-deep); border-color: var(--lesson-rule); }
