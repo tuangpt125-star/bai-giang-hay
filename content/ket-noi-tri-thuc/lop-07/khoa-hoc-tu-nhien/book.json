@@ -1,0 +1,164 @@
+{
+  "series": "Kết nối tri thức với cuộc sống",
+  "seriesSlug": "ket-noi-tri-thuc",
+  "title": "Khoa học tự nhiên 7",
+  "slug": "khoa-hoc-tu-nhien",
+  "grade": 7,
+  "publisher": "Nhà xuất bản Giáo dục Việt Nam",
+  "source": "https://sachdientu.nxbgd.vn/thu-vien-so/doc-sach/shs-khoa-hoc-tu-nhien.4492017677",
+  "chapters": [
+    {
+      "id": "chuong-3",
+      "number": "III",
+      "title": "Tốc độ",
+      "subject": "vat-li",
+      "icon": "gauge",
+      "lessons": [
+        {
+          "number": 8,
+          "title": "Tốc độ chuyển động",
+          "slug": "toc-do-chuyen-dong",
+          "pages": [
+            45,
+            48
+          ]
+        },
+        {
+          "number": 9,
+          "title": "Đo tốc độ",
+          "slug": "do-toc-do",
+          "pages": [
+            49,
+            52
+          ]
+        },
+        {
+          "number": 10,
+          "title": "Đồ thị quãng đường – thời gian",
+          "slug": "do-thi-quang-duong-thoi-gian",
+          "pages": [
+            53,
+            55
+          ]
+        },
+        {
+          "number": 11,
+          "title": "Thảo luận về ảnh hưởng của tốc độ trong an toàn giao thông",
+          "slug": "thao-luan-ve-anh-huong-cua-toc-do-trong-an-toan-giao-thong",
+          "pages": [
+            56,
+            59
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuong-4",
+      "number": "IV",
+      "title": "Âm thanh",
+      "subject": "vat-li",
+      "icon": "sound",
+      "lessons": [
+        {
+          "number": 12,
+          "title": "Sóng âm",
+          "slug": "song-am",
+          "pages": [
+            60,
+            63
+          ]
+        },
+        {
+          "number": 13,
+          "title": "Độ to và độ cao của âm",
+          "slug": "do-to-va-do-cao-cua-am",
+          "pages": [
+            64,
+            67
+          ]
+        },
+        {
+          "number": 14,
+          "title": "Phản xạ âm, chống ô nhiễm tiếng ồn",
+          "slug": "phan-xa-am-chong-o-nhiem-tieng-on",
+          "pages": [
+            68,
+            71
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuong-5",
+      "number": "V",
+      "title": "Ánh sáng",
+      "subject": "vat-li",
+      "icon": "sun",
+      "lessons": [
+        {
+          "number": 15,
+          "title": "Năng lượng ánh sáng. Tia sáng, vùng tối",
+          "slug": "nang-luong-anh-sang-tia-sang-vung-toi",
+          "pages": [
+            72,
+            77
+          ]
+        },
+        {
+          "number": 16,
+          "title": "Sự phản xạ ánh sáng",
+          "slug": "su-phan-xa-anh-sang",
+          "pages": [
+            78,
+            81
+          ]
+        },
+        {
+          "number": 17,
+          "title": "Ảnh của vật qua gương phẳng",
+          "slug": "anh-cua-vat-qua-guong-phang",
+          "pages": [
+            82,
+            85
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuong-6",
+      "number": "VI",
+      "title": "Từ",
+      "subject": "vat-li",
+      "icon": "magnet",
+      "lessons": [
+        {
+          "number": 18,
+          "title": "Nam châm",
+          "slug": "nam-cham",
+          "pages": [
+            86,
+            89
+          ]
+        },
+        {
+          "number": 19,
+          "title": "Từ trường",
+          "slug": "tu-truong",
+          "pages": [
+            90,
+            95
+          ]
+        },
+        {
+          "number": 20,
+          "title": "Chế tạo nam châm điện đơn giản",
+          "slug": "che-tao-nam-cham-dien-don-gian",
+          "pages": [
+            96,
+            98
+          ]
+        }
+      ]
+    }
+  ]
+}

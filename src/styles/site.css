@@ -348,3 +348,37 @@ h2 { font-size: clamp(1.25rem, 2.2vw, 1.6rem); letter-spacing: -.055em; margin: 
 }
 .lesson-text .circuit-table td:nth-child(3) { width: 27%; }
 .lesson-text .circuit-table td:nth-child(4) { width: 33%; }
+
+.grade-links {
+  display: flex;
+  gap: .45rem;
+  margin: .8rem .6rem 0;
+}
+.grade-links a {
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+  color: var(--muted);
+  padding: .45rem .65rem;
+  font-size: .875rem;
+  font-weight: 650;
+}
+.grade-links a:hover, .grade-links a[aria-current] {
+  color: var(--purple);
+  border-color: #dbcef6;
+  background: #f3edff;
+}
+.sound .chapter-icon { color: #176d5d; background: #e2f7ef; }
+.sun .chapter-icon { color: #965113; background: #fff0db; }
+.magnet .chapter-icon { color: #a0305d; background: #fce8f0; }
+
+.top-grade-links { display: none; }
+@media (max-width: 700px) {
+  .top-grade-links { display: flex; margin: 0 0 0 auto; }
+  .top-grade-links a { white-space: nowrap; }
+}
+
+.lesson-text .lesson-reference {
+  color: var(--purple);
+  text-decoration: underline;
+  text-underline-offset: .16em;
+}
