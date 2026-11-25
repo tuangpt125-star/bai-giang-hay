@@ -35,3 +35,42 @@
 @media (max-width: 620px) {
   .measurement-lab .lab-layout { grid-template-columns: minmax(0, 1fr); }
 }
+
+.measurement-lab .lab-board {
+  position: relative;
+  border: 1px solid var(--lesson-rule);
+  border-radius: .65rem;
+  background: linear-gradient(#fefeff, #eef2fa);
+}
+.measurement-lab .lab-board canvas { display: block; width: 100%; height: auto; }
+.measurement-lab .lab-grab {
+  position: absolute;
+  width: 2.35rem;
+  height: 2.35rem;
+  min-height: 0;
+  padding: 0;
+  border: 2px solid #465672;
+  border-radius: 50%;
+  color: #27374c;
+  background: #fff9;
+  transform: translate(-50%, -50%);
+  touch-action: none;
+  cursor: grab;
+}
+.measurement-lab .lab-grab::before {
+  display: block;
+  content: '';
+  width: .65rem;
+  height: .65rem;
+  margin: auto;
+  border-radius: 50%;
+  background: currentColor;
+}
+.measurement-lab .lab-grab[data-grab-force] { color: #a32d42; border-color: currentColor; }
+.measurement-lab .lab-grab[data-grab-hand] { color: #145e52; border-color: currentColor; }
+.measurement-lab .lab-grab:active { cursor: grabbing; }
+.measurement-lab .lab-actions { display: flex; flex-wrap: wrap; gap: .55rem; margin: .8rem 0; }
+.measurement-lab .lab-actions button + button { background: white; color: var(--lesson-deep); border-color: var(--lesson-rule); }
+.measurement-lab .lab-actions button:disabled { opacity: .55; cursor: default; }
+.measurement-lab .lab-trial-status { color: var(--lesson-deep); font-weight: 650; }
+.measurement-lab .lab-trial-status:empty { display: none; }
