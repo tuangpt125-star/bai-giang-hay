@@ -1,0 +1,72 @@
+:root {
+  --lesson-deep: #27204b;
+  --lesson-accent: #53368c;
+  --lesson-tint: #f4eefb;
+  --lesson-rule: #d9c9ed;
+  --lesson-canvas: #efebf8;
+  --lesson-glow: #bfabec;
+}
+[data-chapter='gauge'] {
+  --lesson-deep: #142c51;
+  --lesson-accent: #24559a;
+  --lesson-tint: #e9f2ff;
+  --lesson-rule: #b9d4f5;
+  --lesson-canvas: #e9f1fe;
+  --lesson-glow: #9cbbef;
+}
+[data-chapter='sound'] {
+  --lesson-deep: #193b42;
+  --lesson-accent: #0a6472;
+  --lesson-tint: #e5f6f8;
+  --lesson-rule: #a9dbe0;
+  --lesson-canvas: #e3f2f7;
+  --lesson-glow: #89ccd7;
+}
+[data-chapter='sun'] {
+  --lesson-deep: #5a310e;
+  --lesson-accent: #8e4d0d;
+  --lesson-tint: #fff3da;
+  --lesson-rule: #edcc90;
+  --lesson-canvas: #fcf1dd;
+  --lesson-glow: #efc175;
+}
+[data-chapter='magnet'] {
+  --lesson-deep: #542339;
+  --lesson-accent: #94355b;
+  --lesson-tint: #fceaf1;
+  --lesson-rule: #edbad2;
+  --lesson-canvas: #faeaf3;
+  --lesson-glow: #e0a1c1;
+}
+[data-chapter='layers'] {
+  --lesson-deep: #113b32;
+  --lesson-accent: #176559;
+  --lesson-tint: #e6f5ed;
+  --lesson-rule: #abd8c3;
+  --lesson-canvas: #e5f3ec;
+  --lesson-glow: #91cdb2;
+}
+[data-chapter='rotate'] {
+  --lesson-deep: #35234f;
+  --lesson-accent: #654298;
+  --lesson-tint: #f2ebfb;
+  --lesson-rule: #d7c2eb;
+  --lesson-canvas: #f1eafa;
+  --lesson-glow: #c9aee9;
+}
+[data-chapter='bolt'] {
+  --lesson-deep: #3f380c;
+  --lesson-accent: #715700;
+  --lesson-tint: #fff6d5;
+  --lesson-rule: #e8d382;
+  --lesson-canvas: #fbf4db;
+  --lesson-glow: #e8ce6e;
+}
+[data-chapter='thermometer'] {
+  --lesson-deep: #562b24;
+  --lesson-accent: #983f2e;
+  --lesson-tint: #ffede6;
+  --lesson-rule: #f1c0ae;
+  --lesson-canvas: #fcece4;
+  --lesson-glow: #e9a58e;
+}

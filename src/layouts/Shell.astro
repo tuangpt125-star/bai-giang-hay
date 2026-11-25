@@ -13,6 +13,7 @@ interface Props {
 
 const { title, book = defaultBook, currentChapter, isHome, currentLesson } = Astro.props;
 const chapters = physicsChapters(book);
+const chapterTheme = chapters.find(({ id }) => id === currentChapter)?.icon;
 const catalogue = catalogUrl(book);
 const otherBooks = books.filter((option) => option.grade !== book.grade);
 ---
@@ -27,7 +28,7 @@ const otherBooks = books.filter((option) => option.grade !== book.grade);
   </head>
   <body>
     <a class="skip-link" href="#noi-dung">Đến nội dung</a>
-    <div class="app">
+    <div class="app" data-chapter={chapterTheme} data-grade={book.grade}>
       <aside id="site-sidebar" class="sidebar">
         <a class="brand" href={homeUrl}>
           <span class="brand-mark"><Icon name="book" size={24} /></span>
@@ -43,7 +44,7 @@ const otherBooks = books.filter((option) => option.grade !== book.grade);
           )}
           <span class="navigation-label chapter-navigation">CHƯƠNG TRONG SÁCH</span>
           {chapters.map((chapter) => (
-            <a class="navigation-link chapter-link" href={`${catalogue}#${chapter.id}`} aria-current={currentChapter === chapter.id ? 'location' : undefined}>
+            <a class="navigation-link chapter-link" data-chapter={chapter.icon} href={`${catalogue}#${chapter.id}`} aria-current={currentChapter === chapter.id ? 'location' : undefined}>
               <Icon name={chapter.icon} size={18} /><span>{chapter.title}</span>
             </a>
           ))}

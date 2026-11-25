@@ -103,6 +103,7 @@ const label = sameMaterial ? 'cùng vật liệu' : 'cùng thể tích';
   }
   .density-table { background: white; font-variant-numeric: tabular-nums; }
   .density-table th, .density-table td { padding: .45rem .3rem; }
+  .density-table :is(td:first-of-type, td details span, input) { font-family: var(--data-font); font-weight: 500; }
   .density-investigation button {
     color: white;
     background: var(--lesson-accent);
@@ -116,7 +117,7 @@ const label = sameMaterial ? 'cùng vật liệu' : 'cùng thể tích';
   th, td { overflow-wrap: anywhere; }
   tbody th { width: 25%; }
   summary { cursor: pointer; }
-  input { width: 100%; max-width: 4.5rem; min-height: 2.5rem; border: 1px solid #877399; border-radius: .35rem; padding: .2rem; text-align: center; font: inherit; }
+  input { width: 100%; max-width: 4.5rem; min-height: 2.5rem; border: 1px solid #877399; border-radius: .35rem; padding: .2rem; text-align: center; font-size: inherit; }
   input[aria-invalid="true"] { border: 2px solid #a12639; background: #fff2f4; }
   button { min-height: 2.5rem; padding: .3rem .65rem; font: inherit; cursor: pointer; }
   [data-feedback]:empty { display: none; }

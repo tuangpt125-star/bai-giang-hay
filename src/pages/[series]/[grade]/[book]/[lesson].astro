@@ -48,7 +48,7 @@ const densityCover = book.grade === 8 && lesson.slug === 'khoi-luong-rieng';
 const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pages.join('–');
 ---
 <Shell book={book} title={`Bài ${lesson.number}. ${lesson.title}`} currentChapter={lesson.chapter.id} currentLesson={`Bài ${lesson.number}`}>
-  <div class="reading" data-chapter={lesson.chapter.icon}>
+  <div class="reading">
     <a class="back-link reading-back" href={`${catalogue}#${lesson.chapter.id}`}>‹ Mục lục chương {lesson.chapter.number}</a>
     <header class:list={['reading-header', { 'has-cover': densityCover }]}>
       <div class="reading-heading">

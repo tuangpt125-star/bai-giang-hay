@@ -30,7 +30,7 @@ const hasAll = lessons.every((lesson) => hasText(lesson.slug));
     <h2 id="chapter-heading">Theo chương</h2>
     <div class="chapter-grid">
       {chapters.map((chapter) => (
-        <a class:list={['chapter-card', chapter.icon]} href={`#${chapter.id}`}>
+        <a class="chapter-card" data-chapter={chapter.icon} href={`#${chapter.id}`}>
           <span class="chapter-icon"><Icon name={chapter.icon} size={22} /></span>
           <span class="chapter-caption">Chương {chapter.number} · {chapter.lessons.length} bài</span>
           <strong>{chapter.title}</strong>
@@ -65,7 +65,7 @@ const hasAll = lessons.every((lesson) => hasText(lesson.slug));
 
     <div class="groups">
       {chapters.map((chapter) => (
-        <section class="lesson-group" id={chapter.id} aria-labelledby={`${chapter.id}-heading`}>
+        <section class="lesson-group" data-chapter={chapter.icon} id={chapter.id} aria-labelledby={`${chapter.id}-heading`}>
           <h3 id={`${chapter.id}-heading`}><span>Chương {chapter.number}</span>{chapter.title}</h3>
           <ul>
             {chapter.lessons.map((lesson) => (
