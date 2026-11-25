@@ -11,10 +11,6 @@ export function lessonUrl(lesson: { slug: string }) {
   return `/${book.seriesSlug}/lop-${book.grade}/${book.slug}/${lesson.slug}/`;
 }
 
-export function sourceUrl(printPage: number) {
-  return `${book.source}#p=${printPage + book.readerPageOffset}`;
-}
-
 export async function loadBookLessons() {
   const entries = await getCollection('lessons');
   return new Map(entries.map((entry) => [entry.id, entry]));

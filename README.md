@@ -26,8 +26,8 @@ src/
 └── pages/
 ```
 
-`book.json` lưu các chương, thứ tự bài, slug và khoảng trang in. `readerPageOffset` quy đổi số trang in sang số trang của trình đọc trực tuyến. Khi có tệp `bai-hoc/<slug>.mdx`, trang bài sẽ hiện bản đọc HTML. Tệp MDX cần có trường `title` trong frontmatter. Các bài còn lại dẫn đến đúng trang trong sách gốc.
+`book.json` lưu các chương, thứ tự bài, slug và khoảng trang in. `readerPageOffset` quy đổi số trang in sang số trang của trình đọc trực tuyến. Khi có tệp `bai-hoc/<slug>.mdx`, trang bài sẽ hiện bản đọc HTML. Tệp MDX cần có trường `title` trong frontmatter. Các bài chưa có nội dung HTML hiển thị trạng thái chuẩn bị.
 
-Bản xem thử riêng tư có nội dung nguyên văn của bài mẫu. Nhánh GitHub công khai chứa giao diện, cấu hình và mục lục.
+Bản xem riêng tư chứa các bài đọc HTML cùng hình và bảng trong bài. Repo GitHub công khai chứa giao diện, cấu hình và mục lục.
 
 [Nguồn đối chiếu mục lục](https://online.pubhtml5.com/ngvcn/wlly/#p=5)
