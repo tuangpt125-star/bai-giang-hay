@@ -3,13 +3,15 @@ import '../styles/measurement-lab.css';
 ---
 <section class="measurement-lab" data-lever-balance hidden aria-labelledby="lever-balance-title">
   <h3 id="lever-balance-title">Thí nghiệm ảo · Tìm lực tay để giữ tải cân bằng</h3>
-  <p>Kéo chốt xanh dọc theo thanh để dời tay. Nhập lực em muốn thử rồi bấm <strong>Thử lực tay</strong>. Điều chỉnh cho đến khi thanh giữ gần ngang.</p>
+  <p>Nắm quả nặng màu đỏ để gỡ khỏi móc hoặc treo lại. Kéo chốt xanh dọc theo thanh để dời tay. Giữ vòng xanh phía trên chốt rồi ấn xuống hoặc kéo lên theo hướng ghi bên dưới. Bấm <strong>Thả thanh</strong> để quan sát xem tải làm thanh quay thế nào khi chưa tác dụng lực tay.</p>
   <figure class="lever-figure">
     <div class="lab-board">
       <canvas width="560" height="360" data-lever-diagram aria-hidden="true"></canvas>
+      <button type="button" class="lab-grab" data-grab-weight aria-label="Quả nặng. Bấm Enter để treo hoặc gỡ tải." title="Treo hoặc gỡ quả nặng"></button>
+      <button type="button" class="lab-grab" data-grab-pressure aria-label="Tay cầm. Giữ và kéo, hoặc bấm Enter để bật và nhả lực." title="Giữ tay cầm để tác dụng lực"></button>
       <button type="button" class="lab-grab" data-grab-hand aria-label="Vị trí tay. Dùng phím trái hoặc phải để dịch chuyển." title="Kéo vị trí tay"></button>
     </div>
-    <figcaption>O là điểm tựa, P là trọng lượng tải, F là lực tay. Tải treo ở phía có mũi tên đỏ.</figcaption>
+    <figcaption>O là điểm tựa, P là trọng lượng tải, F là lực tay. Khay bên dưới dùng để đặt quả nặng đã gỡ.</figcaption>
   </figure>
   <div class="lab-layout">
     <div class="lab-controls">
@@ -29,21 +31,27 @@ import '../styles/measurement-lab.css';
       <label for="lever-trial-force">Lực tay em muốn thử (N)</label>
       <input id="lever-trial-force" type="number" min="0" max="150" step="0.1" value="6" required />
       <div class="lab-actions">
-        <button type="button" data-lever-try>Thử lực tay</button>
+        <button type="button" data-lever-try>Giữ lực đã đặt</button>
+        <button type="button" data-lever-toggle-weight>Gỡ tải</button>
+        <button type="button" data-lever-unlock>Thả thanh</button>
         <button type="button" data-lever-reset disabled>Đưa thanh về ngang</button>
       </div>
+      <dl class="lab-values">
+        <div><dt>Lực tay lúc này</dt><dd><output data-lever-applied>0 N</output></dd></div>
+      </dl>
       <p class="lab-trial-status" data-lever-trial role="status"></p>
       <details>
         <summary>Đối chiếu lực tay khi cân bằng</summary>
-        <p>Lực tay cần <output data-lever-effort>9 N</output>.</p>
+        <p>Với quả nặng đã treo, lực tay cần <output data-lever-effort>9 N</output>.</p>
       </details>
     </div>
   </div>
-  <p class="lab-help">Mô hình bỏ qua khối lượng thanh và ma sát. Hình minh họa chiều quay ban đầu. Thanh được xem là gần cân bằng khi hai moment chênh ít hơn 0,05 N·m.</p>
+  <p class="lab-help">Thanh có quán tính, ma sát ở trục và cữ chặn hai phía. Trọng tâm thanh nằm tại O nên trọng lượng của thanh không tạo moment quanh O.</p>
 </section>
 
 <script>
-  import { arrow, deflection, dragHandle, line, positionHandle } from '../physics/lab-diagram';
+  import { arrow, dragHandle, line, positionHandle } from '../physics/lab-diagram';
+  import { rotationLab, stopAngle, type Rotation } from '../physics/rotation';
 
   const format = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 });
   const arrangements = {
@@ -51,7 +59,11 @@ import '../styles/measurement-lab.css';
     farther: { loadArm: 20, min: 30, max: 60, initial: 40 },
     closer: { loadArm: 40, min: 10, max: 30, initial: 20 },
   };
-  const levelY = 185;
+  const levelY = 165;
+  const trayX = 54;
+  const trayY = 309;
+  const gripDistance = 74;
+  const hangerLength = 21;
 
   for (const lab of document.querySelectorAll<HTMLElement>('[data-lever-balance]')) {
     const find = <T extends HTMLElement>(selector: string) => lab.querySelector<T>(selector)!;
@@ -62,10 +74,20 @@ import '../styles/measurement-lab.css';
     const canvas = find<HTMLCanvasElement>('[data-lever-diagram]');
     const context = canvas.getContext('2d');
     const handle = find<HTMLButtonElement>('[data-grab-hand]');
+    const weightHandle = find<HTMLButtonElement>('[data-grab-weight]');
+    const pressureHandle = find<HTMLButtonElement>('[data-grab-pressure]');
     const reset = find<HTMLButtonElement>('[data-lever-reset]');
+    const apply = find<HTMLButtonElement>('[data-lever-try]');
+    const toggleWeight = find<HTMLButtonElement>('[data-lever-toggle-weight]');
+    const unlock = find<HTMLButtonElement>('[data-lever-unlock]');
+    const applied = find<HTMLOutputElement>('[data-lever-applied]');
     const trial = find<HTMLElement>('[data-lever-trial]');
-    let cancelAnimation = () => {};
-    let testing = false;
+    let locked = true;
+    let holding = false;
+    let attached = true;
+    let gripY: number | null = null;
+    let gripOffset = 0;
+    let carried: { x: number; y: number; wasAttached: boolean } | null = null;
 
     if (!context) canvas.closest('figure')!.hidden = true;
 
@@ -78,68 +100,136 @@ import '../styles/measurement-lab.css';
     function pivotX() { return oppositeSide() ? 278 : 86; }
     function pixelsPerCm() { return oppositeSide() ? 3.65 : 6.1; }
 
-    function draw(tilt = 0) {
+    function beamPoint(distance: number, tilt: number) {
+      const offset = distance * pixelsPerCm();
+      return { x: pivotX() + offset * Math.cos(tilt), y: levelY + offset * Math.sin(tilt) };
+    }
+    function loadPoint(tilt: number) {
+      return beamPoint(settings().loadArm * (oppositeSide() ? -1 : 1), tilt);
+    }
+    function handForce(tilt: number) {
+      if (gripY === null) return holding && effort.validity.valid ? effort.valueAsNumber : 0;
+      const neutralY = beamPoint(effortArm.valueAsNumber, tilt).y - gripDistance;
+      const displacement = (gripY - neutralY) * (oppositeSide() ? 1 : -1);
+      return Math.min(36, Math.max(0, displacement * .65));
+    }
+    function momentDifference(tilt: number) {
+      const loadMoment = attached ? load.valueAsNumber * settings().loadArm : 0;
+      const handMoment = handForce(tilt) * effortArm.valueAsNumber;
+      return (loadMoment - handMoment) * Math.cos(tilt) / 100;
+    }
+
+    function draw({ angle: tilt, speed }: Rotation) {
       const pen = context;
-      if (!pen) return;
       const pivot = pivotX();
-      const scale = pixelsPerCm();
-      const loadOffset = settings().loadArm * scale * (oppositeSide() ? -1 : 1);
-      const handOffset = effortArm.valueAsNumber * scale;
-      const left = Math.min(0, loadOffset) - 22;
-      const right = Math.max(loadOffset, handOffset) + 22;
-      const dx = Math.cos(tilt);
-      const dy = Math.sin(tilt);
-      const loadX = pivot + loadOffset * dx;
-      const loadY = levelY + loadOffset * dy;
-      const handX = pivot + handOffset * dx;
-      const handY = levelY + handOffset * dy;
+      const left = oppositeSide() ? -37 : -6;
+      const right = oppositeSide() ? 63 : 66;
+      const loadHook = loadPoint(tilt);
+      const handHook = beamPoint(effortArm.valueAsNumber, tilt);
+      const weightWidth = 25 + load.valueAsNumber / 3;
+      const weightHeight = weightWidth * .8;
+      const weightX = carried?.x ?? (attached ? loadHook.x : trayX);
+      const weightY = carried?.y ?? (attached ? loadHook.y + hangerLength + weightHeight / 2 : trayY);
+      const force = handForce(tilt);
+      const neutralY = handHook.y - gripDistance;
+      const shownGripY = gripY ?? neutralY;
+      const difference = momentDifference(tilt);
+      const atStop = Math.abs(tilt) >= stopAngle;
+      const state = carried ? 'Đang cầm tải.' : attached ? 'Tải đang treo.' : 'Tải ở trong khay.';
+      const motion = locked ? 'Thanh đang được giữ ngang.'
+        : Math.abs(difference) < .005 ? (Math.abs(speed) >= .012 ? 'Hai moment bằng nhau. Thanh đang chậm dần.' : 'Hai moment bằng nhau. Thanh giữ vị trí hiện tại.')
+        : atStop && speed === 0 ? 'Thanh chạm cữ chặn.'
+        : difference > 0 ? 'Moment của tải lớn hơn.' : 'Moment của lực tay lớn hơn.';
+      const status = state + ' ' + motion;
+      if (trial.textContent !== status) trial.textContent = status;
+      const forceLabel = format.format(force) + ' N';
+      if (applied.value !== forceLabel) applied.value = forceLabel;
+      lab.dataset.beamAngle = tilt.toFixed(4);
+      lab.dataset.leverWeightState = carried ? 'held' : attached ? 'attached' : 'tray';
+      handle.hidden = gripY !== null;
+      positionHandle(handle, canvas, handHook.x, handHook.y);
+      positionHandle(weightHandle, canvas, weightX, weightY);
+      positionHandle(pressureHandle, canvas, handHook.x, shownGripY);
+      if (!pen) return;
 
       pen.clearRect(0, 0, canvas.width, canvas.height);
       pen.lineCap = 'round';
+      line(pen, 20, 337, 538, 337, '#c7d3e2', 4);
+      for (const stop of [left + 1, right - 1]) {
+        const point = beamPoint(stop, Math.sign(stop) * stopAngle);
+        line(pen, point.x, point.y + 8, point.x, 333, '#a17555', 9);
+      }
+      line(pen, trayX - 37, trayY + 17, trayX + 37, trayY + 17, '#70819a', 7);
+      pen.font = '650 17px system-ui';
+      pen.fillStyle = '#4c5d75';
+      pen.fillText('Khay tải', trayX - 31, trayY - 29);
       pen.fillStyle = '#624296';
       pen.beginPath();
       pen.moveTo(pivot, levelY);
-      pen.lineTo(pivot - 36, levelY + 65);
-      pen.lineTo(pivot + 36, levelY + 65);
+      pen.lineTo(pivot - 43, 334);
+      pen.lineTo(pivot + 43, 334);
       pen.closePath();
       pen.fill();
 
-      line(pen, pivot + left * dx, levelY + left * dy, pivot + right * dx, levelY + right * dy, '#526887', 14);
+      const start = beamPoint(left, tilt);
+      const end = beamPoint(right, tilt);
+      line(pen, start.x, start.y, end.x, end.y, '#526887', 15);
+      line(pen, start.x, start.y - 3, end.x, end.y - 3, '#8194ae', 3);
       pen.fillStyle = '#e0e7ef';
-      for (let offset = Math.ceil(left / (scale * 10)) * scale * 10; offset < right; offset += scale * 10) {
+      for (let offset = Math.ceil(left / 10) * 10; offset < right; offset += 10) {
+        const point = beamPoint(offset, tilt);
         pen.beginPath();
-        pen.arc(pivot + offset * dx, levelY + offset * dy, 2.6, 0, Math.PI * 2);
+        pen.arc(point.x, point.y, 3, 0, Math.PI * 2);
         pen.fill();
       }
 
-      const weightSize = 23 + load.valueAsNumber / 3;
-      line(pen, loadX, loadY, loadX, loadY + 17, '#485667', 2.5);
+      pen.strokeStyle = '#a64758';
+      pen.lineWidth = 3;
+      pen.beginPath();
+      pen.arc(loadHook.x, loadHook.y + 8, 8, 0, Math.PI * 2);
+      pen.stroke();
+      if (attached) {
+        line(pen, loadHook.x, loadHook.y + 14, weightX, weightY - weightHeight / 2, '#485667', 3);
+        arrow(pen, loadHook.x, weightY + weightHeight / 2 + 7, 0, 25, '#9e3044');
+        pen.font = '700 20px system-ui';
+        pen.fillStyle = '#743244';
+        pen.fillText('P', weightX + 12, weightY + weightHeight / 2 + 30);
+      }
+      pen.strokeStyle = '#6d3341';
+      pen.lineWidth = 2.5;
+      pen.beginPath();
+      pen.arc(weightX, weightY - weightHeight / 2 - 4, 5, 0, Math.PI * 2);
+      pen.stroke();
       pen.fillStyle = '#a64758';
-      pen.fillRect(loadX - weightSize / 2, loadY + 15, weightSize, weightSize);
-      arrow(pen, loadX, loadY - 57, 0, 43, '#9e3044');
-      const applied = Math.max(0, effort.valueAsNumber || 0);
-      const handArrow = Math.min(58, 24 + applied / 2);
-      pen.font = '700 21px system-ui';
-      pen.fillStyle = '#743244';
-      pen.fillText('P', loadX - 7, Math.max(23, loadY - 67));
-      if (applied > 0) {
-        if (oppositeSide()) arrow(pen, handX, handY - handArrow - 13, 0, handArrow, '#145e52');
-        else arrow(pen, handX, handY - 13, 0, -handArrow, '#145e52');
+      pen.beginPath();
+      pen.roundRect(weightX - weightWidth / 2, weightY - weightHeight / 2, weightWidth, weightHeight, 4);
+      pen.fill();
+
+      line(pen, handHook.x, handHook.y - 8, handHook.x, shownGripY, '#145e52', 3);
+      line(pen, handHook.x - 11, shownGripY, handHook.x + 11, shownGripY, '#8cc9b1', 9);
+      if (force > .005) {
+        const direction = oppositeSide() ? 1 : -1;
+        const length = Math.min(42, 15 + force * .8);
+        arrow(pen, handHook.x + 15, handHook.y - 28 - direction * length / 2, 0, direction * length, '#145e52');
+        pen.font = '700 20px system-ui';
         pen.fillStyle = '#145e52';
-        pen.fillText('F', handX - 7, Math.max(23, handY - handArrow - 22));
+        pen.fillText('F', handHook.x + 29, handHook.y - 23);
       }
       pen.fillStyle = 'white';
-      pen.fillText('O', pivot - 8, levelY + 53);
-      if (!testing) positionHandle(handle, canvas, handX, handY);
+      pen.font = '700 23px system-ui';
+      pen.fillText('O', pivot - 9, levelY + 55);
+      pen.beginPath();
+      pen.arc(pivot, levelY, 5, 0, Math.PI * 2);
+      pen.fill();
     }
 
-    function update() {
-      cancelAnimation();
-      testing = false;
-      handle.hidden = false;
-      reset.disabled = true;
-      trial.textContent = '';
+    const beam = rotationLab(
+      (tilt) => locked ? 0 : momentDifference(tilt) * (oppositeSide() ? -1 : 1),
+      () => .55 + (attached ? load.valueAsNumber / 9.81 * (settings().loadArm / 100) ** 2 : 0),
+      draw,
+    );
 
+    function update() {
       const weight = load.valueAsNumber;
       const distance = effortArm.valueAsNumber;
       const model = settings();
@@ -152,7 +242,11 @@ import '../styles/measurement-lab.css';
       find<HTMLOutputElement>('[data-lever-load-arm]').value = model.loadArm + ' cm';
       find<HTMLOutputElement>('[data-lever-effort]').value = format.format(weight * model.loadArm / distance) + ' N';
       find<HTMLOutputElement>('[data-lever-direction]').value = oppositeSide() ? 'ấn xuống' : 'kéo lên';
-      draw();
+      apply.textContent = holding ? 'Nhả lực tay' : 'Giữ lực đã đặt';
+      toggleWeight.textContent = attached ? 'Gỡ tải' : 'Treo tải';
+      unlock.disabled = !locked;
+      reset.disabled = locked;
+      beam.wake();
     }
 
     function moveHand(distance: number) {
@@ -160,31 +254,92 @@ import '../styles/measurement-lab.css';
       effortArm.value = String(Math.max(min, Math.min(max, distance)));
       update();
     }
-    dragHandle(handle, canvas, (x) => moveHand(Math.round((x - pivotX()) / pixelsPerCm() / 10) * 10));
+    dragHandle(handle, canvas, (x, y) => {
+      const { angle: tilt } = beam.state;
+      const distance = ((x - pivotX()) * Math.cos(tilt) + (y - levelY) * Math.sin(tilt)) / pixelsPerCm();
+      moveHand(Math.round(distance / 10) * 10);
+    });
     handle.addEventListener('keydown', (event) => {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
       event.preventDefault();
       moveHand(effortArm.valueAsNumber + (event.key === 'ArrowLeft' ? -10 : 10));
     });
 
-    function tryForce() {
-      if (!effort.reportValidity()) return;
-      const loadMoment = load.valueAsNumber * settings().loadArm / 100;
-      const effortMoment = effort.valueAsNumber * effortArm.valueAsNumber / 100;
-      const difference = loadMoment - effortMoment;
-      const balanced = Math.abs(difference) < .05;
-      cancelAnimation();
-      testing = !balanced;
-      handle.hidden = testing;
-      reset.disabled = !testing;
-      trial.textContent = balanced
-        ? 'Thanh giữ gần ngang. Hai moment gần bằng nhau.'
-        : difference > 0 ? 'Đầu treo tải hạ xuống. Moment của tải lớn hơn.' : 'Đầu treo tải nâng lên. Moment của lực tay lớn hơn.';
-      cancelAnimation = deflection(balanced ? 0 : difference * (oppositeSide() ? -1 : 1), draw);
+    function setGrip(y: number) {
+      gripY = Math.min(342, Math.max(18, y));
+      update();
+    }
+    dragHandle(pressureHandle, canvas,
+      (_, y) => {
+        if (gripY === null) return;
+        setGrip(y - gripOffset);
+        if (locked && handForce(beam.state.angle) > .05) releaseBeam();
+      },
+      (_, y) => {
+        holding = false;
+        const neutralY = beamPoint(effortArm.valueAsNumber, beam.state.angle).y - gripDistance;
+        gripOffset = y - neutralY;
+        setGrip(neutralY);
+      },
+      () => {
+        gripY = null;
+        update();
+      },
+    );
+
+    function carryWeight(x: number, y: number) {
+      if (!carried) return;
+      carried.x = Math.min(542, Math.max(18, x));
+      carried.y = Math.min(337, Math.max(18, y));
+      beam.wake();
+    }
+    dragHandle(weightHandle, canvas, carryWeight,
+      (x, y) => {
+        carried = { x, y, wasAttached: attached };
+        attached = false;
+        update();
+      },
+      (cancelled) => {
+        if (!carried) return;
+        const hook = loadPoint(beam.state.angle);
+        attached = cancelled ? carried.wasAttached : Math.hypot(carried.x - hook.x, carried.y - hook.y - hangerLength) < 45;
+        carried = null;
+        update();
+      },
+    );
+
+    function releaseBeam() {
+      locked = false;
+      update();
     }
 
-    find('[data-lever-try]').addEventListener('click', tryForce);
-    reset.addEventListener('click', update);
+    function changeWeight() {
+      if (carried) return;
+      attached = !attached;
+      update();
+    }
+
+    function tryForce() {
+      if (!holding && !effort.reportValidity()) return;
+      gripY = null;
+      holding = !holding;
+      releaseBeam();
+    }
+
+    function secureBeam() {
+      locked = true;
+      holding = false;
+      gripY = null;
+      beam.reset();
+      update();
+    }
+
+    apply.addEventListener('click', tryForce);
+    pressureHandle.addEventListener('click', (event) => { if (event.detail === 0) tryForce(); });
+    weightHandle.addEventListener('click', (event) => { if (event.detail === 0) changeWeight(); });
+    toggleWeight.addEventListener('click', changeWeight);
+    unlock.addEventListener('click', releaseBeam);
+    reset.addEventListener('click', secureBeam);
     effort.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter') return;
       event.preventDefault();
@@ -195,7 +350,8 @@ import '../styles/measurement-lab.css';
       effortArm.min = String(model.min);
       effortArm.max = String(model.max);
       effortArm.value = String(model.initial);
-      update();
+      carried = null;
+      secureBeam();
     });
     for (const input of [load, effort, effortArm]) input.addEventListener('input', update);
     update();

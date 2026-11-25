@@ -24,34 +24,63 @@ export function positionHandle(handle: HTMLButtonElement, canvas: HTMLCanvasElem
   handle.style.top = y / canvas.height * 100 + '%';
 }
 
-export function dragHandle(handle: HTMLButtonElement, canvas: HTMLCanvasElement, move: (x: number, y: number) => void) {
+type DragAction = (x: number, y: number) => void;
+
+export function dragHandle(
+  handle: HTMLButtonElement,
+  canvas: HTMLCanvasElement,
+  move: DragAction,
+  start?: DragAction,
+  end?: (cancelled: boolean) => void,
+) {
+  let pointer: number | null = null;
+  const point = (event: PointerEvent): [number, number] => {
+    const bounds = canvas.getBoundingClientRect();
+    return [
+      (event.clientX - bounds.left) / bounds.width * canvas.width,
+      (event.clientY - bounds.top) / bounds.height * canvas.height,
+    ];
+  };
+
   handle.addEventListener('pointerdown', (event) => {
-    if (!event.isPrimary || event.button !== 0) return;
+    if (!event.isPrimary || event.button !== 0 || pointer !== null) return;
+    pointer = event.pointerId;
     handle.focus({ preventScroll: true });
     handle.setPointerCapture(event.pointerId);
+    start?.(...point(event));
     event.preventDefault();
   });
   handle.addEventListener('pointermove', (event) => {
-    if (!handle.hasPointerCapture(event.pointerId)) return;
-    const bounds = canvas.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width * canvas.width;
-    const y = (event.clientY - bounds.top) / bounds.height * canvas.height;
-    move(x, y);
+    if (event.pointerId === pointer) move(...point(event));
   });
+  for (const name of ['pointerup', 'pointercancel', 'lostpointercapture'] as const) {
+    handle.addEventListener(name, (event) => {
+      if (event.pointerId !== pointer) return;
+      pointer = null;
+      end?.(name !== 'pointerup');
+    });
+  }
 }
 
-export function deflection(netMoment: number, render: (radians: number) => void) {
-  const target = Math.sign(netMoment) * Math.min(.31, .12 + Math.abs(netMoment) * .055);
-  if (!target || matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    render(target);
-    return () => {};
+export function spring(pen: CanvasRenderingContext2D, x: number, y: number, dx: number, dy: number) {
+  const length = Math.hypot(dx, dy);
+  if (length < 1) return;
+  const ux = dx / length;
+  const uy = dy / length;
+  const bodyStart = length * .31;
+  const bodyEnd = length * .84;
+
+  line(pen, x, y, x + dx, y + dy, '#384963', 2.5);
+  line(pen, x + ux * bodyStart, y + uy * bodyStart, x + ux * bodyEnd, y + uy * bodyEnd, '#f4cd74', 16);
+  pen.beginPath();
+  pen.moveTo(x + ux * bodyStart, y + uy * bodyStart);
+  for (let i = 1; i <= 12; i++) {
+    const along = bodyStart + (bodyEnd - bodyStart) * i / 13;
+    const across = i % 2 === 0 ? 4 : -4;
+    pen.lineTo(x + ux * along - uy * across, y + uy * along + ux * across);
   }
-  const start = performance.now();
-  let frame = requestAnimationFrame(step);
-  function step(time: number) {
-    const progress = Math.min(1, (time - start) / 460);
-    render(target * (1 - (1 - progress) ** 3));
-    if (progress < 1) frame = requestAnimationFrame(step);
-  }
-  return () => cancelAnimationFrame(frame);
+  pen.lineTo(x + ux * bodyEnd, y + uy * bodyEnd);
+  pen.strokeStyle = '#594628';
+  pen.lineWidth = 1.8;
+  pen.stroke();
 }
