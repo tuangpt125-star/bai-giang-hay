@@ -25,6 +25,18 @@ Một xe đồ chơi chạy trên đường thẳng với tốc độ không đ�
 
 Trên cùng một đồ thị, đoạn thẳng đi lên càng dốc thì tốc độ càng lớn. Đoạn nằm ngang cho thấy vật dừng lại. Thời gian vẫn tăng, còn tổng quãng đường đã đi giữ nguyên.
 
+## Kể lại cả hành trình bằng đồ thị
+
+Dùng mô phỏng bên dưới và kéo đến các mốc trong bảng. Em có thể chép bốn điểm ra giấy rồi nối từng cặp điểm liên tiếp để dựng lại hành trình. Trong mô hình, xe chạy đều trong mỗi đoạn chuyển động.
+
+| Thời gian t (s) | 0 | 4 | 7 | 10 |
+| --- | ---: | ---: | ---: | ---: |
+| Quãng đường tích lũy s (m) | 0 | 8 | 8 | 20 |
+
+Trong 4 s đầu, xe đi 8 m, ứng với 2 m/s. Từ giây thứ 4 đến giây thứ 7, xe đứng yên. Trong 3 s cuối, xe đi thêm 12 m, ứng với 4 m/s. Trên trục quãng đường, mốc 8 m tương ứng với cả khoảng đứng yên. Nếu hỏi xe **lần đầu** đi được 8 m, câu trả lời là giây thứ 4.
+
+Quãng đường trên đồ thị là tổng độ dài đã đi kể từ lúc bắt đầu. Chẳng hạn, nếu một người đi 6 m rồi quay lại 2 m, tổng quãng đường là 8 m, còn người đó cách điểm xuất phát 4 m.
+
 ## Tự kiểm tra
 
 Trong mô phỏng bên dưới, xe đã đi được 8 m ở giây thứ 7 và 20 m ở giây thứ 10. Hãy tính quãng đường xe đi **trong khoảng từ giây thứ 7 đến giây thứ 10** và tốc độ trong khoảng đó. Sau đó kéo thanh thời điểm để kiểm tra hai số đo.
