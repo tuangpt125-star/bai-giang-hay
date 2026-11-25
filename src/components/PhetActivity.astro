@@ -1,0 +1,36 @@
+---
+interface Props {
+  title: string;
+  simulation: 'buoyancy-basics' | 'circuit-construction-kit-dc-virtual-lab';
+  tasks: string[];
+  question: string;
+}
+
+const { title, simulation, tasks, question } = Astro.props;
+const url = `https://phet.colorado.edu/sims/html/${simulation}/latest/${simulation}_vi.html`;
+---
+<section class="phet-activity" aria-labelledby="phet-title">
+  <h2 id="phet-title">{title}</h2>
+  <ol>{tasks.map((task) => <li>{task}</li>)}</ol>
+  <p><strong>Giải thích kết quả.</strong> {question}</p>
+  <details>
+    <summary>Mở mô phỏng trong bài</summary>
+    <iframe src={url} title={title} loading="lazy" allowfullscreen></iframe>
+  </details>
+  <p><a href={url} target="_blank" rel="noopener">Mở mô phỏng PhET trong thẻ mới</a></p>
+</section>
+
+<style>
+  .phet-activity {
+    margin: 1.5rem 0;
+    padding: clamp(.85rem, 3vw, 1.4rem);
+    background: #f5f9ff;
+    border: 1px solid #c9dbef;
+    border-radius: .9rem;
+  }
+  h2 { margin: 0; font-size: 1.35rem; }
+  li + li { margin-top: .35rem; }
+  summary { cursor: pointer; font-weight: 650; }
+  iframe { width: 100%; aspect-ratio: 4 / 3; border: 1px solid #c9dbef; border-radius: .55rem; margin-top: .65rem; }
+  p:last-child { margin-bottom: 0; }
+</style>
