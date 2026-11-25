@@ -7,6 +7,8 @@ import CircuitDiagram from '../../../../components/CircuitDiagram.astro';
 import ReflectionDiagram from '../../../../components/ReflectionDiagram.astro';
 import PressureSetups from '../../../../components/PressureSetups.astro';
 import PressureSimulation from '../../../../components/PressureSimulation.astro';
+import DistanceTimeSimulation from '../../../../components/DistanceTimeSimulation.astro';
+import PhetActivity from '../../../../components/PhetActivity.astro';
 import { bookRoute, books, catalogUrl, lessonId, lessonUrl, loadBookLessons, physicsLessons, type Book, type Chapter, type Lesson } from '../../../../book';
 
 export async function getStaticPaths() {
@@ -37,6 +39,11 @@ const headings = allHeadings.filter((heading) => heading.depth === 2);
 const previous = lessons[index - 1];
 const next = lessons[index + 1];
 const showSimulation = book.grade === 8 && lesson.slug === 'ap-suat-tren-mot-be-mat';
+const circuitLesson = book.grade === 8 && lesson.slug === 'mach-dien-don-gian';
+const circuitMeasurement = book.grade === 8 && (
+  lesson.slug === 'cuong-do-dong-dien-va-hieu-dien-the' ||
+  lesson.slug === 'thuc-hanh-do-cuong-do-dong-dien-va-hieu-dien-the'
+);
 const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pages.join('–');
 ---
 <Shell book={book} title={`Bài ${lesson.number}. ${lesson.title}`} currentChapter={lesson.chapter.id} currentLesson={`Bài ${lesson.number}`}>
@@ -66,7 +73,37 @@ const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pag
       )}
     </div>
     {!Content && showSimulation && <><PressureSetups /><PressureSimulation /></>}
-    {!Content && book.grade === 8 && lesson.slug === 'mach-dien-don-gian' && <CircuitDiagram />}
+    {!Content && circuitLesson && <CircuitDiagram />}
+    {book.grade === 7 && lesson.slug === 'do-thi-quang-duong-thoi-gian' && <DistanceTimeSimulation />}
+    {book.grade === 8 && lesson.slug === 'luc-day-archimedes' && (
+      <PhetActivity
+        title="Thí nghiệm ảo · Lực đẩy Archimedes"
+        simulation="buoyancy-basics"
+        tasks={[
+          'Bật hiển thị các lực. Dự đoán lực đẩy sẽ thay đổi thế nào khi nhúng vật sâu dần vào nước.',
+          'Kéo một khối ngập một phần rồi ngập hoàn toàn. Quan sát mũi tên lực đẩy hướng lên khi phần chìm tăng.',
+          'Giữ khối ngập hoàn toàn và kéo xuống sâu hơn, tránh chạm đáy. So sánh mũi tên lực đẩy ở hai độ sâu.',
+        ]}
+        question="Khi vật đã ngập hoàn toàn trong cùng chất lỏng, thay đổi độ sâu có làm thay đổi thể tích phần chìm và lực đẩy không?"
+      />
+    )}
+    {(circuitLesson || circuitMeasurement) && (
+      <PhetActivity
+        title={circuitLesson ? 'Thí nghiệm ảo · Lắp mạch làm sáng đèn' : 'Thí nghiệm ảo · Đo dòng điện và hiệu điện thế'}
+        simulation="circuit-construction-kit-dc-virtual-lab"
+        tasks={circuitLesson ? [
+          'Kéo pin, bóng đèn và công tắc ra bàn thí nghiệm. Dùng dây dẫn nối chúng thành một vòng.',
+          'Dự đoán trạng thái của đèn khi mở và khi đóng công tắc. Thử cả hai trường hợp để kiểm tra.',
+        ] : [
+          'Lắp một mạch kín gồm pin, công tắc và bóng đèn.',
+          'Ngắt dây tại một vị trí trên vòng mạch và mắc ampe kế nối tiếp vào chỗ ngắt. Đóng công tắc, đọc số chỉ theo ampe (A).',
+          'Đặt hai que vôn kế vào hai đầu bóng đèn. Đọc số chỉ theo vôn (V) và ghi lại cùng số đo cường độ dòng điện.',
+        ]}
+        question={circuitLesson
+          ? 'Khi mở công tắc, vòng mạch thay đổi thế nào và vì sao đèn tắt?'
+          : 'Nếu chuyển ampe kế sang phía còn lại của đèn trong cùng vòng mạch, số chỉ có đổi không? Hãy đo để kiểm tra.'}
+      />
+    )}
     {!Content && book.grade === 7 && lesson.slug === 'su-phan-xa-anh-sang' && <ReflectionDiagram />}
     <nav class="lesson-navigation" aria-label="Chuyển bài">
       {previous && <a href={lessonUrl(book, previous)}><small>Bài trước · {previous.number}</small><strong>{previous.title}</strong></a>}

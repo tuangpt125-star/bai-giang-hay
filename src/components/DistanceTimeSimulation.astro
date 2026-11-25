@@ -1,0 +1,161 @@
+<section class="motion" data-distance-time hidden aria-labelledby="motion-title">
+  <h2 id="motion-title">Xe chạy và đồ thị quãng đường – thời gian</h2>
+  <p>Xe chạy trong 4 giây, dừng 3 giây rồi chạy tiếp 3 giây. Em dự đoán đoạn đồ thị từ giây thứ 4 đến giây thứ 7 có dạng gì?</p>
+
+  <div class="controls">
+    <button type="button" data-play>Chạy</button>
+    <button type="button" data-reset>Về đầu</button>
+  </div>
+  <label for="motion-time">Thời điểm</label>
+  <input id="motion-time" type="range" min="0" max="10" step="0.1" value="0" />
+  <p class="measurements">
+    <span>Thời gian <strong data-time>0,0 s</strong></span>
+    <span>Quãng đường <strong data-distance>0,0 m</strong></span>
+  </p>
+
+  <div class="track" aria-hidden="true">
+    <div class="car" data-car></div>
+  </div>
+  <div class="track-labels" aria-hidden="true"><span>0 m</span><span>20 m</span></div>
+
+  <svg viewBox="0 0 360 228" role="img" aria-labelledby="motion-graph-title" aria-describedby="motion-graph-description">
+    <title id="motion-graph-title">Đồ thị quãng đường theo thời gian của xe</title>
+    <desc id="motion-graph-description">Kéo thanh thời điểm để đọc cặp số thời gian và quãng đường tương ứng với mỗi điểm trên đồ thị.</desc>
+    <path class="grid" d="M45 110H325 M45 40H325 M157 40V180 M241 40V180 M325 40V180" />
+    <path class="axes" d="M45 36V180H330" />
+    <g text-anchor="end">
+      <text x="38" y="184">0</text><text x="38" y="114">10</text><text x="38" y="44">20</text>
+    </g>
+    <g text-anchor="middle">
+      <text x="45" y="199">0</text><text x="157" y="199">4</text>
+      <text x="241" y="199">7</text><text x="325" y="199">10</text>
+    </g>
+    <text x="45" y="23">Quãng đường (m)</text>
+    <text x="325" y="220" text-anchor="end">Thời gian (s)</text>
+    <polyline class="line" data-line points="45,180" />
+    <circle data-point cx="45" cy="180" r="4" />
+  </svg>
+
+  <details>
+    <summary>Kiểm tra dự đoán</summary>
+    <p>Từ giây thứ 4 đến giây thứ 7, xe đứng yên ở mốc 8 m. Quãng đường giữ nguyên dù thời gian tăng, nên đoạn đồ thị nằm ngang. Từ giây thứ 7, xe chạy nhanh hơn lúc đầu nên đồ thị dốc hơn.</p>
+  </details>
+</section>
+
+<script>
+  const format = new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const end = 10;
+  const segments = [{ until: 4, speed: 2 }, { until: 7, speed: 0 }, { until: end, speed: 4 }];
+
+  function distanceAt(time: number) {
+    let distance = 0;
+    let start = 0;
+    for (const { until, speed } of segments) {
+      distance += Math.max(0, Math.min(time, until) - start) * speed;
+      start = until;
+    }
+    return distance;
+  }
+
+  for (const simulation of document.querySelectorAll<HTMLElement>('[data-distance-time]')) {
+    const play = simulation.querySelector<HTMLButtonElement>('[data-play]')!;
+    const reset = simulation.querySelector<HTMLButtonElement>('[data-reset]')!;
+    const slider = simulation.querySelector<HTMLInputElement>('#motion-time')!;
+    const timeLabel = simulation.querySelector<HTMLElement>('[data-time]')!;
+    const distanceLabel = simulation.querySelector<HTMLElement>('[data-distance]')!;
+    const car = simulation.querySelector<HTMLElement>('[data-car]')!;
+    const line = simulation.querySelector<SVGPolylineElement>('[data-line]')!;
+    const point = simulation.querySelector<SVGCircleElement>('[data-point]')!;
+    let time = 0;
+    let frame: number | undefined;
+
+    function draw() {
+      const distance = distanceAt(time);
+      slider.value = String(time);
+      timeLabel.textContent = format.format(time) + ' s';
+      distanceLabel.textContent = format.format(distance) + ' m';
+      slider.setAttribute('aria-valuetext', timeLabel.textContent + ', đã đi ' + distanceLabel.textContent);
+      car.style.left = (distance / distanceAt(end) * 100) + '%';
+
+      const graphX = (seconds: number) => 45 + 28 * seconds;
+      const graphY = (metres: number) => 180 - 7 * metres;
+      const stops = [0, ...segments.map(({ until }) => until).filter((until) => until < time), time];
+      line.setAttribute('points', stops.map((stop) => graphX(stop) + ',' + graphY(distanceAt(stop))).join(' '));
+      point.setAttribute('cx', String(graphX(time)));
+      point.setAttribute('cy', String(graphY(distance)));
+    }
+
+    function pause() {
+      if (frame !== undefined) cancelAnimationFrame(frame);
+      frame = undefined;
+      play.textContent = time === end ? 'Chạy lại' : 'Chạy';
+    }
+
+    play.addEventListener('click', () => {
+      if (frame !== undefined) {
+        pause();
+        return;
+      }
+      if (time === end) time = 0;
+      const start = performance.now() - time * 1000;
+      play.textContent = 'Tạm dừng';
+      function tick(now: number) {
+        time = Math.min(end, Math.round((now - start) / 100) / 10);
+        draw();
+        if (time < end) frame = requestAnimationFrame(tick);
+        else pause();
+      }
+      frame = requestAnimationFrame(tick);
+    });
+    reset.addEventListener('click', () => {
+      time = 0;
+      pause();
+      draw();
+    });
+    slider.addEventListener('input', () => {
+      time = slider.valueAsNumber;
+      pause();
+      draw();
+    });
+    draw();
+    simulation.hidden = false;
+  }
+</script>
+
+<style>
+  .motion {
+    margin: 1.5rem 0;
+    padding: clamp(.85rem, 3vw, 1.4rem);
+    background: #f5f9ff;
+    border: 1px solid #c9dbef;
+    border-radius: .9rem;
+  }
+  h2 { margin: 0; font-size: 1.35rem; }
+  .controls, .measurements { display: flex; flex-wrap: wrap; gap: .6rem 1rem; }
+  button {
+    min-height: 2.75rem;
+    padding: .4rem .8rem;
+    background: white;
+    color: var(--ink);
+    border: 1px solid #7896b8;
+    border-radius: .5rem;
+    font: inherit;
+  }
+  label { display: block; margin-top: .8rem; }
+  input { width: 100%; max-width: 36rem; min-height: 2rem; accent-color: #174f89; }
+  .measurements { margin-top: .2rem; }
+  .measurements strong { margin-left: .2em; font-variant-numeric: tabular-nums; }
+  .track { position: relative; height: 2rem; margin-inline: 1.25rem; border-bottom: 3px solid #476381; }
+  .car { position: absolute; bottom: .32rem; width: 2.3rem; height: .92rem; transform: translateX(-50%); background: #174f89; border-radius: .65rem .7rem .2rem .2rem; }
+  .car::before, .car::after { content: ''; position: absolute; bottom: -.23rem; width: .5rem; height: .5rem; border-radius: 50%; background: #25344b; }
+  .car::before { left: .3rem; }
+  .car::after { right: .3rem; }
+  .track-labels { display: flex; justify-content: space-between; font-size: .875rem; }
+  svg { display: block; width: 100%; max-width: 36rem; margin: .65rem auto; font-size: 13px; }
+  text { fill: var(--ink); }
+  .grid { stroke: #bdcfe2; stroke-dasharray: 4 3; }
+  .axes { stroke: #476381; }
+  .line { fill: none; stroke: #174f89; stroke-width: 3; stroke-linejoin: round; }
+  circle { fill: #174f89; }
+  summary { cursor: pointer; font-weight: 650; }
+</style>

@@ -20,7 +20,7 @@ const hasAll = lessons.every((lesson) => hasText(lesson.slug));
       <p>{book.series}</p>
       <a class="primary-button" href="#muc-luc">Xem mục lục</a>
     </div>
-    <img class="hero-image" src={`/images/vat-li-${book.grade}.webp`} width="920" height="613" alt="" fetchpriority="high" />
+    <img class="hero-image" src={`${import.meta.env.BASE_URL}images/vat-li-${book.grade}.webp`} width="920" height="613" alt="" fetchpriority="high" />
   </section>
 
   <section class="chapter-section" aria-labelledby="chapter-heading">

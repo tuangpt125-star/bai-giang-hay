@@ -1,6 +1,6 @@
 ---
 import Icon from '../components/Icon.astro';
-import { books, catalogUrl, defaultBook, physicsChapters, type Book } from '../book';
+import { books, catalogUrl, defaultBook, homeUrl, physicsChapters, type Book } from '../book';
 import '../styles/site.css';
 
 interface Props {
@@ -29,7 +29,7 @@ const otherBooks = books.filter((option) => option.grade !== book.grade);
     <a class="skip-link" href="#noi-dung">Đến nội dung</a>
     <div class="app">
       <aside id="site-sidebar" class="sidebar">
-        <a class="brand" href="/">
+        <a class="brand" href={homeUrl}>
           <span class="brand-mark"><Icon name="book" size={24} /></span>
           <span>Bài Giảng Hay</span>
         </a>
@@ -69,7 +69,7 @@ const otherBooks = books.filter((option) => option.grade !== book.grade);
         </header>
         <main id="noi-dung" class="main" tabindex="-1"><slot /></main>
         <footer class="footer">
-          <a href="/">Bài Giảng Hay</a>
+          <a href={homeUrl}>Bài Giảng Hay</a>
           <span>{book.title} · {book.series}</span>
         </footer>
       </div>
