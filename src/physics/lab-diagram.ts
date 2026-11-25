@@ -26,40 +26,52 @@ export function positionHandle(handle: HTMLButtonElement, canvas: HTMLCanvasElem
 
 type DragAction = (x: number, y: number) => void;
 
-export function dragHandle(
-  handle: HTMLButtonElement,
-  canvas: HTMLCanvasElement,
-  move: DragAction,
-  start?: DragAction,
-  end?: (cancelled: boolean) => void,
-) {
-  let pointer: number | null = null;
-  const point = (event: PointerEvent): [number, number] => {
+interface DragActions {
+  move: DragAction;
+  start?: DragAction;
+  end?: (cancelled: boolean) => void;
+  tap?: () => void;
+}
+
+export function dragHandle(handle: HTMLButtonElement, canvas: HTMLCanvasElement, actions: DragActions) {
+  let press: { id: number; x: number; y: number } | null = null;
+  let dragging = false;
+  const point = (clientX: number, clientY: number): [number, number] => {
     const bounds = canvas.getBoundingClientRect();
     return [
-      (event.clientX - bounds.left) / bounds.width * canvas.width,
-      (event.clientY - bounds.top) / bounds.height * canvas.height,
+      (clientX - bounds.left) / bounds.width * canvas.width,
+      (clientY - bounds.top) / bounds.height * canvas.height,
     ];
   };
 
   handle.addEventListener('pointerdown', (event) => {
-    if (!event.isPrimary || event.button !== 0 || pointer !== null) return;
-    pointer = event.pointerId;
+    if (!event.isPrimary || event.button !== 0 || press) return;
+    press = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    dragging = false;
     handle.focus({ preventScroll: true });
     handle.setPointerCapture(event.pointerId);
-    start?.(...point(event));
     event.preventDefault();
   });
   handle.addEventListener('pointermove', (event) => {
-    if (event.pointerId === pointer) move(...point(event));
+    if (!press || event.pointerId !== press.id) return;
+    if (!dragging) {
+      if (Math.hypot(event.clientX - press.x, event.clientY - press.y) < 5) return;
+      dragging = true;
+      actions.start?.(...point(press.x, press.y));
+    }
+    actions.move(...point(event.clientX, event.clientY));
   });
   for (const name of ['pointerup', 'pointercancel', 'lostpointercapture'] as const) {
     handle.addEventListener(name, (event) => {
-      if (event.pointerId !== pointer) return;
-      pointer = null;
-      end?.(name !== 'pointerup');
+      if (event.pointerId !== press?.id) return;
+      press = null;
+      if (dragging) actions.end?.(name !== 'pointerup');
+      else if (name === 'pointerup') actions.tap?.();
     });
   }
+  handle.addEventListener('click', (event) => {
+    if (event.detail === 0) actions.tap?.();
+  });
 }
 
 export function spring(pen: CanvasRenderingContext2D, x: number, y: number, dx: number, dy: number) {

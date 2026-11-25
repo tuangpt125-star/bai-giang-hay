@@ -1,43 +1,45 @@
 ---
 import '../styles/measurement-lab.css';
+import '../styles/mechanics-lab.css';
 ---
-<section class="measurement-lab" data-turning-effect hidden aria-labelledby="turning-effect-title">
+<section class="measurement-lab mechanics-lab" data-turning-effect hidden aria-labelledby="turning-effect-title">
   <h3 id="turning-effect-title">Thí nghiệm ảo · Kéo thanh bằng lực kế</h3>
-  <p>Kéo chốt trên thanh để chọn lỗ móc. Sau đó nắm vòng đỏ ở đầu lực kế và kéo ra xa chốt. Quan sát số chỉ khi giữ kéo, rồi nhả tay xem thanh chuyển động thế nào.</p>
-  <figure class="turning-figure">
+  <p class="mechanics-intro">Bấm <strong>Kéo thử</strong> để xem thanh quay. Em cũng có thể giữ nút vàng trên hình, kéo ra xa chốt rồi nhả tay.</p>
+  <figure class="mechanics-board">
     <div class="lab-board">
       <canvas width="560" height="350" data-turning-diagram aria-hidden="true"></canvas>
-      <button type="button" class="lab-grab" data-grab-position aria-label="Điểm đặt lực. Dùng mũi tên trái hoặc phải để đổi lỗ móc." title="Đổi lỗ móc"></button>
-      <button type="button" class="lab-grab" data-grab-force aria-label="Tay cầm lực kế. Giữ và kéo, hoặc bấm Enter để bật và nhả lực." title="Giữ và kéo lực kế"></button>
+      <button type="button" class="lab-grab" data-grab-position hidden aria-label="Lỗ móc. Dùng phím trái hoặc phải để đổi vị trí." title="Đổi lỗ móc"></button>
+      <button type="button" class="lab-grab" data-grab-force aria-label="Lực kế. Chạm để kéo thử hoặc nhả lực. Giữ và kéo để điều khiển trực tiếp." title="Kéo hoặc nhả lực"></button>
     </div>
-    <figcaption>Lực kế màu vàng nối với chốt. Mũi tên đỏ chỉ chiều lực kéo, song song với giá lực nét đứt. Đoạn tím đi vuông góc từ O đến giá lực.</figcaption>
   </figure>
-  <div class="lab-actions">
-    <button type="button" data-turning-try>Tác dụng lực đã đặt</button>
-    <button type="button" data-turning-reset disabled>Đưa thanh về ngang</button>
+  <div class="mechanics-actions">
+    <button type="button" data-turning-try>Kéo thử</button>
+    <button type="button" data-turning-reset data-secondary disabled>Về ngang</button>
   </div>
-  <p class="lab-trial-status" role="status" data-turning-trial>Thanh ngang. Em có thể thử dự đoán trước khi kéo.</p>
-  <div class="lab-layout">
-    <div class="lab-controls">
-      <label for="turning-force">Lực đặt trước <output for="turning-force" data-turning-force>10 N</output></label>
-      <input id="turning-force" type="range" min="5" max="20" step="5" value="10" />
-      <label for="turning-position">Lỗ móc lực kế <output for="turning-position" data-turning-position>30 cm bên phải O</output></label>
-      <input id="turning-position" type="range" min="-25" max="50" step="5" value="30" />
-      <label for="turning-angle">Hướng lực đặt trước <output for="turning-angle" data-turning-angle>90°</output></label>
-      <input id="turning-angle" type="range" min="-90" max="90" step="15" value="90" />
-      <p class="lab-help">0° hướng ngang sang phải. Các thanh điều chỉnh dùng để chuẩn bị hoặc thử bằng bàn phím.</p>
+  <p class="lab-trial-status mechanics-status" role="status" data-turning-trial>Thanh đang nằm ngang.</p>
+  <dl class="mechanics-measurements">
+    <div><dt>Lực kéo lúc này</dt><dd><output aria-live="off" data-turning-tension>0 N</output></dd></div>
+    <div><dt>Cánh tay đòn d</dt><dd><output aria-live="off" data-turning-arm>—</output></dd></div>
+    <div><dt>Moment lực</dt><dd><output aria-live="off" data-turning-moment>0 N·m</output></dd></div>
+  </dl>
+  <details class="mechanics-settings" data-turning-settings>
+    <summary>Đổi vị trí, hướng kéo và lực thử</summary>
+    <div class="lab-layout">
+      <div class="lab-controls">
+        <label for="turning-position">Lỗ móc lực kế <output for="turning-position" data-turning-position>30 cm bên phải O</output></label>
+        <input id="turning-position" type="range" min="-25" max="50" step="5" value="30" />
+        <label for="turning-angle">Hướng kéo <output for="turning-angle" data-turning-angle>90°</output></label>
+        <input id="turning-angle" type="range" min="-90" max="90" step="15" value="90" />
+        <label for="turning-force">Lực khi bấm Kéo thử <output for="turning-force" data-turning-force>10 N</output></label>
+        <input id="turning-force" type="range" min="5" max="20" step="5" value="10" />
+      </div>
+      <div class="lab-panel">
+        <p><strong>Khi bắt đầu kéo từ vị trí ngang</strong></p>
+        <p>Cánh tay đòn dự đoán là <output data-turning-predicted-arm>30 cm</output>, moment lực là <output data-turning-predicted-moment>3 N·m</output>.</p>
+        <p class="lab-help">90° là kéo lên, 0° là kéo ngang sang phải. Nét đứt là giá lực, đoạn tím vuông góc từ O đến giá lực là d.</p>
+      </div>
     </div>
-    <div class="lab-panel">
-      <p><strong data-turning-readout>Dự đoán ở vị trí ngang</strong></p>
-      <dl class="lab-values">
-        <div><dt>Lực kéo</dt><dd><output data-turning-tension>10 N</output></dd></div>
-        <div><dt>Cánh tay đòn d</dt><dd><output data-turning-arm>30 cm</output></dd></div>
-        <div><dt>Độ lớn moment</dt><dd><output data-turning-moment>3 N·m</output></dd></div>
-        <div><dt>Tác dụng của lực lúc này</dt><dd><output data-turning-direction>Ngược chiều kim đồng hồ</output></dd></div>
-      </dl>
-    </div>
-  </div>
-  <p class="lab-help">Thanh có quán tính và ma sát ở chốt. Khi nhả lực, thanh có thể quay tiếp một lúc rồi chậm dần hoặc chạm cữ chặn.</p>
+  </details>
 </section>
 
 <script>
@@ -63,6 +65,10 @@ import '../styles/measurement-lab.css';
     const apply = find<HTMLButtonElement>('[data-turning-try]');
     const reset = find<HTMLButtonElement>('[data-turning-reset]');
     const status = find<HTMLElement>('[data-turning-trial]');
+    const settings = find<HTMLDetailsElement>('[data-turning-settings]');
+    const tensionValue = find<HTMLOutputElement>('[data-turning-tension]');
+    const armValue = find<HTMLOutputElement>('[data-turning-arm]');
+    const momentValue = find<HTMLOutputElement>('[data-turning-moment]');
     let live = false;
     let forceOn = false;
     let hand: { x: number; y: number } | null = null;
@@ -81,7 +87,7 @@ import '../styles/measurement-lab.css';
       const norm = Math.hypot(ux, uy) || 1;
       const tension = hand
         ? Math.min(20, Math.max(0, (norm - slack) / extensionPerNewton))
-        : forceOn || !live ? force.valueAsNumber : 0;
+        : forceOn ? force.valueAsNumber : 0;
       const length = hand ? norm : slack + (forceOn ? tension * extensionPerNewton : 0);
       const unitX = ux / norm;
       const unitY = uy / norm;
@@ -97,7 +103,7 @@ import '../styles/measurement-lab.css';
       const headY = Math.min(332, Math.max(18, y + uy * pull.length));
       const hasTension = pull.tension > .005;
       const netTorque = Math.abs(pull.torque) < .0001 ? 0 : pull.torque;
-      hookHandle.hidden = Boolean(hand || forceOn || Math.abs(speed) > .02);
+      hookHandle.hidden = !settings.open || Boolean(hand || forceOn || Math.abs(speed) > .02);
       positionHandle(hookHandle, canvas, x, y);
       positionHandle(meterHandle, canvas, hand ? hand.x : headX, hand ? hand.y : headY);
 
@@ -161,32 +167,29 @@ import '../styles/measurement-lab.css';
       }
 
       lab.dataset.beamAngle = tilt.toFixed(4);
-      find('[data-turning-readout]').textContent = live ? 'Số đo lúc này' : 'Dự đoán ở vị trí ngang';
-      find<HTMLOutputElement>('[data-turning-tension]').value = format.format(pull.tension) + ' N';
-      find<HTMLOutputElement>('[data-turning-arm]').value = hasTension ? format.format(Math.abs(pull.arm)) + ' cm' : '—';
-      find<HTMLOutputElement>('[data-turning-moment]').value = format.format(Math.abs(netTorque)) + ' N·m';
-      find<HTMLOutputElement>('[data-turning-direction]').value = !netTorque
-        ? 'Không có moment do lực kéo'
-        : netTorque < 0 ? 'Ngược chiều kim đồng hồ' : 'Theo chiều kim đồng hồ';
-      if (live && !hand) {
-        const atStop = Math.abs(tilt) >= stopAngle;
-        const message = atStop ? 'Thanh đang ở cữ chặn.'
-          : !forceOn && Math.abs(speed) >= .012 ? 'Lực kéo đã về 0. Thanh đang quay chậm dần.'
-          : !forceOn ? 'Lực kế đã nhả. Thanh đã dừng.'
-          : 'Đang giữ lực đã đặt. Bấm Nhả lực để bỏ lực kéo.';
-        if (status.textContent !== message) status.textContent = message;
-      }
+      tensionValue.value = format.format(pull.tension) + ' N';
+      armValue.value = hasTension ? format.format(Math.abs(pull.arm)) + ' cm' : '—';
+      momentValue.value = format.format(Math.abs(netTorque)) + ' N·m';
+      const atStop = Math.abs(tilt) >= stopAngle;
+      const direction = netTorque < 0 ? 'ngược chiều kim đồng hồ' : 'theo chiều kim đồng hồ';
+      const message = !live ? 'Thanh đang nằm ngang.'
+        : hasTension && !netTorque ? 'Giá lực đi qua O. Lực kéo không làm thanh quay.'
+        : hasTension && atStop && Math.sign(tilt) === Math.sign(netTorque) ? 'Thanh đã quay ' + direction + ' tới cữ chặn.'
+        : hasTension ? 'Lực kéo làm thanh quay ' + direction + '.'
+        : hand ? 'Kéo xa chốt thêm một chút để dây căng.'
+        : Math.abs(speed) >= .012 ? 'Đã nhả lực. Thanh vẫn quay chậm dần.'
+        : 'Đã nhả lực. Thanh đang đứng yên.';
+      if (status.textContent !== message) status.textContent = message;
     }
 
-    const beam = rotationLab((tilt) => live ? appliedForce(tilt).torque : 0, () => .48, render);
+    const beam = rotationLab((tilt) => appliedForce(tilt).torque, () => .48, render);
 
     function prepare() {
       live = false;
       forceOn = false;
       hand = null;
       reset.disabled = true;
-      apply.textContent = 'Tác dụng lực đã đặt';
-      status.textContent = 'Thanh ngang. Em có thể thử dự đoán trước khi kéo.';
+      apply.textContent = 'Kéo thử';
       const distance = position.valueAsNumber;
       const side = distance === 0 ? 'Tại O' : Math.abs(distance) + ' cm bên ' + (distance < 0 ? 'trái O' : 'phải O');
       for (const [input, key, label] of [
@@ -195,6 +198,9 @@ import '../styles/measurement-lab.css';
         find<HTMLOutputElement>('[data-turning-' + key + ']').value = label;
         input.setAttribute('aria-valuetext', label);
       }
+      const arm = Math.abs(distance * Math.sin(angle.valueAsNumber * Math.PI / 180));
+      find<HTMLOutputElement>('[data-turning-predicted-arm]').value = format.format(arm) + ' cm';
+      find<HTMLOutputElement>('[data-turning-predicted-moment]').value = format.format(force.valueAsNumber * arm / 100) + ' N·m';
       beam.reset();
     }
 
@@ -202,7 +208,7 @@ import '../styles/measurement-lab.css';
       position.value = String(Math.max(-25, Math.min(50, value)));
       prepare();
     }
-    dragHandle(hookHandle, canvas, (x) => moveHook(Math.round((x - ox) / pixelsPerCm / 5) * 5));
+    dragHandle(hookHandle, canvas, { move: (x) => moveHook(Math.round((x - ox) / pixelsPerCm / 5) * 5) });
     hookHandle.addEventListener('keydown', (event) => {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
       event.preventDefault();
@@ -213,41 +219,36 @@ import '../styles/measurement-lab.css';
       hand = { x: Math.max(18, Math.min(542, x)), y: Math.max(18, Math.min(332, y)) };
       beam.wake();
     }
-    dragHandle(meterHandle, canvas,
-      (x, y) => { if (hand) moveHand(x, y); },
-      (x, y) => {
+    dragHandle(meterHandle, canvas, {
+      move(x, y) { if (hand) moveHand(x, y); },
+      start(x, y) {
         live = true;
         forceOn = false;
         reset.disabled = false;
-        apply.textContent = 'Tác dụng lực đã đặt';
-        status.textContent = 'Đang kéo lực kế. Nhả tay để bỏ lực.';
+        apply.textContent = 'Kéo thử';
         moveHand(x, y);
       },
-      () => {
+      end() {
         if (!hand) return;
         hand = null;
         beam.wake();
       },
-    );
+      tap: toggleForce,
+    });
 
     function toggleForce() {
       hand = null;
       live = true;
       forceOn = !forceOn;
       reset.disabled = false;
-      apply.textContent = forceOn ? 'Nhả lực' : 'Tác dụng lực đã đặt';
+      apply.textContent = forceOn ? 'Nhả lực' : 'Kéo thử';
       beam.wake();
     }
     apply.addEventListener('click', toggleForce);
-    meterHandle.addEventListener('click', (event) => { if (event.detail === 0) toggleForce(); });
+    settings.addEventListener('toggle', () => beam.wake());
     reset.addEventListener('click', prepare);
     for (const input of [force, position, angle]) input.addEventListener('input', prepare);
     prepare();
     lab.hidden = false;
   }
 </script>
-
-<style>
-  .measurement-lab .turning-figure { margin: 0; }
-  .turning-figure .lab-board { max-width: 37rem; margin-inline: auto; }
-</style>

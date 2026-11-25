@@ -1,52 +1,65 @@
 ---
 import '../styles/measurement-lab.css';
+import '../styles/mechanics-lab.css';
 ---
-<section class="measurement-lab" data-lever-balance hidden aria-labelledby="lever-balance-title">
-  <h3 id="lever-balance-title">Thí nghiệm ảo · Tìm lực tay để giữ tải cân bằng</h3>
-  <p>Nắm quả nặng màu đỏ để gỡ khỏi móc hoặc treo lại. Kéo chốt xanh dọc theo thanh để dời tay. Giữ vòng xanh phía trên chốt rồi ấn xuống hoặc kéo lên theo hướng ghi bên dưới. Bấm <strong>Thả thanh</strong> để quan sát xem tải làm thanh quay thế nào khi chưa tác dụng lực tay.</p>
-  <figure class="lever-figure">
+<section class="measurement-lab mechanics-lab" data-lever-balance hidden aria-labelledby="lever-balance-title">
+  <h3 id="lever-balance-title">Thí nghiệm ảo · Giữ đòn bẩy cân bằng</h3>
+  <p class="mechanics-intro">Bấm <strong>Thả thanh</strong>, sau đó thử từng mức lực để xem đầu treo quả nặng nâng lên, hạ xuống hay giữ ngang.</p>
+  <figure class="mechanics-board">
     <div class="lab-board">
       <canvas width="560" height="360" data-lever-diagram aria-hidden="true"></canvas>
-      <button type="button" class="lab-grab" data-grab-weight aria-label="Quả nặng. Bấm Enter để treo hoặc gỡ tải." title="Treo hoặc gỡ quả nặng"></button>
-      <button type="button" class="lab-grab" data-grab-pressure aria-label="Tay cầm. Giữ và kéo, hoặc bấm Enter để bật và nhả lực." title="Giữ tay cầm để tác dụng lực"></button>
-      <button type="button" class="lab-grab" data-grab-hand aria-label="Vị trí tay. Dùng phím trái hoặc phải để dịch chuyển." title="Kéo vị trí tay"></button>
+      <button type="button" class="lab-grab" data-grab-weight aria-label="Quả nặng. Chạm để treo hoặc gỡ. Có thể kéo từ khay lên móc." title="Treo hoặc gỡ quả nặng"></button>
+      <button type="button" class="lab-grab" data-grab-pressure data-grip-direction="↓" aria-label="Tay cầm. Chạm để thử lực. Giữ rồi di chuyển để tác dụng lực trực tiếp." title="Tác dụng lực tay"></button>
+      <button type="button" class="lab-grab" data-grab-hand hidden aria-label="Vị trí đặt tay. Dùng phím trái hoặc phải để di chuyển." title="Đổi vị trí đặt tay"></button>
     </div>
-    <figcaption>O là điểm tựa, P là trọng lượng tải, F là lực tay. Khay bên dưới dùng để đặt quả nặng đã gỡ.</figcaption>
   </figure>
-  <div class="lab-layout">
-    <div class="lab-controls">
-      <label for="lever-arrangement">Cách bố trí</label>
-      <select id="lever-arrangement">
-        <option value="opposite">Loại 1 · Điểm tựa nằm giữa</option>
-        <option value="farther">Loại 2 · Đặt tay xa hơn tải</option>
-        <option value="closer">Loại 2 · Đặt tay gần hơn tải</option>
-      </select>
-      <label for="lever-load">Trọng lượng tải <output for="lever-load" data-lever-load>18 N</output></label>
-      <input id="lever-load" type="range" min="6" max="36" step="3" value="18" />
-      <label for="lever-effort-arm">Cánh tay đòn của lực tay <output for="lever-effort-arm" data-lever-effort-arm>40 cm</output></label>
-      <input id="lever-effort-arm" type="range" min="10" max="60" step="10" value="40" />
-      <p class="lab-help">Cánh tay đòn của tải là <output data-lever-load-arm>20 cm</output>.<br />Lực tay tác dụng theo hướng <output data-lever-direction>ấn xuống</output>.</p>
-    </div>
-    <div class="lab-controls lab-panel">
-      <label for="lever-trial-force">Lực tay em muốn thử (N)</label>
-      <input id="lever-trial-force" type="number" min="0" max="150" step="0.1" value="6" required />
-      <div class="lab-actions">
-        <button type="button" data-lever-try>Giữ lực đã đặt</button>
-        <button type="button" data-lever-toggle-weight>Gỡ tải</button>
-        <button type="button" data-lever-unlock>Thả thanh</button>
-        <button type="button" data-lever-reset disabled>Đưa thanh về ngang</button>
-      </div>
-      <dl class="lab-values">
-        <div><dt>Lực tay lúc này</dt><dd><output data-lever-applied>0 N</output></dd></div>
-      </dl>
-      <p class="lab-trial-status" data-lever-trial role="status"></p>
-      <details>
-        <summary>Đối chiếu lực tay khi cân bằng</summary>
-        <p>Với quả nặng đã treo, lực tay cần <output data-lever-effort>9 N</output>.</p>
-      </details>
+  <div class="mechanics-actions">
+    <button type="button" data-lever-unlock>Thả thanh</button>
+    <button type="button" data-lever-toggle-weight data-secondary>Gỡ tải</button>
+    <button type="button" data-lever-reset data-secondary disabled>Về ngang</button>
+  </div>
+  <p class="lab-trial-status mechanics-status" data-lever-trial role="status"></p>
+  <div class="mechanics-trials">
+    <p id="lever-level-label">Thử lực từ vị trí ngang</p>
+    <div class="mechanics-levels" role="group" aria-labelledby="lever-level-label">
+      {[6, 9, 12].map((value) => <button type="button" data-lever-level={value} aria-pressed="false">{value} N</button>)}
     </div>
   </div>
-  <p class="lab-help">Thanh có quán tính, ma sát ở trục và cữ chặn hai phía. Trọng tâm thanh nằm tại O nên trọng lượng của thanh không tạo moment quanh O.</p>
+  <dl class="mechanics-measurements">
+    <div><dt>Lực tay lúc này</dt><dd><output aria-live="off" data-lever-applied>0 N</output></dd></div>
+    <div><dt>Trọng lượng quả nặng</dt><dd><output for="lever-load" data-lever-load>18 N</output></dd></div>
+  </dl>
+  <p class="lab-help mechanics-gesture">Em cũng có thể kéo quả nặng màu đỏ hoặc giữ tay cầm xanh rồi <strong data-lever-direction>ấn xuống</strong>.</p>
+  <details class="mechanics-settings" data-lever-settings>
+    <summary>Đổi cách bố trí, tải và lực thử</summary>
+    <div class="lab-layout">
+      <div class="lab-controls">
+        <label for="lever-arrangement">Cách bố trí</label>
+        <select id="lever-arrangement">
+          <option value="opposite">Loại 1 · Điểm tựa nằm giữa</option>
+          <option value="farther">Loại 2 · Đặt tay xa hơn tải</option>
+          <option value="closer">Loại 2 · Đặt tay gần hơn tải</option>
+        </select>
+        <label for="lever-load">Trọng lượng quả nặng (N)</label>
+        <input id="lever-load" type="range" min="6" max="36" step="3" value="18" />
+        <label for="lever-effort-arm">Vị trí tay cách O <output for="lever-effort-arm" data-lever-effort-arm>40 cm</output></label>
+        <input id="lever-effort-arm" type="range" min="10" max="60" step="10" value="40" />
+        <p class="lab-help">Vị trí treo tải cách O <output data-lever-load-arm>20 cm</output>.</p>
+      </div>
+      <div class="lab-controls lab-panel">
+        <label for="lever-trial-force">Lực tay muốn thử (N)</label>
+        <div class="mechanics-force-entry">
+          <input id="lever-trial-force" type="number" inputmode="decimal" min="0" max="150" step="0.1" value="6" required />
+          <button type="button" data-lever-try>Thử lực này</button>
+        </div>
+        <details>
+          <summary>Đối chiếu lực cân bằng</summary>
+          <p>Khi tải đang treo, lực cân bằng là <output data-lever-effort>9 N</output>.</p>
+        </details>
+        <p class="lab-help">O là điểm tựa, P là trọng lượng tải, F là lực tay. Thanh có quán tính, ma sát ở trục và cữ chặn hai phía.</p>
+      </div>
+    </div>
+  </details>
 </section>
 
 <script>
@@ -82,6 +95,8 @@ import '../styles/measurement-lab.css';
     const unlock = find<HTMLButtonElement>('[data-lever-unlock]');
     const applied = find<HTMLOutputElement>('[data-lever-applied]');
     const trial = find<HTMLElement>('[data-lever-trial]');
+    const settingsPanel = find<HTMLDetailsElement>('[data-lever-settings]');
+    const levels = lab.querySelectorAll<HTMLButtonElement>('[data-lever-level]');
     let locked = true;
     let holding = false;
     let attached = true;
@@ -119,6 +134,10 @@ import '../styles/measurement-lab.css';
       return (loadMoment - handMoment) * Math.cos(tilt) / 100;
     }
 
+    function inDropZone(x: number, y: number, hook: { x: number; y: number }) {
+      return Math.hypot(x - hook.x, y - hook.y - hangerLength) < 58;
+    }
+
     function draw({ angle: tilt, speed }: Rotation) {
       const pen = context;
       const pivot = pivotX();
@@ -135,18 +154,21 @@ import '../styles/measurement-lab.css';
       const shownGripY = gripY ?? neutralY;
       const difference = momentDifference(tilt);
       const atStop = Math.abs(tilt) >= stopAngle;
-      const state = carried ? 'Đang cầm tải.' : attached ? 'Tải đang treo.' : 'Tải ở trong khay.';
-      const motion = locked ? 'Thanh đang được giữ ngang.'
-        : Math.abs(difference) < .005 ? (Math.abs(speed) >= .012 ? 'Hai moment bằng nhau. Thanh đang chậm dần.' : 'Hai moment bằng nhau. Thanh giữ vị trí hiện tại.')
-        : atStop && speed === 0 ? 'Thanh chạm cữ chặn.'
-        : difference > 0 ? 'Moment của tải lớn hơn.' : 'Moment của lực tay lớn hơn.';
-      const status = state + ' ' + motion;
+      const readyToHang = Boolean(carried) && inDropZone(weightX, weightY, loadHook);
+      const weightState = attached ? 'Tải đang treo.' : 'Tải ở trong khay.';
+      const towardLoad = difference > 0;
+      const pushingStop = atStop && Math.sign(tilt) === Math.sign(difference) * (oppositeSide() ? -1 : 1);
+      const motion = locked ? 'Thanh được giữ ngang.'
+        : Math.abs(difference) < .005 ? (Math.abs(speed) >= .012 ? 'Thanh đang chậm dần.' : attached ? 'Đòn bẩy cân bằng.' : 'Thanh đứng yên.')
+        : pushingStop ? (towardLoad ? 'Đầu treo tải đã hạ tới cữ chặn.' : 'Đầu treo tải đã nâng tới cữ chặn.')
+        : towardLoad ? 'Đầu treo tải hạ xuống.' : 'Đầu treo tải nâng lên.';
+      const status = carried ? (readyToHang ? 'Thả tay để treo quả nặng.' : 'Đưa quả nặng vào vòng gần móc để treo.') : weightState + ' ' + motion;
       if (trial.textContent !== status) trial.textContent = status;
       const forceLabel = format.format(force) + ' N';
       if (applied.value !== forceLabel) applied.value = forceLabel;
       lab.dataset.beamAngle = tilt.toFixed(4);
       lab.dataset.leverWeightState = carried ? 'held' : attached ? 'attached' : 'tray';
-      handle.hidden = gripY !== null;
+      handle.hidden = !settingsPanel.open || gripY !== null;
       positionHandle(handle, canvas, handHook.x, handHook.y);
       positionHandle(weightHandle, canvas, weightX, weightY);
       positionHandle(pressureHandle, canvas, handHook.x, shownGripY);
@@ -183,6 +205,17 @@ import '../styles/measurement-lab.css';
         pen.fill();
       }
 
+      if (carried) {
+        pen.beginPath();
+        pen.arc(loadHook.x, loadHook.y + hangerLength, 25, 0, Math.PI * 2);
+        pen.fillStyle = readyToHang ? '#b9e4ce' : '#ffffff';
+        pen.fill();
+        pen.strokeStyle = '#356950';
+        pen.lineWidth = 2.5;
+        pen.setLineDash(readyToHang ? [] : [5, 4]);
+        pen.stroke();
+        pen.setLineDash([]);
+      }
       pen.strokeStyle = '#a64758';
       pen.lineWidth = 3;
       pen.beginPath();
@@ -241,11 +274,15 @@ import '../styles/measurement-lab.css';
       find<HTMLOutputElement>('[data-lever-effort-arm]').value = distanceLabel;
       find<HTMLOutputElement>('[data-lever-load-arm]').value = model.loadArm + ' cm';
       find<HTMLOutputElement>('[data-lever-effort]').value = format.format(weight * model.loadArm / distance) + ' N';
-      find<HTMLOutputElement>('[data-lever-direction]').value = oppositeSide() ? 'ấn xuống' : 'kéo lên';
-      apply.textContent = holding ? 'Nhả lực tay' : 'Giữ lực đã đặt';
+      find('[data-lever-direction]').textContent = oppositeSide() ? 'ấn xuống' : 'kéo lên';
+      pressureHandle.dataset.gripDirection = oppositeSide() ? '↓' : '↑';
       toggleWeight.textContent = attached ? 'Gỡ tải' : 'Treo tải';
-      unlock.disabled = !locked;
+      unlock.textContent = holding || gripY !== null ? 'Nhả lực tay' : 'Thả thanh';
+      unlock.disabled = !locked && !holding && gripY === null;
       reset.disabled = locked;
+      for (const level of levels) {
+        level.setAttribute('aria-pressed', String(holding && effort.validity.valid && effort.value === level.dataset.leverLevel));
+      }
       beam.wake();
     }
 
@@ -254,10 +291,12 @@ import '../styles/measurement-lab.css';
       effortArm.value = String(Math.max(min, Math.min(max, distance)));
       update();
     }
-    dragHandle(handle, canvas, (x, y) => {
-      const { angle: tilt } = beam.state;
-      const distance = ((x - pivotX()) * Math.cos(tilt) + (y - levelY) * Math.sin(tilt)) / pixelsPerCm();
-      moveHand(Math.round(distance / 10) * 10);
+    dragHandle(handle, canvas, {
+      move(x, y) {
+        const { angle: tilt } = beam.state;
+        const distance = ((x - pivotX()) * Math.cos(tilt) + (y - levelY) * Math.sin(tilt)) / pixelsPerCm();
+        moveHand(Math.round(distance / 10) * 10);
+      },
     });
     handle.addEventListener('keydown', (event) => {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
@@ -269,23 +308,27 @@ import '../styles/measurement-lab.css';
       gripY = Math.min(342, Math.max(18, y));
       update();
     }
-    dragHandle(pressureHandle, canvas,
-      (_, y) => {
+    dragHandle(pressureHandle, canvas, {
+      move(_, y) {
         if (gripY === null) return;
         setGrip(y - gripOffset);
         if (locked && handForce(beam.state.angle) > .05) releaseBeam();
       },
-      (_, y) => {
+      start(_, y) {
         holding = false;
         const neutralY = beamPoint(effortArm.valueAsNumber, beam.state.angle).y - gripDistance;
         gripOffset = y - neutralY;
         setGrip(neutralY);
       },
-      () => {
+      end() {
         gripY = null;
         update();
       },
-    );
+      tap() {
+        if (holding) releaseForce();
+        else tryForce();
+      },
+    });
 
     function carryWeight(x: number, y: number) {
       if (!carried) return;
@@ -293,20 +336,22 @@ import '../styles/measurement-lab.css';
       carried.y = Math.min(337, Math.max(18, y));
       beam.wake();
     }
-    dragHandle(weightHandle, canvas, carryWeight,
-      (x, y) => {
+    dragHandle(weightHandle, canvas, {
+      move: carryWeight,
+      start(x, y) {
         carried = { x, y, wasAttached: attached };
         attached = false;
         update();
       },
-      (cancelled) => {
+      end(cancelled) {
         if (!carried) return;
         const hook = loadPoint(beam.state.angle);
-        attached = cancelled ? carried.wasAttached : Math.hypot(carried.x - hook.x, carried.y - hook.y - hangerLength) < 45;
+        attached = cancelled ? carried.wasAttached : inDropZone(carried.x, carried.y, hook);
         carried = null;
         update();
       },
-    );
+      tap: changeWeight,
+    });
 
     function releaseBeam() {
       locked = false;
@@ -319,11 +364,23 @@ import '../styles/measurement-lab.css';
       update();
     }
 
-    function tryForce() {
-      if (!holding && !effort.reportValidity()) return;
+    function releaseForce() {
+      holding = false;
       gripY = null;
-      holding = !holding;
       releaseBeam();
+    }
+
+    function tryForce() {
+      if (!effort.validity.valid) {
+        settingsPanel.open = true;
+        effort.reportValidity();
+        return;
+      }
+      gripY = null;
+      holding = true;
+      locked = false;
+      beam.reset();
+      update();
     }
 
     function secureBeam() {
@@ -335,11 +392,16 @@ import '../styles/measurement-lab.css';
     }
 
     apply.addEventListener('click', tryForce);
-    pressureHandle.addEventListener('click', (event) => { if (event.detail === 0) tryForce(); });
-    weightHandle.addEventListener('click', (event) => { if (event.detail === 0) changeWeight(); });
+    for (const level of levels) {
+      level.addEventListener('click', () => {
+        effort.value = level.dataset.leverLevel!;
+        tryForce();
+      });
+    }
     toggleWeight.addEventListener('click', changeWeight);
-    unlock.addEventListener('click', releaseBeam);
+    unlock.addEventListener('click', releaseForce);
     reset.addEventListener('click', secureBeam);
+    settingsPanel.addEventListener('toggle', () => beam.wake());
     effort.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter') return;
       event.preventDefault();
@@ -358,9 +420,3 @@ import '../styles/measurement-lab.css';
     lab.hidden = false;
   }
 </script>
-
-<style>
-  .measurement-lab .lever-figure { margin: 0; }
-  .lever-figure .lab-board { max-width: 37rem; margin-inline: auto; }
-  #lever-trial-force { display: block; width: 100%; max-width: 9rem; margin: .3rem 0; }
-</style>
