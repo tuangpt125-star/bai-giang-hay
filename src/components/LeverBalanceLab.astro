@@ -6,7 +6,7 @@ import '../styles/measurement-lab.css';
   <p>Kéo chốt xanh dọc theo thanh để dời tay. Nhập lực em muốn thử rồi bấm <strong>Thử lực tay</strong>. Điều chỉnh cho đến khi thanh giữ gần ngang.</p>
   <figure class="lever-figure">
     <div class="lab-board">
-      <canvas width="560" height="300" data-lever-diagram aria-hidden="true"></canvas>
+      <canvas width="560" height="360" data-lever-diagram aria-hidden="true"></canvas>
       <button type="button" class="lab-grab" data-grab-hand aria-label="Vị trí tay. Dùng phím trái hoặc phải để dịch chuyển." title="Kéo vị trí tay"></button>
     </div>
     <figcaption>O là điểm tựa, P là trọng lượng tải, F là lực tay. Tải treo ở phía có mũi tên đỏ.</figcaption>
@@ -51,7 +51,7 @@ import '../styles/measurement-lab.css';
     farther: { loadArm: 20, min: 30, max: 60, initial: 40 },
     closer: { loadArm: 40, min: 10, max: 30, initial: 20 },
   };
-  const levelY = 132;
+  const levelY = 185;
 
   for (const lab of document.querySelectorAll<HTMLElement>('[data-lever-balance]')) {
     const find = <T extends HTMLElement>(selector: string) => lab.querySelector<T>(selector)!;
@@ -118,7 +118,7 @@ import '../styles/measurement-lab.css';
       pen.fillRect(loadX - weightSize / 2, loadY + 15, weightSize, weightSize);
       arrow(pen, loadX, loadY - 57, 0, 43, '#9e3044');
       const applied = Math.max(0, effort.valueAsNumber || 0);
-      const handArrow = Math.min(testing ? 40 : 58, 24 + applied / 2);
+      const handArrow = Math.min(58, 24 + applied / 2);
       pen.font = '700 21px system-ui';
       pen.fillStyle = '#743244';
       pen.fillText('P', loadX - 7, Math.max(23, loadY - 67));

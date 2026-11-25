@@ -6,7 +6,7 @@ import '../styles/measurement-lab.css';
   <p>Kéo chốt trên thanh sang trái hoặc phải để đổi điểm đặt. Kéo đầu mũi tên đỏ để đổi hướng kéo. Sau đó bấm <strong>Thử lực</strong> rồi quan sát thanh.</p>
   <figure class="turning-figure">
     <div class="lab-board" data-turning-board>
-      <canvas width="560" height="300" data-turning-diagram aria-hidden="true"></canvas>
+      <canvas width="560" height="340" data-turning-diagram aria-hidden="true"></canvas>
       <button type="button" class="lab-grab" data-grab-position aria-label="Điểm đặt lực. Dùng phím trái hoặc phải để dịch chuyển." title="Kéo điểm đặt lực"></button>
       <button type="button" class="lab-grab" data-grab-force aria-label="Hướng lực. Dùng phím lên hoặc xuống để đổi hướng." title="Kéo đầu mũi tên"></button>
     </div>
@@ -44,7 +44,7 @@ import '../styles/measurement-lab.css';
 
   const format = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 });
   const ox = 178;
-  const oy = 148;
+  const oy = 170;
   const pixelsPerCm = 4.7;
 
   for (const lab of document.querySelectorAll<HTMLElement>('[data-turning-effect]')) {
@@ -74,7 +74,7 @@ import '../styles/measurement-lab.css';
       const r = position.valueAsNumber * pixelsPerCm;
       const x = ox + r * dx;
       const y = oy + r * dy;
-      const arrowLength = testing ? 44 : 52 + force.valueAsNumber * 2.2;
+      const arrowLength = 52 + force.valueAsNumber * 2.2;
       const tipX = x + arrowLength * ux;
       const tipY = y + arrowLength * uy;
 
