@@ -2,33 +2,61 @@
 title: "Tác dụng làm quay của lực. Moment lực"
 ---
 
-<p className="callout"><strong>Mục tiêu.</strong> Dùng thanh quay hoặc cánh cửa để khảo sát vai trò của độ lớn lực, vị trí và hướng tác dụng.</p>
+import TurningEffectLab from '../../../../../src/components/TurningEffectLab.astro';
 
-Đẩy cánh cửa ở gần tay nắm thường làm cửa quay dễ hơn đẩy sát bản lề. Tác dụng làm quay phụ thuộc vào lực lớn thế nào và đường tác dụng của lực nằm ở đâu so với trục quay.
+<div className="lesson-question">
+  <p><strong>Vì sao tay nắm cửa thường đặt xa bản lề?</strong></p>
+  <p>Thử tưởng tượng em đẩy cùng một cánh cửa bằng cùng một lực, lần đầu sát bản lề và lần sau ở tay nắm. Ở vị trí nào cửa dễ quay hơn? Nếu đẩy ở tay nắm nhưng lực hướng thẳng về bản lề thì sao?</p>
+</div>
 
-## Giữ vị trí rồi đổi hướng kéo
+<p className="callout"><strong>Mục tiêu.</strong> Làm thí nghiệm để nhận ra khi nào lực có thể làm một vật quay. Dùng độ lớn lực và cánh tay đòn để so sánh moment.</p>
 
-Luồn một thanh nhẹ vào trục quay nằm ngang của bộ thí nghiệm. Dùng lực kế kéo thanh tại một lỗ cách trục. Thử lần lượt kéo vuông góc với thanh, kéo xiên và kéo dọc theo thanh qua trục. Giữ số chỉ lực kế gần như nhau. Đường tác dụng của lực càng gần trục thì moment càng nhỏ. Khi kéo dọc thanh qua trục, cánh tay đòn bằng 0.
+## Khi nào lực làm thanh quay?
 
-Lần khác, giữ hướng kéo vuông góc và thử hai chỗ đặt lực. Nếu chuyển từ vị trí cách trục 10 cm ra 20 cm thì cùng một lực cho moment gấp đôi. Với tay vặn, hãy dùng hai thao tác đó để giải thích lợi ích của tay vặn dài và hướng kéo gần vuông góc.
+Gắn một thanh nhựa cứng có các lỗ cách đều lên giá đỡ tại trục O. Chỉnh để thanh nằm ngang khi chưa treo tải. Đánh dấu A và C ở hai phía, cách O bằng nhau.
+
+1. Lần lượt treo cùng một quả nặng tại A, O và C. Ghi đầu nào đi xuống khi thả nhẹ thanh.
+2. So hướng quay ở A và C. Giải thích vì sao treo tại O không làm thanh quay.
+3. Treo một quả ở A và một quả giống hệt ở C, rồi thêm một quả vào A. Dự đoán trạng thái của thanh trước và sau khi thêm.
+
+**Giá của lực** là đường thẳng đi qua điểm đặt theo hướng của lực. Nếu giá của lực đi qua trục quay thì lực không làm vật quay quanh trục đó. Lực có giá song song với trục cũng không làm vật quay quanh trục này. Trên cánh cửa, em có thể so ba cách đẩy: hướng về bản lề, song song với trục bản lề và vuông góc với mặt cửa.
+
+## Thử đổi một yếu tố mỗi lần
+
+Hãy thử theo bảng và ghi số chỉ từ mô phỏng. Nhìn thanh từ cùng một phía khi so chiều quay.
+
+| Việc cần so sánh | Giữ nguyên | Thay đổi |
+| --- | --- | --- |
+| Vị trí đặt lực | 10 N, hướng 90° | Cách O 20 cm rồi 40 cm |
+| Hướng kéo | 10 N, cách O 30 cm | 0°, 30°, 90°, rồi −90° |
+| Độ lớn lực | Cách O 30 cm, hướng 90° | 5 N rồi 10 N |
+
+<TurningEffectLab />
+
+Quan sát đoạn từ O đến nét đứt. Khi kéo xiên, đoạn này ngắn hơn khoảng cách từ O đến điểm đặt lực. Ở hướng 0°, giá của lực đi qua O, đoạn đó bằng 0.
 
 ## Moment lực và cánh tay đòn
 
-**Cánh tay đòn** là khoảng cách vuông góc từ trục quay đến đường tác dụng của lực trong hình phẳng. Moment lực có độ lớn **M = F × d**, với F tính bằng N và d tính bằng m. Đơn vị moment lực là N·m. Nếu đường tác dụng đi qua trục quay, d = 0 và lực đó không làm vật quay quanh trục.
+**Moment lực** đặc trưng cho tác dụng làm quay của lực quanh một trục. Lực lớn hơn tạo moment lớn hơn nếu giữ nguyên cánh tay đòn. Giá của lực càng xa trục thì moment càng lớn nếu lực có cùng độ lớn.
 
-Trên cửa, nếu hai người đẩy vuông góc với mặt cửa bằng lực bằng nhau, người đẩy xa bản lề hơn tạo moment lớn hơn. Nếu đẩy theo hướng thẳng về bản lề, cánh tay đòn bằng 0.
+Trong mô hình phẳng của bài, **cánh tay đòn d** là khoảng cách vuông góc từ trục O đến giá của lực. Ta có thể tính độ lớn moment như sau.
 
-## Dự đoán chiều quay
+<div className="lesson-formula">
+  <math display="block" aria-label="M bằng F nhân d"><mi>M</mi><mo>=</mo><mi>F</mi><mo>×</mo><mi>d</mi></math>
+  <p>Dùng <strong>F</strong> theo niutơn và <strong>d</strong> theo mét. <strong>M</strong> có đơn vị N·m.</p>
+</div>
 
-Nhìn vật từ một phía cố định, xác định mỗi lực có xu hướng làm vật quay theo chiều kim đồng hồ hay ngược lại. Khi so sánh hai lực có xu hướng quay trái chiều, xét moment của từng lực quanh cùng trục.
+Chẳng hạn, kéo vuông góc với thanh bằng lực 10 N tại điểm cách O 30 cm thì d = 0,30 m và M = 3 N·m. Với cùng điểm đặt, hướng lực 30° cho d = 0,15 m và M = 1,5 N·m. Đổi từ 90° sang −90° giữ nguyên độ lớn moment và đổi chiều quay.
+
+**Vận dụng.** Khi vặn ốc, hãy đặt tay ở xa tâm ốc và đẩy gần vuông góc với cán cờ lê. Em hãy dùng hai yếu tố trong công thức để giải thích cách làm này. Khi đạp xe, kiểu đạp hiệu quả cũng phụ thuộc vào hướng lực so với tay quay.
 
 ## Tự kiểm tra
 
-Một người tác dụng lực 12 N với cánh tay đòn 0,25 m. Muốn tạo cùng moment bằng một lực có cánh tay đòn 0,50 m thì cần lực bao nhiêu?
+Một người kéo vuông góc với thanh bằng lực 12 N ở vị trí cách trục 0,25 m. Muốn tạo cùng moment khi kéo vuông góc ở vị trí cách trục 0,50 m, người đó cần dùng lực bao nhiêu?
 
-<details>
+<details className="lesson-answer">
   <summary>Xem đáp án</summary>
-  <p>Moment là 12 × 0,25 = 3 N·m. Lực cần dùng là 3 : 0,50 = 6 N.</p>
+  <p>Moment ban đầu là 12 × 0,25 = 3 N·m. Lực mới là 3 : 0,50 = 6 N. Cánh tay đòn tăng gấp đôi, nên chỉ cần một nửa lực để đạt cùng moment.</p>
 </details>
 
-*Bài đọc tự biên soạn theo chủ đề Bài 18, trang 76–78, Khoa học tự nhiên 8, bộ Kết nối tri thức với cuộc sống.* [Đọc SGK từ trang 76](https://online.pubhtml5.com/ngvcn/wlly/#p=77).
+*Bài đọc theo mạch kiến thức Bài 18, trang 76–78, SGK Khoa học tự nhiên 8, bộ Kết nối tri thức với cuộc sống.* [Đọc SGK từ trang 76](https://online.pubhtml5.com/ngvcn/wlly/#p=77).

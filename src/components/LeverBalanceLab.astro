@@ -1,0 +1,132 @@
+---
+import '../styles/measurement-lab.css';
+---
+<section class="measurement-lab" data-lever-balance hidden aria-labelledby="lever-balance-title">
+  <h3 id="lever-balance-title">Thí nghiệm ảo · Đo lực tay khi thanh cân bằng</h3>
+  <p>Chọn một cách đặt điểm tựa, giữ nguyên tải rồi đổi vị trí đặt tay. Dự đoán lực tay sẽ tăng hay giảm trước khi xem số chỉ.</p>
+  <div class="lab-layout">
+    <div class="lab-controls">
+      <label for="lever-arrangement">Cách bố trí</label>
+      <select id="lever-arrangement">
+        <option value="opposite">Loại 1 · Điểm tựa nằm giữa</option>
+        <option value="farther">Loại 2 · Đặt tay xa hơn tải</option>
+        <option value="closer">Loại 2 · Đặt tay gần hơn tải</option>
+      </select>
+      <label for="lever-load">Trọng lượng tải <output for="lever-load" data-lever-load>18 N</output></label>
+      <input id="lever-load" type="range" min="6" max="36" step="3" value="18" />
+      <label for="lever-effort-arm">Cánh tay đòn của lực tay <output for="lever-effort-arm" data-lever-effort-arm>40 cm</output></label>
+      <input id="lever-effort-arm" type="range" min="10" max="60" step="10" value="40" />
+      <p class="lab-help">Cánh tay đòn của tải là <output data-lever-load-arm>20 cm</output> trong cách bố trí này.</p>
+    </div>
+    <figure class="lever-figure">
+      <div class="lever-diagram" aria-hidden="true">
+        <span class="lever-beam"></span>
+        <span class="lever-support"></span>
+        <span class="lever-origin">O</span>
+        <span class="lever-force lever-load"><b>P</b><span>↓</span></span>
+        <span class="lever-force lever-effort"><b>F</b><span data-lever-arrow>↓</span></span>
+      </div>
+      <figcaption>O là điểm tựa, P là trọng lượng tải, F là lực tay tác dụng lên thanh.</figcaption>
+    </figure>
+  </div>
+  <details class="lab-panel">
+    <summary>Đọc lực tay khi cân bằng</summary>
+    <dl class="lab-values" aria-live="polite">
+      <div><dt>Lực tay cần</dt><dd><output data-lever-effort>9 N</output></dd></div>
+      <div><dt>Hướng của lực tay</dt><dd><output data-lever-direction>Ấn xuống</output></dd></div>
+    </dl>
+  </details>
+  <p class="lab-help">Mô hình bỏ qua khối lượng thanh và ma sát ở trục. Cả hai lực trong hình đều vuông góc với thanh.</p>
+</section>
+
+<script>
+  const format = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 });
+  const arrangements = {
+    opposite: { loadArm: 20, min: 10, max: 60, initial: 40 },
+    farther: { loadArm: 20, min: 30, max: 60, initial: 40 },
+    closer: { loadArm: 40, min: 10, max: 30, initial: 20 },
+  };
+
+  for (const lab of document.querySelectorAll<HTMLElement>('[data-lever-balance]')) {
+    const find = <T extends HTMLElement>(selector: string) => lab.querySelector<T>(selector)!;
+    const arrangement = find<HTMLSelectElement>('#lever-arrangement');
+    const load = find<HTMLInputElement>('#lever-load');
+    const effortArm = find<HTMLInputElement>('#lever-effort-arm');
+    const diagram = find<HTMLElement>('.lever-diagram');
+
+    function update() {
+      const model = arrangements[arrangement.value as keyof typeof arrangements];
+      const opposite = arrangement.value === 'opposite';
+      const pivot = opposite ? 50 : 13;
+      const scale = opposite ? .63 : 1.21;
+      const distance = effortArm.valueAsNumber;
+      const weight = load.valueAsNumber;
+      const loadPosition = pivot + (opposite ? -1 : 1) * model.loadArm * scale;
+      const forcePosition = pivot + distance * scale;
+
+      diagram.style.setProperty('--fulcrum', pivot + '%');
+      diagram.style.setProperty('--load-position', loadPosition + '%');
+      diagram.style.setProperty('--force-position', forcePosition + '%');
+      diagram.style.setProperty('--beam-start', (Math.min(pivot, loadPosition) - 5) + '%');
+      diagram.style.setProperty('--beam-end', (Math.max(loadPosition, forcePosition) + 5) + '%');
+      find<HTMLElement>('[data-lever-arrow]').textContent = opposite ? '↓' : '↑';
+
+      const loadLabel = weight + ' N';
+      const distanceLabel = distance + ' cm';
+      load.setAttribute('aria-valuetext', loadLabel);
+      effortArm.setAttribute('aria-valuetext', distanceLabel);
+      find<HTMLOutputElement>('[data-lever-load]').value = loadLabel;
+      find<HTMLOutputElement>('[data-lever-effort-arm]').value = distanceLabel;
+      find<HTMLOutputElement>('[data-lever-load-arm]').value = model.loadArm + ' cm';
+      find<HTMLOutputElement>('[data-lever-effort]').value = format.format(weight * model.loadArm / distance) + ' N';
+      find<HTMLOutputElement>('[data-lever-direction]').value = opposite ? 'Ấn xuống' : 'Kéo lên';
+    }
+
+    arrangement.addEventListener('change', () => {
+      const model = arrangements[arrangement.value as keyof typeof arrangements];
+      effortArm.min = String(model.min);
+      effortArm.max = String(model.max);
+      effortArm.value = String(model.initial);
+      update();
+    });
+    load.addEventListener('input', update);
+    effortArm.addEventListener('input', update);
+    update();
+    lab.hidden = false;
+  }
+</script>
+
+<style>
+  .measurement-lab .lever-figure { margin: 0; }
+  .lever-diagram {
+    position: relative;
+    min-height: 10rem;
+    border: 1px solid var(--lesson-rule);
+    border-radius: .65rem;
+    background: white;
+  }
+  .lever-beam {
+    position: absolute;
+    top: 57%;
+    left: var(--beam-start);
+    width: calc(var(--beam-end) - var(--beam-start));
+    height: .45rem;
+    border-radius: 1rem;
+    background: #566580;
+  }
+  .lever-support {
+    position: absolute;
+    top: calc(57% + .45rem);
+    left: var(--fulcrum);
+    width: 2rem;
+    height: 1.3rem;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    background: #624296;
+    transform: translateX(-50%);
+  }
+  .lever-origin { position: absolute; left: var(--fulcrum); top: 78%; transform: translateX(-50%); }
+  .lever-force { position: absolute; bottom: 44%; display: grid; justify-items: center; line-height: 1; transform: translateX(-50%); }
+  .lever-force > span { font-size: 2.6rem; }
+  .lever-load { left: var(--load-position); color: #9e3044; }
+  .lever-effort { left: var(--force-position); color: #145e52; }
+</style>

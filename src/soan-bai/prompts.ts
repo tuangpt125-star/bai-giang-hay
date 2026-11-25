@@ -116,15 +116,15 @@ export const prompts: Record<string, LessonPrompt> = {
   },
   '8-18': {
     question: 'Vì sao cùng một lực, đẩy cửa gần tay nắm thường dễ quay hơn đẩy gần bản lề?',
-    activity: 'Kéo thanh tại hai vị trí, rồi thử đổi hướng kéo ở cùng một vị trí. So khoảng cách vuông góc từ trục đến giá lực.',
+    activity: 'Treo cùng một quả nặng ở hai phía và tại trục O. Dùng mô phỏng để đổi riêng vị trí, hướng kéo và độ lớn lực, rồi ghi moment.',
     takeaway: 'Moment bằng độ lớn của lực nhân với cánh tay đòn. Đường tác dụng đi qua trục cho moment bằng 0.',
-    visual: 'Hình cánh cửa hoặc thanh có trục, giá lực và cánh tay đòn.',
+    visual: 'Sơ đồ trục O, mũi tên F, giá lực nét đứt và đoạn d vuông góc với giá lực.',
   },
   '8-19': {
     question: 'Bạn nhẹ hơn cần ngồi ở đâu để cân bằng bập bênh?',
-    activity: 'Đặt hai tải ở hai phía điểm tựa. Đổi vị trí một tải rồi ghi cặp khoảng cách làm thanh cân bằng.',
-    takeaway: 'Các moment ngược chiều bằng nhau khi đòn bẩy cân bằng. Vị trí điểm tựa cũng có thể làm đổi hướng chuyển động.',
-    visual: 'Hình thanh đòn bẩy có điểm tựa, hướng lực và khoảng cách.',
+    activity: 'Giữ tải 18 N. Đo lực tay khi đổi vị trí đặt lực, rồi so loại 1 với hai cách bố trí loại 2 trong SGK.',
+    takeaway: 'Khi cân bằng, hai moment ngược chiều bằng nhau. Cánh tay đòn của lực tay dài hơn cánh tay đòn của tải thì lợi về lực.',
+    visual: 'Ba sơ đồ với điểm tựa O, tải P và lực tay F. Ghi số đo của ba vị trí tay.',
   },
   '8-20': {
     question: 'Tại sao bóng cao su đã cọ có thể hút giấy dù mẩu giấy trung hòa?',
