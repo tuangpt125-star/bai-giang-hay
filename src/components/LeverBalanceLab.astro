@@ -2,8 +2,15 @@
 import '../styles/measurement-lab.css';
 ---
 <section class="measurement-lab" data-lever-balance hidden aria-labelledby="lever-balance-title">
-  <h3 id="lever-balance-title">Thí nghiệm ảo · Đo lực tay khi thanh cân bằng</h3>
-  <p>Chọn một cách đặt điểm tựa, giữ nguyên tải rồi đổi vị trí đặt tay. Dự đoán lực tay sẽ tăng hay giảm trước khi xem số chỉ.</p>
+  <h3 id="lever-balance-title">Thí nghiệm ảo · Tìm lực tay để giữ tải cân bằng</h3>
+  <p>Kéo chốt xanh dọc theo thanh để dời tay. Nhập lực em muốn thử rồi bấm <strong>Thử lực tay</strong>. Điều chỉnh cho đến khi thanh giữ gần ngang.</p>
+  <figure class="lever-figure">
+    <div class="lab-board">
+      <canvas width="560" height="360" data-lever-diagram aria-hidden="true"></canvas>
+      <button type="button" class="lab-grab" data-grab-hand aria-label="Vị trí tay. Dùng phím trái hoặc phải để dịch chuyển." title="Kéo vị trí tay"></button>
+    </div>
+    <figcaption>O là điểm tựa, P là trọng lượng tải, F là lực tay. Tải treo ở phía có mũi tên đỏ.</figcaption>
+  </figure>
   <div class="lab-layout">
     <div class="lab-controls">
       <label for="lever-arrangement">Cách bố trí</label>
@@ -16,61 +23,126 @@ import '../styles/measurement-lab.css';
       <input id="lever-load" type="range" min="6" max="36" step="3" value="18" />
       <label for="lever-effort-arm">Cánh tay đòn của lực tay <output for="lever-effort-arm" data-lever-effort-arm>40 cm</output></label>
       <input id="lever-effort-arm" type="range" min="10" max="60" step="10" value="40" />
-      <p class="lab-help">Cánh tay đòn của tải là <output data-lever-load-arm>20 cm</output> trong cách bố trí này.</p>
+      <p class="lab-help">Cánh tay đòn của tải là <output data-lever-load-arm>20 cm</output>.<br />Lực tay tác dụng theo hướng <output data-lever-direction>ấn xuống</output>.</p>
     </div>
-    <figure class="lever-figure">
-      <div class="lever-diagram" aria-hidden="true">
-        <span class="lever-beam"></span>
-        <span class="lever-support"></span>
-        <span class="lever-origin">O</span>
-        <span class="lever-force lever-load"><b>P</b><span>↓</span></span>
-        <span class="lever-force lever-effort"><b>F</b><span data-lever-arrow>↓</span></span>
+    <div class="lab-controls lab-panel">
+      <label for="lever-trial-force">Lực tay em muốn thử (N)</label>
+      <input id="lever-trial-force" type="number" min="0" max="150" step="0.1" value="6" required />
+      <div class="lab-actions">
+        <button type="button" data-lever-try>Thử lực tay</button>
+        <button type="button" data-lever-reset disabled>Đưa thanh về ngang</button>
       </div>
-      <figcaption>O là điểm tựa, P là trọng lượng tải, F là lực tay tác dụng lên thanh.</figcaption>
-    </figure>
+      <p class="lab-trial-status" data-lever-trial role="status"></p>
+      <details>
+        <summary>Đối chiếu lực tay khi cân bằng</summary>
+        <p>Lực tay cần <output data-lever-effort>9 N</output>.</p>
+      </details>
+    </div>
   </div>
-  <details class="lab-panel">
-    <summary>Đọc lực tay khi cân bằng</summary>
-    <dl class="lab-values" aria-live="polite">
-      <div><dt>Lực tay cần</dt><dd><output data-lever-effort>9 N</output></dd></div>
-      <div><dt>Hướng của lực tay</dt><dd><output data-lever-direction>Ấn xuống</output></dd></div>
-    </dl>
-  </details>
-  <p class="lab-help">Mô hình bỏ qua khối lượng thanh và ma sát ở trục. Cả hai lực trong hình đều vuông góc với thanh.</p>
+  <p class="lab-help">Mô hình bỏ qua khối lượng thanh và ma sát. Hình minh họa chiều quay ban đầu. Thanh được xem là gần cân bằng khi hai moment chênh ít hơn 0,05 N·m.</p>
 </section>
 
 <script>
+  import { arrow, deflection, dragHandle, line, positionHandle } from '../physics/lab-diagram';
+
   const format = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 });
   const arrangements = {
     opposite: { loadArm: 20, min: 10, max: 60, initial: 40 },
     farther: { loadArm: 20, min: 30, max: 60, initial: 40 },
     closer: { loadArm: 40, min: 10, max: 30, initial: 20 },
   };
+  const levelY = 185;
 
   for (const lab of document.querySelectorAll<HTMLElement>('[data-lever-balance]')) {
     const find = <T extends HTMLElement>(selector: string) => lab.querySelector<T>(selector)!;
     const arrangement = find<HTMLSelectElement>('#lever-arrangement');
     const load = find<HTMLInputElement>('#lever-load');
     const effortArm = find<HTMLInputElement>('#lever-effort-arm');
-    const diagram = find<HTMLElement>('.lever-diagram');
+    const effort = find<HTMLInputElement>('#lever-trial-force');
+    const canvas = find<HTMLCanvasElement>('[data-lever-diagram]');
+    const context = canvas.getContext('2d');
+    const handle = find<HTMLButtonElement>('[data-grab-hand]');
+    const reset = find<HTMLButtonElement>('[data-lever-reset]');
+    const trial = find<HTMLElement>('[data-lever-trial]');
+    let cancelAnimation = () => {};
+    let testing = false;
+
+    if (!context) canvas.closest('figure')!.hidden = true;
+
+    function settings() {
+      const mode = arrangement.value as keyof typeof arrangements;
+      return arrangements[mode];
+    }
+
+    function oppositeSide() { return arrangement.value === 'opposite'; }
+    function pivotX() { return oppositeSide() ? 278 : 86; }
+    function pixelsPerCm() { return oppositeSide() ? 3.65 : 6.1; }
+
+    function draw(tilt = 0) {
+      const pen = context;
+      if (!pen) return;
+      const pivot = pivotX();
+      const scale = pixelsPerCm();
+      const loadOffset = settings().loadArm * scale * (oppositeSide() ? -1 : 1);
+      const handOffset = effortArm.valueAsNumber * scale;
+      const left = Math.min(0, loadOffset) - 22;
+      const right = Math.max(loadOffset, handOffset) + 22;
+      const dx = Math.cos(tilt);
+      const dy = Math.sin(tilt);
+      const loadX = pivot + loadOffset * dx;
+      const loadY = levelY + loadOffset * dy;
+      const handX = pivot + handOffset * dx;
+      const handY = levelY + handOffset * dy;
+
+      pen.clearRect(0, 0, canvas.width, canvas.height);
+      pen.lineCap = 'round';
+      pen.fillStyle = '#624296';
+      pen.beginPath();
+      pen.moveTo(pivot, levelY);
+      pen.lineTo(pivot - 36, levelY + 65);
+      pen.lineTo(pivot + 36, levelY + 65);
+      pen.closePath();
+      pen.fill();
+
+      line(pen, pivot + left * dx, levelY + left * dy, pivot + right * dx, levelY + right * dy, '#526887', 14);
+      pen.fillStyle = '#e0e7ef';
+      for (let offset = Math.ceil(left / (scale * 10)) * scale * 10; offset < right; offset += scale * 10) {
+        pen.beginPath();
+        pen.arc(pivot + offset * dx, levelY + offset * dy, 2.6, 0, Math.PI * 2);
+        pen.fill();
+      }
+
+      const weightSize = 23 + load.valueAsNumber / 3;
+      line(pen, loadX, loadY, loadX, loadY + 17, '#485667', 2.5);
+      pen.fillStyle = '#a64758';
+      pen.fillRect(loadX - weightSize / 2, loadY + 15, weightSize, weightSize);
+      arrow(pen, loadX, loadY - 57, 0, 43, '#9e3044');
+      const applied = Math.max(0, effort.valueAsNumber || 0);
+      const handArrow = Math.min(58, 24 + applied / 2);
+      pen.font = '700 21px system-ui';
+      pen.fillStyle = '#743244';
+      pen.fillText('P', loadX - 7, Math.max(23, loadY - 67));
+      if (applied > 0) {
+        if (oppositeSide()) arrow(pen, handX, handY - handArrow - 13, 0, handArrow, '#145e52');
+        else arrow(pen, handX, handY - 13, 0, -handArrow, '#145e52');
+        pen.fillStyle = '#145e52';
+        pen.fillText('F', handX - 7, Math.max(23, handY - handArrow - 22));
+      }
+      pen.fillStyle = 'white';
+      pen.fillText('O', pivot - 8, levelY + 53);
+      if (!testing) positionHandle(handle, canvas, handX, handY);
+    }
 
     function update() {
-      const model = arrangements[arrangement.value as keyof typeof arrangements];
-      const opposite = arrangement.value === 'opposite';
-      const pivot = opposite ? 50 : 13;
-      const scale = opposite ? .63 : 1.21;
-      const distance = effortArm.valueAsNumber;
+      cancelAnimation();
+      testing = false;
+      handle.hidden = false;
+      reset.disabled = true;
+      trial.textContent = '';
+
       const weight = load.valueAsNumber;
-      const loadPosition = pivot + (opposite ? -1 : 1) * model.loadArm * scale;
-      const forcePosition = pivot + distance * scale;
-
-      diagram.style.setProperty('--fulcrum', pivot + '%');
-      diagram.style.setProperty('--load-position', loadPosition + '%');
-      diagram.style.setProperty('--force-position', forcePosition + '%');
-      diagram.style.setProperty('--beam-start', (Math.min(pivot, loadPosition) - 5) + '%');
-      diagram.style.setProperty('--beam-end', (Math.max(loadPosition, forcePosition) + 5) + '%');
-      find<HTMLElement>('[data-lever-arrow]').textContent = opposite ? '↓' : '↑';
-
+      const distance = effortArm.valueAsNumber;
+      const model = settings();
       const loadLabel = weight + ' N';
       const distanceLabel = distance + ' cm';
       load.setAttribute('aria-valuetext', loadLabel);
@@ -79,18 +151,53 @@ import '../styles/measurement-lab.css';
       find<HTMLOutputElement>('[data-lever-effort-arm]').value = distanceLabel;
       find<HTMLOutputElement>('[data-lever-load-arm]').value = model.loadArm + ' cm';
       find<HTMLOutputElement>('[data-lever-effort]').value = format.format(weight * model.loadArm / distance) + ' N';
-      find<HTMLOutputElement>('[data-lever-direction]').value = opposite ? 'Ấn xuống' : 'Kéo lên';
+      find<HTMLOutputElement>('[data-lever-direction]').value = oppositeSide() ? 'ấn xuống' : 'kéo lên';
+      draw();
     }
 
+    function moveHand(distance: number) {
+      const { min, max } = settings();
+      effortArm.value = String(Math.max(min, Math.min(max, distance)));
+      update();
+    }
+    dragHandle(handle, canvas, (x) => moveHand(Math.round((x - pivotX()) / pixelsPerCm() / 10) * 10));
+    handle.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      moveHand(effortArm.valueAsNumber + (event.key === 'ArrowLeft' ? -10 : 10));
+    });
+
+    function tryForce() {
+      if (!effort.reportValidity()) return;
+      const loadMoment = load.valueAsNumber * settings().loadArm / 100;
+      const effortMoment = effort.valueAsNumber * effortArm.valueAsNumber / 100;
+      const difference = loadMoment - effortMoment;
+      const balanced = Math.abs(difference) < .05;
+      cancelAnimation();
+      testing = !balanced;
+      handle.hidden = testing;
+      reset.disabled = !testing;
+      trial.textContent = balanced
+        ? 'Thanh giữ gần ngang. Hai moment gần bằng nhau.'
+        : difference > 0 ? 'Đầu treo tải hạ xuống. Moment của tải lớn hơn.' : 'Đầu treo tải nâng lên. Moment của lực tay lớn hơn.';
+      cancelAnimation = deflection(balanced ? 0 : difference * (oppositeSide() ? -1 : 1), draw);
+    }
+
+    find('[data-lever-try]').addEventListener('click', tryForce);
+    reset.addEventListener('click', update);
+    effort.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      tryForce();
+    });
     arrangement.addEventListener('change', () => {
-      const model = arrangements[arrangement.value as keyof typeof arrangements];
+      const model = settings();
       effortArm.min = String(model.min);
       effortArm.max = String(model.max);
       effortArm.value = String(model.initial);
       update();
     });
-    load.addEventListener('input', update);
-    effortArm.addEventListener('input', update);
+    for (const input of [load, effort, effortArm]) input.addEventListener('input', update);
     update();
     lab.hidden = false;
   }
@@ -98,35 +205,6 @@ import '../styles/measurement-lab.css';
 
 <style>
   .measurement-lab .lever-figure { margin: 0; }
-  .lever-diagram {
-    position: relative;
-    min-height: 10rem;
-    border: 1px solid var(--lesson-rule);
-    border-radius: .65rem;
-    background: white;
-  }
-  .lever-beam {
-    position: absolute;
-    top: 57%;
-    left: var(--beam-start);
-    width: calc(var(--beam-end) - var(--beam-start));
-    height: .45rem;
-    border-radius: 1rem;
-    background: #566580;
-  }
-  .lever-support {
-    position: absolute;
-    top: calc(57% + .45rem);
-    left: var(--fulcrum);
-    width: 2rem;
-    height: 1.3rem;
-    clip-path: polygon(50% 0, 100% 100%, 0 100%);
-    background: #624296;
-    transform: translateX(-50%);
-  }
-  .lever-origin { position: absolute; left: var(--fulcrum); top: 78%; transform: translateX(-50%); }
-  .lever-force { position: absolute; bottom: 44%; display: grid; justify-items: center; line-height: 1; transform: translateX(-50%); }
-  .lever-force > span { font-size: 2.6rem; }
-  .lever-load { left: var(--load-position); color: #9e3044; }
-  .lever-effort { left: var(--force-position); color: #145e52; }
+  .lever-figure .lab-board { max-width: 37rem; margin-inline: auto; }
+  #lever-trial-force { display: block; width: 100%; max-width: 9rem; margin: .3rem 0; }
 </style>

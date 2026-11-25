@@ -2,31 +2,50 @@
 import '../styles/measurement-lab.css';
 ---
 <section class="measurement-lab" data-turning-effect hidden aria-labelledby="turning-effect-title">
-  <h3 id="turning-effect-title">Thí nghiệm ảo · Đổi lực, vị trí hoặc hướng kéo</h3>
-  <p>Thanh nằm ngang trong hình để em so sánh tác dụng của từng lực. Dấu O là trục quay. Góc 0° hướng dọc thanh sang phải, góc dương hướng lên và góc âm hướng xuống.</p>
+  <h3 id="turning-effect-title">Thí nghiệm ảo · Kéo và thả thanh quay</h3>
+  <p>Kéo chốt trên thanh sang trái hoặc phải để đổi điểm đặt. Kéo đầu mũi tên đỏ để đổi hướng kéo. Sau đó bấm <strong>Thử lực</strong> rồi quan sát thanh.</p>
+  <figure class="turning-figure">
+    <div class="lab-board" data-turning-board>
+      <canvas width="560" height="340" data-turning-diagram aria-hidden="true"></canvas>
+      <button type="button" class="lab-grab" data-grab-position aria-label="Điểm đặt lực. Dùng phím trái hoặc phải để dịch chuyển." title="Kéo điểm đặt lực"></button>
+      <button type="button" class="lab-grab" data-grab-force aria-label="Hướng lực. Dùng phím lên hoặc xuống để đổi hướng." title="Kéo đầu mũi tên"></button>
+    </div>
+    <figcaption>Chốt O là trục quay. Mũi tên đỏ là lực F, nét đứt là giá lực, đoạn tím là cánh tay đòn d.</figcaption>
+  </figure>
+  <div class="lab-actions">
+    <button type="button" data-turning-try>Thử lực</button>
+    <button type="button" data-turning-reset disabled>Đưa thanh về ngang</button>
+  </div>
+  <p class="lab-trial-status" role="status" data-turning-trial></p>
   <div class="lab-layout">
     <div class="lab-controls">
       <label for="turning-force">Độ lớn lực F <output for="turning-force" data-turning-force>10 N</output></label>
       <input id="turning-force" type="range" min="5" max="20" step="5" value="10" />
-      <label for="turning-position">Từ O đến điểm đặt lực <output for="turning-position" data-turning-position>30 cm</output></label>
-      <input id="turning-position" type="range" min="0" max="50" step="5" value="30" />
+      <label for="turning-position">Vị trí đặt lực <output for="turning-position" data-turning-position>30 cm bên phải O</output></label>
+      <input id="turning-position" type="range" min="-25" max="50" step="5" value="30" />
       <label for="turning-angle">Hướng kéo <output for="turning-angle" data-turning-angle>90°</output></label>
       <input id="turning-angle" type="range" min="-90" max="90" step="15" value="90" />
+      <p class="lab-help">0° hướng ngang sang phải. Góc dương hướng lên, góc âm hướng xuống.</p>
     </div>
-    <figure class="turning-figure">
-      <canvas width="560" height="260" data-turning-diagram aria-hidden="true"></canvas>
-      <figcaption>Đỏ là lực F. Nét đứt là giá của lực. Đoạn tím là cánh tay đòn d.</figcaption>
-    </figure>
+    <div class="lab-panel">
+      <p><strong>Số đo trước khi thả thanh</strong></p>
+      <dl class="lab-values">
+        <div><dt>Cánh tay đòn d</dt><dd><output data-turning-arm>30 cm</output></dd></div>
+        <div><dt>Độ lớn moment</dt><dd><output data-turning-moment>3 N·m</output></dd></div>
+        <div><dt>Xu hướng quay</dt><dd><output data-turning-direction>Ngược chiều kim đồng hồ</output></dd></div>
+      </dl>
+    </div>
   </div>
-  <dl class="lab-values lab-panel" aria-live="polite">
-    <div><dt>Cánh tay đòn d</dt><dd><output data-turning-arm>30 cm</output></dd></div>
-    <div><dt>Độ lớn moment</dt><dd><output data-turning-moment>3 N·m</output></dd></div>
-    <div><dt>Xu hướng quay</dt><dd><output data-turning-direction>Ngược chiều kim đồng hồ</output></dd></div>
-  </dl>
+  <p class="lab-help">Chuyển động trên hình minh họa chiều quay ban đầu. Các số đo được tính khi thanh nằm ngang.</p>
 </section>
 
 <script>
+  import { arrow, deflection, dragHandle, line, positionHandle } from '../physics/lab-diagram';
+
   const format = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 });
+  const ox = 178;
+  const oy = 170;
+  const pixelsPerCm = 4.7;
 
   for (const lab of document.querySelectorAll<HTMLElement>('[data-turning-effect]')) {
     const find = <T extends HTMLElement>(selector: string) => lab.querySelector<T>(selector)!;
@@ -35,97 +54,154 @@ import '../styles/measurement-lab.css';
     const angle = find<HTMLInputElement>('#turning-angle');
     const canvas = find<HTMLCanvasElement>('[data-turning-diagram]');
     const context = canvas.getContext('2d');
-    const diagram = canvas.closest('figure');
-    if (!context && diagram) diagram.hidden = true;
+    const positionHandleButton = find<HTMLButtonElement>('[data-grab-position]');
+    const forceHandleButton = find<HTMLButtonElement>('[data-grab-force]');
+    const reset = find<HTMLButtonElement>('[data-turning-reset]');
+    const trialStatus = find<HTMLElement>('[data-turning-trial]');
+    let cancelAnimation = () => {};
+    let testing = false;
 
-    function draw(distance: number, radians: number, strength: number) {
+    if (!context) canvas.closest('figure')!.hidden = true;
+
+    function draw(tilt = 0) {
       const pen = context;
       if (!pen) return;
-      const ox = 105;
-      const oy = 130;
-      const x = ox + distance * 5.5;
+      const radians = angle.valueAsNumber * Math.PI / 180;
+      const dx = Math.cos(tilt);
+      const dy = Math.sin(tilt);
       const ux = Math.cos(radians);
       const uy = -Math.sin(radians);
-      const projection = (x - ox) * ux;
-      const footX = x - projection * ux;
-      const footY = oy - projection * uy;
-      const arrowLength = 30 + strength * 3.4;
+      const r = position.valueAsNumber * pixelsPerCm;
+      const x = ox + r * dx;
+      const y = oy + r * dy;
+      const arrowLength = 52 + force.valueAsNumber * 2.2;
       const tipX = x + arrowLength * ux;
-      const tipY = oy + arrowLength * uy;
-
-      function line(x1: number, y1: number, x2: number, y2: number, color: string, width: number) {
-        pen.strokeStyle = color;
-        pen.lineWidth = width;
-        pen.beginPath();
-        pen.moveTo(x1, y1);
-        pen.lineTo(x2, y2);
-        pen.stroke();
-      }
+      const tipY = y + arrowLength * uy;
 
       pen.clearRect(0, 0, canvas.width, canvas.height);
       pen.lineCap = 'round';
-      line(36, oy, 435, oy, '#506580', 9);
-      pen.setLineDash([7, 6]);
-      line(x - 340 * ux, oy - 340 * uy, x + 340 * ux, oy + 340 * uy, '#745a6b', 2);
-      pen.setLineDash([]);
-      const armLength = Math.hypot(footX - ox, footY - oy);
-      if (armLength > 1) {
-        line(ox, oy, footX, footY, '#643ba0', 4);
-        const mark = Math.min(10, armLength / 2);
-        const vx = (ox - footX) / armLength;
-        const vy = (oy - footY) / armLength;
-        const cornerX = footX + mark * (ux + vx);
-        const cornerY = footY + mark * (uy + vy);
-        line(footX + mark * ux, footY + mark * uy, cornerX, cornerY, '#643ba0', 2);
-        line(cornerX, cornerY, footX + mark * vx, footY + mark * vy, '#643ba0', 2);
-        pen.fillStyle = '#643ba0';
-        pen.font = '700 21px system-ui';
-        pen.fillText('d', (ox + footX) / 2 + 10, (oy + footY) / 2 + (uy < 0 ? 21 : -10));
-      }
-      line(x, oy, tipX, tipY, '#a32d42', 5);
-      line(tipX, tipY, tipX - 13 * ux + 8 * uy, tipY - 13 * uy - 8 * ux, '#a32d42', 5);
-      line(tipX, tipY, tipX - 13 * ux - 8 * uy, tipY - 13 * uy + 8 * ux, '#a32d42', 5);
-      pen.fillStyle = '#a32d42';
-      pen.font = '700 22px system-ui';
-      pen.fillText('F', tipX + 13, tipY + (uy > 0 ? -6 : 17));
-
-      pen.fillStyle = '#53368c';
+      pen.fillStyle = '#53617c';
       pen.beginPath();
-      pen.arc(ox, oy, 7, 0, Math.PI * 2);
+      pen.moveTo(ox, oy);
+      pen.lineTo(ox - 34, oy + 68);
+      pen.lineTo(ox + 34, oy + 68);
+      pen.closePath();
       pen.fill();
-      pen.fillText('O', ox - 19, oy + 32);
+      line(pen, ox - 132 * dx, oy - 132 * dy, ox + 248 * dx, oy + 248 * dy, '#506580', 16);
+      line(pen, ox - 132 * dx, oy - 132 * dy - 4, ox + 248 * dx, oy + 248 * dy - 4, '#8194ae', 3);
+      pen.fillStyle = '#d5deea';
+      for (let distance = -25; distance <= 50; distance += 5) {
+        const offset = distance * pixelsPerCm;
+        pen.beginPath();
+        pen.arc(ox + offset * dx, oy + offset * dy, 3, 0, Math.PI * 2);
+        pen.fill();
+      }
+
+      if (!testing) {
+        const projection = (x - ox) * ux + (y - oy) * uy;
+        const footX = x - projection * ux;
+        const footY = y - projection * uy;
+        pen.setLineDash([7, 6]);
+        line(pen, x - 340 * ux, y - 340 * uy, x + 340 * ux, y + 340 * uy, '#745a6b', 2);
+        pen.setLineDash([]);
+        const armLength = Math.hypot(footX - ox, footY - oy);
+        if (armLength > 1) {
+          line(pen, ox, oy, footX, footY, '#643ba0', 4);
+          const mark = Math.min(10, armLength / 2);
+          const vx = (ox - footX) / armLength;
+          const vy = (oy - footY) / armLength;
+          const cornerX = footX + mark * (ux + vx);
+          const cornerY = footY + mark * (uy + vy);
+          line(pen, footX + mark * ux, footY + mark * uy, cornerX, cornerY, '#643ba0', 2);
+          line(pen, cornerX, cornerY, footX + mark * vx, footY + mark * vy, '#643ba0', 2);
+          pen.fillStyle = '#643ba0';
+          pen.font = '700 21px system-ui';
+          pen.fillText('d', (ox + footX) / 2 + 8, (oy + footY) / 2 + (uy < 0 ? 28 : -12));
+        }
+        positionHandle(positionHandleButton, canvas, x, y);
+        positionHandle(forceHandleButton, canvas, tipX, tipY);
+      }
+
+      arrow(pen, x, y, arrowLength * ux, arrowLength * uy, '#a32d42');
+      pen.font = '700 23px system-ui';
       pen.fillStyle = '#a32d42';
+      pen.fillText('F', tipX + 20, tipY + (uy > 0 ? -8 : 20));
+      pen.fillStyle = '#fff';
+      pen.fillText('O', ox - 8, oy + 55);
       pen.beginPath();
-      pen.arc(x, oy, 4, 0, Math.PI * 2);
+      pen.arc(ox, oy, 6, 0, Math.PI * 2);
       pen.fill();
     }
 
+    function moment() {
+      return force.valueAsNumber * position.valueAsNumber * Math.sin(angle.valueAsNumber * Math.PI / 180) / 100;
+    }
+
     function update() {
-      const strength = force.valueAsNumber;
+      cancelAnimation();
+      testing = false;
+      reset.disabled = true;
+      trialStatus.textContent = '';
+      positionHandleButton.hidden = false;
+      forceHandleButton.hidden = false;
       const distance = position.valueAsNumber;
-      const degrees = angle.valueAsNumber;
-      const radians = degrees * Math.PI / 180;
-      const signedArm = distance * Math.sin(radians);
-      const arm = Math.abs(signedArm);
-      const moment = strength * arm / 100;
-      const direction = moment < .000001
-        ? 'Không có tác dụng làm quay'
-        : signedArm > 0 ? 'Ngược chiều kim đồng hồ' : 'Theo chiều kim đồng hồ';
+      const arm = Math.abs(distance * Math.sin(angle.valueAsNumber * Math.PI / 180));
+      const signed = moment();
+      const side = distance === 0 ? 'Tại O' : Math.abs(distance) + ' cm bên ' + (distance < 0 ? 'trái O' : 'phải O');
 
       for (const [input, key, label] of [
-        [force, 'force', strength + ' N'],
-        [position, 'position', distance + ' cm'],
-        [angle, 'angle', degrees + '°'],
+        [force, 'force', force.value + ' N'],
+        [position, 'position', side],
+        [angle, 'angle', angle.value + '°'],
       ] as const) {
         find<HTMLOutputElement>('[data-turning-' + key + ']').value = label;
         input.setAttribute('aria-valuetext', label);
       }
       find<HTMLOutputElement>('[data-turning-arm]').value = format.format(arm) + ' cm';
-      find<HTMLOutputElement>('[data-turning-moment]').value = format.format(moment) + ' N·m';
-      find<HTMLOutputElement>('[data-turning-direction]').value = direction;
-      draw(distance, radians, strength);
+      find<HTMLOutputElement>('[data-turning-moment]').value = format.format(Math.abs(signed)) + ' N·m';
+      find<HTMLOutputElement>('[data-turning-direction]').value = signed === 0
+        ? 'Không có tác dụng làm quay'
+        : signed > 0 ? 'Ngược chiều kim đồng hồ' : 'Theo chiều kim đồng hồ';
+      draw();
     }
 
+    function adjust(input: HTMLInputElement, value: number) {
+      input.value = String(Math.max(Number(input.min), Math.min(Number(input.max), value)));
+      update();
+    }
+
+    dragHandle(positionHandleButton, canvas, (x) => {
+      adjust(position, Math.round((x - ox) / pixelsPerCm / 5) * 5);
+    });
+    dragHandle(forceHandleButton, canvas, (x, y) => {
+      const pointX = ox + position.valueAsNumber * pixelsPerCm;
+      const degrees = Math.atan2(oy - y, Math.max(0, x - pointX)) * 180 / Math.PI;
+      adjust(angle, Math.round(degrees / 15) * 15);
+    });
+    positionHandleButton.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      adjust(position, position.valueAsNumber + (event.key === 'ArrowLeft' ? -5 : 5));
+    });
+    forceHandleButton.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+      event.preventDefault();
+      adjust(angle, angle.valueAsNumber + (event.key === 'ArrowDown' ? -15 : 15));
+    });
+
+    find('[data-turning-try]').addEventListener('click', () => {
+      const signed = moment();
+      cancelAnimation();
+      testing = signed !== 0;
+      positionHandleButton.hidden = testing;
+      forceHandleButton.hidden = testing;
+      reset.disabled = !testing;
+      trialStatus.textContent = signed === 0
+        ? 'Thanh không quay quanh O.'
+        : signed > 0 ? 'Thanh bắt đầu quay ngược chiều kim đồng hồ.' : 'Thanh bắt đầu quay theo chiều kim đồng hồ.';
+      cancelAnimation = deflection(-signed, draw);
+    });
+    reset.addEventListener('click', update);
     for (const input of [force, position, angle]) input.addEventListener('input', update);
     update();
     lab.hidden = false;
@@ -134,5 +210,5 @@ import '../styles/measurement-lab.css';
 
 <style>
   .measurement-lab .turning-figure { margin: 0; }
-  canvas { display: block; width: 100%; height: auto; border: 1px solid var(--lesson-rule); border-radius: .65rem; background: white; }
+  .turning-figure .lab-board { max-width: 37rem; margin-inline: auto; }
 </style>
