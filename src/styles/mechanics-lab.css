@@ -1,0 +1,88 @@
+.mechanics-lab .mechanics-intro { margin: .4rem 0 .75rem; }
+.mechanics-lab .lab-board {
+  max-width: 37rem;
+  margin-inline: auto;
+  background: linear-gradient(#fff, #edf3fb);
+}
+.mechanics-lab .mechanics-board { margin: 0; }
+.mechanics-lab .mechanics-gesture { margin: .65rem 0; }
+
+.measurement-lab.mechanics-lab .lab-grab {
+  width: 3rem;
+  height: 3rem;
+  z-index: 1;
+}
+.measurement-lab.mechanics-lab :is([data-grab-force], [data-grab-pressure], [data-grab-weight]) { z-index: 2; }
+.measurement-lab.mechanics-lab .lab-grab:active { z-index: 3; }
+.measurement-lab.mechanics-lab .lab-grab::before {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 1.85rem;
+  height: 1.85rem;
+  font-size: 1rem;
+  line-height: 1;
+  font-weight: 750;
+  color: white;
+  background: var(--grip-color, #496580);
+}
+.measurement-lab.mechanics-lab [data-grab-force]::before {
+  content: 'Kéo';
+  width: 2.55rem;
+  height: 1.65rem;
+  border-radius: 1rem;
+  font-size: .82rem;
+  color: #342200;
+  background: #ffd469;
+}
+.measurement-lab.mechanics-lab [data-grab-pressure]::before {
+  content: attr(data-grip-direction);
+  --grip-color: #145e52;
+}
+.measurement-lab.mechanics-lab :is([data-grab-position], [data-grab-hand])::before { content: '↔'; }
+.measurement-lab.mechanics-lab [data-grab-weight]::before {
+  content: 'P';
+  --grip-color: #94374b;
+  border-radius: .35rem;
+}
+
+.mechanics-lab .mechanics-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: .85rem 0 .45rem; }
+.mechanics-lab .mechanics-actions button,
+.mechanics-lab .mechanics-levels button { min-height: 3rem; line-height: 1.25; }
+.mechanics-lab .mechanics-actions [data-secondary] {
+  color: var(--lesson-deep);
+  border-color: var(--lesson-rule);
+  background: white;
+}
+.mechanics-lab .mechanics-actions button:disabled { opacity: .6; }
+.mechanics-lab .mechanics-status { margin: .55rem 0 .8rem; }
+.mechanics-lab .mechanics-measurements {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.2rem, 1fr));
+  gap: .45rem;
+  margin: .65rem 0;
+}
+.mechanics-lab .mechanics-measurements div {
+  padding: .4rem .55rem;
+  border: 1px solid var(--lesson-rule);
+  border-radius: .45rem;
+  background: white;
+}
+.mechanics-lab .mechanics-measurements dt { font-size: .8rem; color: var(--muted); }
+.mechanics-lab .mechanics-measurements dd { margin: 0; color: var(--lesson-deep); font-size: 1.05rem; }
+.mechanics-lab .mechanics-trials { margin: .9rem 0; }
+.mechanics-lab .mechanics-trials p { margin: 0 0 .35rem; font-weight: 650; }
+.mechanics-lab .mechanics-levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: .45rem; }
+.mechanics-lab .mechanics-levels button { background: white; color: var(--lesson-deep); border-color: var(--lesson-rule); }
+.mechanics-lab .mechanics-levels button[aria-pressed="true"] { background: var(--lesson-accent); color: white; }
+.mechanics-lab .mechanics-settings {
+  margin: .75rem 0 0;
+  border: 1px solid var(--lesson-rule);
+  border-radius: .55rem;
+  background: white;
+  padding-inline: .65rem;
+}
+.mechanics-lab .mechanics-settings > summary { padding: .55rem 0; }
+.mechanics-lab .mechanics-settings > :last-child { margin-bottom: .65rem; }
+.mechanics-lab .mechanics-force-entry { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; }
+.mechanics-lab .mechanics-force-entry input { width: 6.5rem; }
