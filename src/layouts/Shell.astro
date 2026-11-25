@@ -1,0 +1,86 @@
+---
+import Icon from '../components/Icon.astro';
+import { book, chapters } from '../book';
+import '../styles/site.css';
+
+interface Props {
+  title: string;
+  currentChapter?: string;
+  isHome?: boolean;
+  currentLesson?: string;
+}
+
+const { title, currentChapter, isHome, currentLesson } = Astro.props;
+---
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Mục lục và bài đọc Vật lí lớp 8 theo sách Khoa học tự nhiên 8, bộ Kết nối tri thức với cuộc sống." />
+    <meta name="theme-color" content="#f8f8fc" />
+    <title>{title} · Bài Giảng Hay</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#noi-dung">Đến nội dung</a>
+    <div class="app">
+      <aside id="site-sidebar" class="sidebar">
+        <a class="brand" href="/">
+          <span class="brand-mark"><Icon name="book" size={24} /></span>
+          <span>Bài Giảng Hay</span>
+        </a>
+        <nav aria-label="Điều hướng chính">
+          <span class="navigation-label">THƯ VIỆN</span>
+          <a class="navigation-link" href="/" aria-current={isHome ? 'page' : undefined}><Icon name="grid" size={18} /> Mục lục Vật lí 8</a>
+          <span class="navigation-label chapter-navigation">CHƯƠNG TRONG SÁCH</span>
+          {chapters.map((chapter) => (
+            <a class="navigation-link chapter-link" href={`/#${chapter.id}`} aria-current={currentChapter === chapter.id ? 'location' : undefined}>
+              <Icon name={chapter.icon} size={18} /><span>{chapter.title}</span>
+            </a>
+          ))}
+        </nav>
+        <div class="sidebar-source">
+          <span class="source-mark"><Icon name="book" size={18} /></span>
+          <div><strong>{book.title}</strong><small>Kết nối tri thức</small></div>
+        </div>
+      </aside>
+      <div class="workspace">
+        <header class="topbar">
+          <button type="button" class="mobile-menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="Mở mục lục"><Icon name="menu" size={22} /></button>
+          <nav class="breadcrumbs" aria-label="Đường dẫn trang">
+            <a href="/">Lớp {book.grade}</a><span aria-hidden="true">/</span>
+            {isHome ? <strong>Vật lí</strong> : <a href="/">Vật lí</a>}
+            {currentLesson && <><span aria-hidden="true">/</span><strong>{currentLesson}</strong></>}
+          </nav>
+          <a class="top-source" href={`${book.source}#p=${book.contentsReaderPage}`} target="_blank" rel="noopener"><Icon name="book" size={17} /> <span>Sách gốc</span></a>
+        </header>
+        <main id="noi-dung" class="main"><slot /></main>
+        <footer class="footer">
+          <a href="/">Bài Giảng Hay</a>
+          <span>{book.title} · {book.series}</span>
+        </footer>
+      </div>
+    </div>
+    <script>
+      const button = document.querySelector<HTMLButtonElement>('.mobile-menu');
+      const sidebar = document.querySelector<HTMLElement>('#site-sidebar');
+
+      function setMenu(open: boolean) {
+        button?.setAttribute('aria-expanded', String(open));
+        button?.setAttribute('aria-label', open ? 'Đóng mục lục' : 'Mở mục lục');
+        sidebar?.classList.toggle('open', open);
+      }
+
+      button?.addEventListener('click', () => setMenu(button.getAttribute('aria-expanded') !== 'true'));
+      sidebar?.addEventListener('click', (event) => {
+        if (event.target instanceof Element && event.target.closest('a')) setMenu(false);
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && button?.getAttribute('aria-expanded') === 'true') {
+          setMenu(false);
+          button.focus();
+        }
+      });
+    </script>
+  </body>
+</html>

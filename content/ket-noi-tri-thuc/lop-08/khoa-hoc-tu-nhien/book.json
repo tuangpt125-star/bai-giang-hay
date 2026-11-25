@@ -1,0 +1,66 @@
+{
+  "series": "Kết nối tri thức với cuộc sống",
+  "seriesSlug": "ket-noi-tri-thuc",
+  "title": "Khoa học tự nhiên 8",
+  "slug": "khoa-hoc-tu-nhien",
+  "grade": 8,
+  "publisher": "Nhà xuất bản Giáo dục Việt Nam",
+  "source": "https://online.pubhtml5.com/ngvcn/wlly/",
+  "contentsReaderPage": 5,
+  "readerPageOffset": 1,
+  "chapters": [
+    {
+      "id": "chuong-3",
+      "number": "III",
+      "title": "Khối lượng riêng và áp suất",
+      "subject": "vat-li",
+      "icon": "layers",
+      "lessons": [
+        { "number": 13, "title": "Khối lượng riêng", "slug": "khoi-luong-rieng", "pages": [56, 58] },
+        { "number": 14, "title": "Thực hành xác định khối lượng riêng", "slug": "thuc-hanh-xac-dinh-khoi-luong-rieng", "pages": [59, 63] },
+        { "number": 15, "title": "Áp suất trên một bề mặt", "slug": "ap-suat-tren-mot-be-mat", "pages": [64, 66] },
+        { "number": 16, "title": "Áp suất chất lỏng. Áp suất khí quyển", "slug": "ap-suat-chat-long-ap-suat-khi-quyen", "pages": [67, 72] },
+        { "number": 17, "title": "Lực đẩy Archimedes", "slug": "luc-day-archimedes", "pages": [73, 75] }
+      ]
+    },
+    {
+      "id": "chuong-4",
+      "number": "IV",
+      "title": "Tác dụng làm quay của lực",
+      "subject": "vat-li",
+      "icon": "rotate",
+      "lessons": [
+        { "number": 18, "title": "Tác dụng làm quay của lực. Moment lực", "slug": "tac-dung-lam-quay-cua-luc-moment-luc", "pages": [76, 78] },
+        { "number": 19, "title": "Đòn bẩy và ứng dụng", "slug": "don-bay-va-ung-dung", "pages": [79, 83] }
+      ]
+    },
+    {
+      "id": "chuong-5",
+      "number": "V",
+      "title": "Điện",
+      "subject": "vat-li",
+      "icon": "bolt",
+      "lessons": [
+        { "number": 20, "title": "Hiện tượng nhiễm điện do cọ xát", "slug": "hien-tuong-nhiem-dien-do-co-xat", "pages": [84, 87] },
+        { "number": 21, "title": "Dòng điện, nguồn điện", "slug": "dong-dien-nguon-dien", "pages": [88, 90] },
+        { "number": 22, "title": "Mạch điện đơn giản", "slug": "mach-dien-don-gian", "pages": [91, 94] },
+        { "number": 23, "title": "Tác dụng của dòng điện", "slug": "tac-dung-cua-dong-dien", "pages": [95, 98] },
+        { "number": 24, "title": "Cường độ dòng điện và hiệu điện thế", "slug": "cuong-do-dong-dien-va-hieu-dien-the", "pages": [99, 101] },
+        { "number": 25, "title": "Thực hành đo cường độ dòng điện và hiệu điện thế", "slug": "thuc-hanh-do-cuong-do-dong-dien-va-hieu-dien-the", "pages": [102, 104] }
+      ]
+    },
+    {
+      "id": "chuong-6",
+      "number": "VI",
+      "title": "Nhiệt",
+      "subject": "vat-li",
+      "icon": "thermometer",
+      "lessons": [
+        { "number": 26, "title": "Năng lượng nhiệt và nội năng", "slug": "nang-luong-nhiet-va-noi-nang", "pages": [105, 108] },
+        { "number": 27, "title": "Thực hành đo năng lượng nhiệt bằng joulemeter", "slug": "thuc-hanh-do-nang-luong-nhiet-bang-joulemeter", "pages": [109, 111] },
+        { "number": 28, "title": "Sự truyền nhiệt", "slug": "su-truyen-nhiet", "pages": [112, 117] },
+        { "number": 29, "title": "Sự nở vì nhiệt", "slug": "su-no-vi-nhiet", "pages": [118, 122] }
+      ]
+    }
+  ]
+}
