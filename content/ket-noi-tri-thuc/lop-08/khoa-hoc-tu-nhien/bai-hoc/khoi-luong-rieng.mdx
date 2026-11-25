@@ -4,53 +4,105 @@ title: "Khối lượng riêng"
 
 import DensityInvestigation from '../../../../../src/components/DensityInvestigation.astro';
 
-<p className="callout"><strong>Mục tiêu.</strong> Tìm quy luật từ số đo khối lượng và thể tích, rồi dùng quy luật đó để nêu định nghĩa, tính và đổi đơn vị khối lượng riêng.</p>
+<div className="lesson-question">
+  <p><strong>Sắt có luôn nặng hơn nhôm?</strong></p>
+  <p>Một chiếc đinh sắt và một thanh nhôm lớn, em đoán vật nào có khối lượng lớn hơn? Nếu được chọn lại hai mẫu để so sánh riêng sắt với nhôm, em sẽ giữ đại lượng nào bằng nhau?</p>
+</div>
 
-Một bạn nói sắt nặng hơn nhôm. Nếu bạn ấy cầm một mẩu sắt rất nhỏ và một khối nhôm lớn, em có đồng ý ngay không? Hãy tìm cách chọn mẫu để phép so sánh chỉ phụ thuộc vào vật liệu.
+<p className="callout"><strong>Mục tiêu.</strong> Từ số đo khối lượng và thể tích, em giải thích được khối lượng riêng, tính được đại lượng này và đổi giữa kg/m³, g/cm³ và g/mL.</p>
 
-## Thí nghiệm 1 · Ba mẫu cùng chất
+## Thí nghiệm 1 · Cùng là sắt, khác thể tích
 
-Ba mẫu đều bằng sắt, có thể tích lần lượt 10, 20 và 30 cm³. Dự đoán mẫu 20 cm³ nặng gấp bao nhiêu lần mẫu 10 cm³. Sau đó mở **Cân mẫu** ở từng hàng, ghi số chỉ và tự tính tỉ số **m/V**. Trong lớp, em có thể làm tương tự bằng cân và ba mẫu sắt cùng loại có thể tích đã biết.
+Ba thỏi sắt đặc có thể tích 10, 20 và 30 cm³. Chúng có thể tích gấp một, hai và ba lần mẫu nhỏ nhất. Em dự đoán khối lượng có tăng theo đúng tỉ lệ đó không?
+
+1. Bấm **Cân mẫu** ở từng hàng để xem số cân, rồi ghi khối lượng bằng gam.
+2. Lấy khối lượng chia cho thể tích của từng mẫu. Điền kết quả vào cột **m/V**.
+3. So sánh ba tỉ số. Trước khi mở lời giải, dự đoán điều gì sẽ xảy ra nếu đổi sang các mẫu khác chất.
 
 <DensityInvestigation sameMaterial={true} />
 
-## Thí nghiệm 2 · Ba chất cùng thể tích
+Ở lớp, hãy đưa cân điện tử về 0 trước khi cân. Với ba thỏi sắt cùng loại, các tỉ số đo được có thể chênh nhẹ do độ chia của cân hoặc sai số khi xác định thể tích.
 
-Lần này, mỗi mẫu đều chiếm 10 cm³ và ta chỉ đổi vật liệu. Hãy cân ba mẫu, tính tỉ số như trên và giải thích vì sao việc giữ nguyên thể tích giúp trả lời câu hỏi mở đầu.
+## Thí nghiệm 2 · Cùng thể tích, khác chất
+
+Lần này, ba mẫu đều chiếm 10 cm³ nhưng làm bằng nhôm, sắt và đồng. Hãy cân và tính tỉ số như trên. Việc giữ thể tích bằng nhau giúp em trả lời câu hỏi về sắt và nhôm như thế nào?
 
 <DensityInvestigation sameMaterial={false} />
 
 ## Khối lượng riêng và đơn vị
 
-Hai phép thử cho thấy với cùng một chất đồng nhất, khi thể tích tăng thì khối lượng tăng cùng tỉ lệ. Khi so các chất khác nhau ở cùng thể tích, khối lượng có thể khác nhau. **Khối lượng riêng** là khối lượng trên một đơn vị thể tích. Kí hiệu là **D**.
+Với một chất đồng nhất ở cùng điều kiện, lấy gấp đôi thể tích sẽ được gấp đôi khối lượng. Tỉ số **m/V** giữ nguyên. Tỉ số ấy cho biết **khối lượng của một đơn vị thể tích chất đó**, gọi là **khối lượng riêng**.
 
-**D = m/V**, trong đó **m** là khối lượng và **V** là thể tích của mẫu.
+<div className="lesson-formula">
+  <math display="block" aria-label="D bằng m chia V">
+    <mi>D</mi><mo>=</mo><mfrac><mi>m</mi><mi>V</mi></mfrac>
+  </math>
+  <p><strong>D</strong> là khối lượng riêng, <strong>m</strong> là khối lượng và <strong>V</strong> là thể tích.</p>
+</div>
 
-- Nếu dùng kg và m³, khối lượng riêng có đơn vị **kg/m³**.
-- Nếu dùng g và cm³, khối lượng riêng có đơn vị **g/cm³**.
-- Vì 1 g = 0,001 kg và 1 cm³ = 0,000 001 m³, ta có **1 g/cm³ = 1 000 kg/m³**.
+| Khối lượng | Thể tích | Đơn vị của khối lượng riêng |
+| --- | --- | --- |
+| kg | m³ | kg/m³ |
+| g | cm³ | g/cm³ |
+| g | mL | g/mL |
 
-## Tra bảng và vận dụng
+Vì **1 cm³ = 1 mL**, nên **1 g/cm³ = 1 g/mL**. Khi đổi từ g/cm³ sang kg/m³, nhân với **1 000**. Đổi ngược lại thì chia cho **1 000**. Chẳng hạn, 2,7 g/cm³ = 2 700 kg/m³.
+
+## Tra bảng và áp dụng
+
+Các giá trị dưới đây được lấy gần đúng ở nhiệt độ phòng. Giá trị của đồng trong bảng dựa trên khối lượng của mẫu đồng 1 cm³ minh họa ở trang 57.
 
 | Chất | Khối lượng riêng gần đúng (kg/m³) |
 | --- | ---: |
-| Dầu ăn | 900 |
+| Dầu hỏa | 800 |
 | Nước | 1 000 |
 | Nhôm | 2 700 |
-| Sắt | 7 900 |
-| Đồng | 8 900 |
+| Sắt | 7 800 |
+| Đồng | 8 960 |
 
-Một mẫu có khối lượng 54 g và thể tích 20 cm³. Tỉ số là 54 : 20 = 2,7 g/cm³, tức 2 700 kg/m³. Giá trị gần với nhôm trong bảng. Muốn khẳng định vật liệu, có thể cần thêm dấu hiệu vì các chất khác nhau đôi khi có khối lượng riêng gần nhau.
+**Đọc bảng thế nào?** Số 2 700 kg/m³ nghĩa là 1 m³ nhôm có khối lượng khoảng 2 700 kg. Một mẫu nặng 54 g, chiếm 20 cm³, có D = 54 : 20 = 2,7 g/cm³. Giá trị phù hợp với nhôm trong bảng. Khi nhận dạng một vật thật, có thể cần thêm dấu hiệu vì một số vật liệu có khối lượng riêng gần nhau.
 
-Khi đã biết **D** và **V**, tính khối lượng bằng **m = D × V**. Ví dụ, 0,50 L nước chiếm 0,00050 m³. Dùng D ≈ 1 000 kg/m³, ta được m ≈ 0,50 kg.
+**Tính khối lượng khi biết thể tích.** Viết lại công thức thành **m = D × V**. Chẳng hạn, 0,50 L nước tương ứng 0,00050 m³. Lấy D ≈ 1 000 kg/m³, ta được m ≈ 0,50 kg.
+
+## Phân biệt khối lượng riêng và trọng lượng riêng
+
+Khi chia **trọng lượng** P cho thể tích V, ta được **trọng lượng riêng** d. P là lực, đo bằng niutơn (N). Đại lượng này sẽ được dùng ở Bài 17 khi tính lực đẩy của chất lỏng.
+
+<div className="lesson-formula">
+  <math display="block" aria-label="d bằng P chia V">
+    <mi>d</mi><mo>=</mo><mfrac><mi>P</mi><mi>V</mi></mfrac>
+  </math>
+  <p>Nếu <strong>P</strong> tính bằng N và <strong>V</strong> tính bằng m³, <strong>d</strong> có đơn vị N/m³.</p>
+</div>
+
+| Đại lượng | Lấy đại lượng nào chia cho thể tích? | Đơn vị thường dùng |
+| --- | --- | --- |
+| Khối lượng riêng **D** | Khối lượng **m** | kg/m³ |
+| Trọng lượng riêng **d** | Trọng lượng **P** | N/m³ |
+
+Ví dụ, 1 m³ nước có khối lượng khoảng 1 000 kg. Nếu lấy gần đúng mỗi kilôgam có trọng lượng 10 N thì 1 m³ nước nặng khoảng 10 000 N. Vậy nước có **D ≈ 1 000 kg/m³** và **d ≈ 10 000 N/m³**. [Xem Bài 17 về lực đẩy Archimedes](../luc-day-archimedes/).
 
 ## Tự kiểm tra
 
-Một mẫu nhôm có thể tích 40 cm³. Một mẫu sắt có thể tích 10 cm³. Dùng số liệu trong bảng để tính khối lượng từng mẫu và trả lời câu hỏi mở đầu.
+**1. Tìm thể tích trước.** Một khối hộp kim loại dài 5 cm, rộng 4 cm, cao 3 cm và có khối lượng 420 g. Tính khối lượng riêng theo g/cm³ và kg/m³.
 
-<details>
-  <summary>Xem đáp án</summary>
-  <p>Khối nhôm có khối lượng khoảng 2,7 × 40 = 108 g. Khối sắt có khối lượng khoảng 7,9 × 10 = 79 g. Với hai mẫu này, khối nhôm nặng hơn. Nếu lấy cùng thể tích, mẫu sắt có khối lượng lớn hơn.</p>
+<details className="lesson-answer">
+  <summary>Xem lời giải bài 1</summary>
+  <p>V = 5 × 4 × 3 = 60 cm³. D = 420 : 60 = 7 g/cm³ = 7 000 kg/m³.</p>
 </details>
 
-*Bài đọc tự biên soạn theo chủ đề Bài 13, trang 56–58, Khoa học tự nhiên 8, bộ Kết nối tri thức với cuộc sống.* [Đọc SGK từ trang 56](https://online.pubhtml5.com/ngvcn/wlly/#p=57).
+**2. Quay lại câu hỏi mở đầu.** Một mẫu nhôm chiếm 40 cm³ và một mẫu sắt chiếm 10 cm³. Dựa vào bảng, tính khối lượng từng mẫu. Mẫu nào có khối lượng lớn hơn?
+
+<details className="lesson-answer">
+  <summary>Xem lời giải bài 2</summary>
+  <p>Mẫu nhôm có khối lượng khoảng 2,7 × 40 = 108 g. Mẫu sắt có khối lượng khoảng 7,8 × 10 = 78 g. Với hai mẫu này, nhôm có khối lượng lớn hơn. Nếu lấy hai mẫu có cùng thể tích, mẫu sắt có khối lượng lớn hơn.</p>
+</details>
+
+**3. Chọn đúng đại lượng.** Một vật có trọng lượng 12 N và thể tích 0,002 m³. Hãy tính trọng lượng riêng của vật và ghi đúng đơn vị.
+
+<details className="lesson-answer">
+  <summary>Xem lời giải bài 3</summary>
+  <p>d = P/V = 12 : 0,002 = 6 000 N/m³. Tử số là trọng lượng tính bằng N, nên kết quả có đơn vị N/m³.</p>
+</details>
+
+<p className="lesson-source">Theo mạch kiến thức Bài 13, Khoa học tự nhiên 8, bộ Kết nối tri thức với cuộc sống. <a href="https://online.pubhtml5.com/ngvcn/wlly/#p=57">Đọc SGK trang 56–58</a>.</p>

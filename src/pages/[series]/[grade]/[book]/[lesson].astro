@@ -44,22 +44,34 @@ const circuitMeasurement = book.grade === 8 && (
   lesson.slug === 'cuong-do-dong-dien-va-hieu-dien-the' ||
   lesson.slug === 'thuc-hanh-do-cuong-do-dong-dien-va-hieu-dien-the'
 );
+const densityCover = book.grade === 8 && lesson.slug === 'khoi-luong-rieng';
 const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pages.join('–');
 ---
 <Shell book={book} title={`Bài ${lesson.number}. ${lesson.title}`} currentChapter={lesson.chapter.id} currentLesson={`Bài ${lesson.number}`}>
-  <div class="reading">
-    <a class="back-link" href={`${catalogue}#${lesson.chapter.id}`}>Mục lục chương {lesson.chapter.number}</a>
-    <header class="reading-header">
-      <p class="reading-meta">Bài {lesson.number} <span aria-hidden="true">·</span> Trang {pages} trong sách</p>
-      <h1>{lesson.title}</h1>
-      <a class="workspace-link" href={lessonWorkspaceUrl(book, lesson)}>Soạn giáo án hoặc slide cho bài này</a>
+  <div class="reading" data-chapter={lesson.chapter.icon}>
+    <a class="back-link reading-back" href={`${catalogue}#${lesson.chapter.id}`}>‹ Mục lục chương {lesson.chapter.number}</a>
+    <header class:list={['reading-header', { 'has-cover': densityCover }]}>
+      <div class="reading-heading">
+        <p class="reading-chapter">Chương {lesson.chapter.number} · {lesson.chapter.title}</p>
+        <h1>{lesson.title}</h1>
+        <p class="reading-meta">Bài {lesson.number} <span aria-hidden="true">·</span> SGK trang {pages}</p>
+        <a class="workspace-link" href={lessonWorkspaceUrl(book, lesson)}>Soạn giáo án hoặc slide cho bài này</a>
+      </div>
+      {densityCover && (
+        <figure class="reading-visual">
+          <img src={`${import.meta.env.BASE_URL}images/khoi-luong-rieng.webp`} width="900" height="600"
+            alt="Ảnh minh họa ba trụ kim loại cao dần đặt cạnh cân điện tử" fetchpriority="high" />
+        </figure>
+      )}
     </header>
     <div class:list={['reading-grid', { 'has-text': Content }]}>
       {Content ? (
         <>
           <nav class="in-this-lesson" aria-label="Các mục trong bài">
-            <strong>Trong bài này</strong>
-            <ul>{headings.map(({ slug, text }) => <li><a href={`#${slug}`}>{text}</a></li>)}</ul>
+            <details open data-reading-toc>
+              <summary>Trong bài này</summary>
+              <ul>{headings.map(({ slug, text }) => <li><a href={`#${slug}`}>{text}</a></li>)}</ul>
+            </details>
           </nav>
           <article class="lesson-text"><Content /></article>
         </>
@@ -112,3 +124,8 @@ const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pag
     </nav>
   </div>
 </Shell>
+
+<script>
+  const toc = document.querySelector<HTMLDetailsElement>('[data-reading-toc]');
+  if (toc && matchMedia('(max-width: 700px)').matches) toc.open = false;
+</script>

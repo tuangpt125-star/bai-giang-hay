@@ -87,7 +87,7 @@ export const prompts: Record<string, LessonPrompt> = {
   '8-13': {
     question: 'Ta cần chọn mẫu thế nào để so sánh khối lượng của sắt và nhôm một cách công bằng?',
     activity: 'Cân ba mẫu sắt khác thể tích, tính m/V. Lặp lại với ba chất cùng thể tích, rồi so các tỉ số.',
-    takeaway: 'Với cùng một chất đồng nhất, m/V không đổi trong các mẫu ở cùng điều kiện. D = m/V. Khi đổi đơn vị, 1 g/cm³ = 1 000 kg/m³.',
+    takeaway: 'Với cùng một chất đồng nhất, m/V không đổi trong các mẫu ở cùng điều kiện. D = m/V. Khi đổi đơn vị, 1 g/cm³ = 1 g/mL = 1 000 kg/m³. Trọng lượng riêng d = P/V, đo bằng N/m³.',
     visual: 'Bảng thể tích, khối lượng và tỉ số m/V từ hai thí nghiệm của bài.',
   },
   '8-14': {
