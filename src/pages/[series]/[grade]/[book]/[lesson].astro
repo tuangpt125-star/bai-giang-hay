@@ -1,34 +1,50 @@
 ---
-import { render } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
+import { render, type CollectionEntry } from 'astro:content';
 import Shell from '../../../../layouts/Shell.astro';
 import Icon from '../../../../components/Icon.astro';
-import { book, lessons, lessonUrl, loadBookLessons, sourceUrl } from '../../../../book';
+import CircuitDiagram from '../../../../components/CircuitDiagram.astro';
+import ReflectionDiagram from '../../../../components/ReflectionDiagram.astro';
+import PressureSetups from '../../../../components/PressureSetups.astro';
+import PressureSimulation from '../../../../components/PressureSimulation.astro';
+import { bookRoute, books, catalogUrl, lessonId, lessonUrl, loadBookLessons, physicsLessons, type Book, type Chapter, type Lesson } from '../../../../book';
 
 export async function getStaticPaths() {
   const entries = await loadBookLessons();
-  const directory = `${book.seriesSlug}/lop-${String(book.grade).padStart(2, '0')}/${book.slug}`;
-  return lessons.map((lesson, index) => ({
-    params: { series: book.seriesSlug, grade: `lop-${book.grade}`, book: book.slug, lesson: lesson.slug },
-    props: { lesson, index, entry: entries.get(`${directory}/bai-hoc/${lesson.slug}`) },
-  }));
+  return books.flatMap((book) => {
+    const lessons = physicsLessons(book);
+    return lessons.map((lesson, index) => ({
+      params: { ...bookRoute(book), lesson: lesson.slug },
+      props: { book, lesson, index, entry: entries.get(lessonId(book, lesson)) },
+    }));
+  });
 }
 
-const { lesson, index, entry } = Astro.props;
+interface Props {
+  book: Book;
+  lesson: Lesson & { chapter: Chapter };
+  index: number;
+  entry?: CollectionEntry<'lessons'>;
+}
+
+const { book, lesson, index, entry } = Astro.props;
+const lessons = physicsLessons(book);
+const catalogue = catalogUrl(book);
 const reading = entry ? await render(entry) : null;
 const Content = reading?.Content;
-const headings = reading?.headings.filter((heading) => heading.depth === 2) ?? [];
+const allHeadings: MarkdownHeading[] = reading?.headings ?? [];
+const headings = allHeadings.filter((heading) => heading.depth === 2);
 const previous = lessons[index - 1];
 const next = lessons[index + 1];
+const showSimulation = book.grade === 8 && lesson.slug === 'ap-suat-tren-mot-be-mat';
 const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pages.join('–');
-const original = sourceUrl(lesson.pages[0]);
 ---
-<Shell title={`Bài ${lesson.number}. ${lesson.title}`} currentChapter={lesson.chapter.id} currentLesson={`Bài ${lesson.number}`}>
+<Shell book={book} title={`Bài ${lesson.number}. ${lesson.title}`} currentChapter={lesson.chapter.id} currentLesson={`Bài ${lesson.number}`}>
   <div class="reading">
-    <a class="back-link" href={`/#${lesson.chapter.id}`}>Mục lục chương {lesson.chapter.number}</a>
+    <a class="back-link" href={`${catalogue}#${lesson.chapter.id}`}>Mục lục chương {lesson.chapter.number}</a>
     <header class="reading-header">
       <p class="reading-meta">Bài {lesson.number} <span aria-hidden="true">·</span> Trang {pages} trong sách</p>
       <h1>{lesson.title}</h1>
-      <a class="original-link" href={original} target="_blank" rel="noopener"><Icon name="book" size={17} /> Mở trang {lesson.pages[0]} trong sách gốc</a>
     </header>
     <div class:list={['reading-grid', { 'has-text': Content }]}>
       {Content ? (
@@ -43,16 +59,18 @@ const original = sourceUrl(lesson.pages[0]);
         <section class="pending-reading">
           <span class="featured-icon"><Icon name="book" size={25} /></span>
           <div>
-            <h2>Đọc trong sách gốc</h2>
-            <p>Bài này chưa có bản đọc HTML. Bạn có thể mở sách ở đúng trang để học tiếp.</p>
-            <a class="primary-button" href={original} target="_blank" rel="noopener">Mở sách ở trang {lesson.pages[0]}</a>
+            <h2>Bài đọc đang được chuẩn bị</h2>
+            <a class="back-link" href={`${catalogue}#${lesson.chapter.id}`}>Về mục lục chương {lesson.chapter.number}</a>
           </div>
         </section>
       )}
     </div>
+    {!Content && showSimulation && <><PressureSetups /><PressureSimulation /></>}
+    {!Content && book.grade === 8 && lesson.slug === 'mach-dien-don-gian' && <CircuitDiagram />}
+    {!Content && book.grade === 7 && lesson.slug === 'su-phan-xa-anh-sang' && <ReflectionDiagram />}
     <nav class="lesson-navigation" aria-label="Chuyển bài">
-      {previous && <a href={lessonUrl(previous)}><small>Bài trước · {previous.number}</small><strong>{previous.title}</strong></a>}
-      {next && <a href={lessonUrl(next)}><small>Bài sau · {next.number}</small><strong>{next.title}</strong></a>}
+      {previous && <a href={lessonUrl(book, previous)}><small>Bài trước · {previous.number}</small><strong>{previous.title}</strong></a>}
+      {next && <a href={lessonUrl(book, next)}><small>Bài sau · {next.number}</small><strong>{next.title}</strong></a>}
     </nav>
   </div>
 </Shell>

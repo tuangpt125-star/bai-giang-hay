@@ -1,6 +1,6 @@
 # Bài Giảng Hay
 
-Website tự học Vật lí lớp 8 theo các chương III–VI của sách *Khoa học tự nhiên 8 – Kết nối tri thức với cuộc sống*.
+Website tự học Vật lí lớp 7 và 8 theo các chương III–VI của bộ sách *Kết nối tri thức với cuộc sống*.
 
 ## Chạy trên máy
 
@@ -17,7 +17,7 @@ Astro xuất website tĩnh vào `dist/`.
 ## Cấu trúc nội dung
 
 ```text
-content/ket-noi-tri-thuc/lop-08/khoa-hoc-tu-nhien/
+content/ket-noi-tri-thuc/lop-{07,08}/khoa-hoc-tu-nhien/
 ├── book.json
 └── bai-hoc/
 src/
@@ -26,8 +26,8 @@ src/
 └── pages/
 ```
 
-`book.json` lưu các chương, thứ tự bài, slug và khoảng trang in. `readerPageOffset` quy đổi số trang in sang số trang của trình đọc trực tuyến. Khi có tệp `bai-hoc/<slug>.mdx`, trang bài sẽ hiện bản đọc HTML. Tệp MDX cần có trường `title` trong frontmatter. Các bài còn lại dẫn đến đúng trang trong sách gốc.
+`book.json` lưu các chương, thứ tự bài, slug và khoảng trang in. Khi có tệp `bai-hoc/<slug>.mdx`, trang bài sẽ hiện bản đọc HTML. Tệp MDX cần có trường `title` trong frontmatter. Hình, công thức và bảng của bài được đặt trực tiếp trong nội dung. Các bài chưa có MDX hiển thị trạng thái chuẩn bị.
 
-Bản xem thử riêng tư có nội dung nguyên văn của bài mẫu. Nhánh GitHub công khai chứa giao diện, cấu hình và mục lục.
+Bản xem riêng tư chứa các bài đọc HTML cùng hình và bảng trong bài. Repo GitHub công khai chứa giao diện, cấu hình và mục lục.
 
-[Nguồn đối chiếu mục lục](https://online.pubhtml5.com/ngvcn/wlly/#p=5)
+[Nguồn mục lục lớp 7](https://sachdientu.nxbgd.vn/thu-vien-so/doc-sach/shs-khoa-hoc-tu-nhien.4492017677) · [Nguồn mục lục lớp 8](https://online.pubhtml5.com/ngvcn/wlly/#p=5)

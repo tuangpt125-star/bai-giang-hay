@@ -1,0 +1,24 @@
+---
+const setups = [
+  { label: 'a', width: 76, base: 79, height: 35, stacked: false, description: 'Một khối sắt đặt nằm.' },
+  { label: 'b', width: 76, base: 89, height: 70, stacked: true, description: 'Hai khối sắt đặt nằm chồng lên nhau.' },
+  { label: 'c', width: 35, base: 98, height: 76, stacked: false, description: 'Một khối sắt đặt đứng.' },
+];
+---
+<div class="setups">
+  {setups.map(({ label, width, base, height, stacked, description }) => (
+    <svg viewBox="0 0 136 143" role="img" aria-label={label + ') ' + description}>
+      <rect x="12" y="73" width="112" height="41" fill="#e4eef5" />
+      <path d="M12 63v52h112V63" fill="none" stroke="#49859c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+      <rect x={(136-width)/2} y={base-height} width={width} height={height} rx="2" fill="#39465b" stroke="#242f42" stroke-width="2" />
+      <path d={`M${(136-width)/2+3} ${base-height+4}h${width-6}`} stroke="#8a9bb1" stroke-width="2" />
+      {stacked && <path d="M30 54h76" stroke="#a0aec0" stroke-width="2" />}
+      <text x="68" y="137" text-anchor="middle">{label})</text>
+    </svg>
+  ))}
+</div>
+<style>
+  .setups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 35rem; margin-inline: auto; gap: .25rem; }
+  svg { display: block; width: 100%; height: auto; }
+  text { fill: #3d3851; font: 650 16px system-ui; }
+</style>

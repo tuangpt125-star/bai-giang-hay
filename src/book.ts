@@ -1,18 +1,68 @@
 import { getCollection } from 'astro:content';
-import book from '../content/ket-noi-tri-thuc/lop-08/khoa-hoc-tu-nhien/book.json';
 
-export { book };
-export const chapters = book.chapters.filter((chapter) => chapter.subject === 'vat-li');
-export const lessons = chapters.flatMap((chapter) =>
-  chapter.lessons.map((lesson) => ({ ...lesson, chapter }))
-);
-
-export function lessonUrl(lesson: { slug: string }) {
-  return `/${book.seriesSlug}/lop-${book.grade}/${book.slug}/${lesson.slug}/`;
+export interface Lesson {
+  number: number;
+  title: string;
+  slug: string;
+  pages: number[];
 }
 
-export function sourceUrl(printPage: number) {
-  return `${book.source}#p=${printPage + book.readerPageOffset}`;
+export interface Chapter {
+  id: string;
+  number: string;
+  title: string;
+  subject: string;
+  icon: string;
+  lessons: Lesson[];
+}
+
+export interface Book {
+  series: string;
+  seriesSlug: string;
+  title: string;
+  slug: string;
+  grade: number;
+  chapters: Chapter[];
+}
+
+const catalogues = import.meta.glob<Book>('../content/*/*/*/book.json', { eager: true, import: 'default' });
+export const books = Object.values(catalogues).sort((a, b) => a.grade - b.grade);
+export const defaultBook = books.find((book) => book.grade === 8)!;
+
+export function physicsChapters(book: Book) {
+  return book.chapters.filter((chapter) => chapter.subject === 'vat-li');
+}
+
+export function physicsLessons(book: Book) {
+  return physicsChapters(book).flatMap((chapter) =>
+    chapter.lessons.map((lesson) => ({ ...lesson, chapter }))
+  );
+}
+
+export function bookRoute(book: Book) {
+  return {
+    series: book.seriesSlug,
+    grade: `lop-${book.grade}`,
+    book: book.slug,
+  };
+}
+
+function bookPath(book: Book) {
+  const route = bookRoute(book);
+  return `/${route.series}/${route.grade}/${route.book}/`;
+}
+
+export function catalogUrl(book: Book) {
+  return book === defaultBook ? '/' : bookPath(book);
+}
+
+export function lessonUrl(book: Book, lesson: Pick<Lesson, 'slug'>) {
+  return `${bookPath(book)}${lesson.slug}/`;
+}
+
+export function lessonId(book: Book, lesson: Pick<Lesson, 'slug'>) {
+  const grade = String(book.grade).padStart(2, '0');
+  return `${book.seriesSlug}/lop-${grade}/${book.slug}/bai-hoc/${lesson.slug}`;
 }
 
 export async function loadBookLessons() {

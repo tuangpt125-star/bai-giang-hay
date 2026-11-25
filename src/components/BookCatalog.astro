@@ -1,0 +1,125 @@
+---
+import Shell from '../layouts/Shell.astro';
+import Icon from './Icon.astro';
+import { physicsChapters, physicsLessons, lessonId, lessonUrl, loadBookLessons, type Book } from '../book';
+
+interface Props { book: Book }
+const { book } = Astro.props;
+const chapters = physicsChapters(book);
+const lessons = physicsLessons(book);
+const entries = await loadBookLessons();
+const sample = book.grade === 8 ? lessons.find((lesson) => lesson.number === 15) : undefined;
+const hasText = (slug: string) => entries.has(lessonId(book, { slug }));
+const hasAll = lessons.every((lesson) => hasText(lesson.slug));
+---
+<Shell title={`Vật lí lớp ${book.grade}`} book={book} isHome>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <span class="hero-label"><Icon name="book" size={16} /> {book.title}</span>
+      <h1 id="hero-title">Vật lí lớp {book.grade}</h1>
+      <p>{book.series}</p>
+      <a class="primary-button" href="#muc-luc">Xem mục lục</a>
+    </div>
+    <img class="hero-image" src={`/images/vat-li-${book.grade}.webp`} width="920" height="613" alt="" fetchpriority="high" />
+  </section>
+
+  <section class="chapter-section" aria-labelledby="chapter-heading">
+    <h2 id="chapter-heading">Theo chương</h2>
+    <div class="chapter-grid">
+      {chapters.map((chapter) => (
+        <a class:list={['chapter-card', chapter.icon]} href={`#${chapter.id}`}>
+          <span class="chapter-icon"><Icon name={chapter.icon} size={22} /></span>
+          <span class="chapter-caption">Chương {chapter.number} · {chapter.lessons.length} bài</span>
+          <strong>{chapter.title}</strong>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="catalog" aria-labelledby="muc-luc">
+    <div class="catalog-header">
+      <div>
+        <h2 id="muc-luc">Mục lục bài học</h2>
+        <p>{lessons.length} bài theo thứ tự trong sách</p>
+      </div>
+      <div class="search-wrap" hidden>
+        <label class="sr-only" for="lesson-search">Tìm bài học</label>
+        <Icon name="search" size={20} />
+        <input id="lesson-search" type="search" placeholder="Tìm tên hoặc số bài" />
+      </div>
+    </div>
+
+    <p id="search-status" class="sr-only" aria-live="polite"></p>
+    <p class="empty-search" hidden>Không tìm thấy bài phù hợp.</p>
+
+    {sample && hasText(sample.slug) && (
+      <a class="featured" href={lessonUrl(book, sample)}>
+        <span class="featured-icon"><Icon name="document" size={25} /></span>
+        <span><small>Bài đọc HTML</small><strong>Bài {sample.number}. {sample.title}</strong></span>
+        <span class="featured-action">Đọc bài</span>
+      </a>
+    )}
+
+    <div class="groups">
+      {chapters.map((chapter) => (
+        <section class="lesson-group" id={chapter.id} aria-labelledby={`${chapter.id}-heading`}>
+          <h3 id={`${chapter.id}-heading`}><span>Chương {chapter.number}</span>{chapter.title}</h3>
+          <ul>
+            {chapter.lessons.map((lesson) => (
+              <li data-lesson>
+                <a class="lesson-row" href={lessonUrl(book, lesson)}>
+                  <span class="lesson-number">Bài {lesson.number}</span>
+                  <span class="lesson-name">{lesson.title}</span>
+                  {!hasAll && hasText(lesson.slug) && <span class="html-tag">Đọc HTML</span>}
+                  <span class="lesson-page">Trang {lesson.pages[0]}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </section>
+</Shell>
+
+<script>
+  const search = document.querySelector<HTMLInputElement>('#lesson-search');
+  const wrapper = document.querySelector<HTMLElement>('.search-wrap');
+  const groups = [...document.querySelectorAll<HTMLElement>('.lesson-group')];
+  const status = document.querySelector('#search-status');
+  const empty = document.querySelector<HTMLElement>('.empty-search');
+  const featured = document.querySelector<HTMLElement>('.featured');
+
+  function normalize(text: string) {
+    return text.toLocaleLowerCase('vi').normalize('NFD').replace(/\p{Diacritic}/gu, '').replaceAll('đ', 'd');
+  }
+
+  if (search && wrapper) {
+    wrapper.hidden = false;
+    search.addEventListener('input', () => {
+      const query = search.value.trim();
+      const terms = normalize(query).split(/\s+/);
+      if (featured) featured.hidden = query.length > 0;
+      let total = 0;
+      for (const group of groups) {
+        let visibleInGroup = 0;
+        for (const row of group.querySelectorAll<HTMLElement>('[data-lesson]')) {
+          const text = normalize(row.textContent ?? '').replace(/\s+/g, ' ');
+          row.hidden = !terms.every((term) => text.includes(term));
+          if (!row.hidden) visibleInGroup++;
+        }
+        group.hidden = visibleInGroup === 0;
+        total += visibleInGroup;
+      }
+      if (empty) empty.hidden = total > 0;
+      if (status) status.textContent = query ? `${total} bài phù hợp.` : '';
+    });
+    document.querySelectorAll<HTMLAnchorElement>('a[href*="#chuong-"]').forEach((link) => {
+      link.addEventListener('click', () => {
+        if (!search.value) return;
+        search.value = '';
+        search.dispatchEvent(new Event('input'));
+      });
+    });
+  }
+</script>

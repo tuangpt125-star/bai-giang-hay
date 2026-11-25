@@ -1,0 +1,191 @@
+---
+const presets = [
+  { force: 40, area: 80, label: 'a) Một khối đặt nằm' },
+  { force: 80, area: 80, label: 'b) Hai khối đặt nằm' },
+  { force: 40, area: 40, label: 'c) Một khối đặt đứng' },
+];
+const initial = presets[0];
+---
+<section class="pressure-simulation" data-pressure-simulation hidden aria-labelledby="pressure-simulation-title">
+  <header>
+    <h3 id="pressure-simulation-title">Mô phỏng áp suất</h3>
+    <p>Thay đổi lực ép hoặc diện tích tiếp xúc rồi so sánh áp suất.</p>
+  </header>
+  <div class="pressure-presets" aria-label="Trường hợp thí nghiệm" role="group">
+    {presets.map(({ force, area, label }, index) => (
+      <button type="button" data-preset-force={force} data-preset-area={area} aria-pressed={index === 0 ? 'true' : 'false'}>{label}</button>
+    ))}
+  </div>
+  <div class="pressure-grid">
+    <div class="pressure-controls">
+      <label for="pressure-force">Áp lực <output for="pressure-force" data-force-value>{initial.force} N</output></label>
+      <input id="pressure-force" type="range" min="20" max="120" step="5" value={initial.force} />
+      <label for="pressure-area">Diện tích tiếp xúc <output for="pressure-area" data-area-value>{initial.area} cm²</output></label>
+      <input id="pressure-area" type="range" min="20" max="120" step="5" value={initial.area} />
+      <div class="pressure-result">
+        <span id="pressure-result-label">Áp suất</span>
+        <output for="pressure-force pressure-area" aria-live="polite" aria-labelledby="pressure-result-label" data-pressure-value>5 kPa</output>
+      </div>
+    </div>
+    <figure class="pressure-figure">
+      <div class="pressure-diagram" aria-hidden="true">
+        <div class="pressure-sand"></div>
+        <div class="pressure-tray"></div>
+        <div class="pressure-weight"></div>
+      </div>
+      <figcaption>Mức lún minh họa trên cùng một lớp bột</figcaption>
+    </figure>
+  </div>
+  <p class="pressure-question">Giữ nguyên áp lực. Nếu diện tích tiếp xúc giảm một nửa, áp suất thay đổi thế nào?</p>
+</section>
+
+<script>
+  const format = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 });
+
+  for (const simulation of document.querySelectorAll<HTMLElement>('[data-pressure-simulation]')) {
+    const force = simulation.querySelector<HTMLInputElement>('#pressure-force')!;
+    const area = simulation.querySelector<HTMLInputElement>('#pressure-area')!;
+    const forceValue = simulation.querySelector<HTMLOutputElement>('[data-force-value]')!;
+    const areaValue = simulation.querySelector<HTMLOutputElement>('[data-area-value]')!;
+    const pressureValue = simulation.querySelector<HTMLOutputElement>('[data-pressure-value]')!;
+    const illustration = simulation.querySelector<HTMLElement>('.pressure-diagram')!;
+    const presets = simulation.querySelectorAll<HTMLButtonElement>('[data-preset-force]');
+
+    function update() {
+      const forceNewtons = force.valueAsNumber;
+      const areaCm2 = area.valueAsNumber;
+      const areaM2 = areaCm2 / 10_000;
+      const pressureKPa = forceNewtons / areaM2 / 1_000;
+
+      forceValue.value = format.format(forceNewtons) + ' N';
+      force.setAttribute('aria-valuetext', forceValue.value);
+      areaValue.value = format.format(areaCm2) + ' cm²';
+      area.setAttribute('aria-valuetext', areaValue.value);
+      pressureValue.value = format.format(pressureKPa) + ' kPa';
+
+      illustration.style.setProperty('--block-width', (28 + areaCm2 * 0.39) + '%');
+      const stacked = forceNewtons === 80 && areaCm2 === 80;
+      illustration.dataset.stacked = String(stacked);
+      const blockHeight = stacked ? 5 : Math.min(4.75, 200 / areaCm2);
+      illustration.style.setProperty('--block-height', blockHeight + 'rem');
+      illustration.style.setProperty('--sink-depth', Math.min(2.4, pressureKPa * 0.075) + 'rem');
+
+      for (const preset of presets) {
+        const active = Number(preset.dataset.presetForce) === forceNewtons && Number(preset.dataset.presetArea) === areaCm2;
+        preset.setAttribute('aria-pressed', String(active));
+      }
+    }
+
+    force.addEventListener('input', update);
+    area.addEventListener('input', update);
+    for (const preset of presets) {
+      preset.addEventListener('click', () => {
+        force.value = preset.dataset.presetForce!;
+        area.value = preset.dataset.presetArea!;
+        update();
+      });
+    }
+    update();
+    simulation.hidden = false;
+  }
+</script>
+
+<style>
+  .pressure-simulation {
+    margin: 1.5rem 0;
+    padding: clamp(.85rem, 2.6vw, 1.25rem);
+    border: 1px solid #ded4ee;
+    border-radius: .9rem;
+    background: #f8f5fd;
+    container-type: inline-size;
+  }
+  .pressure-simulation header h3 { margin: 0; }
+  .pressure-simulation header p { color: var(--muted); }
+  .pressure-presets { display: flex; flex-wrap: wrap; gap: .45rem; margin: .6rem 0 1rem; }
+  .pressure-presets button {
+    min-height: 2.6rem;
+    padding: .4rem .65rem;
+    background: #fff;
+    color: var(--ink);
+    border: 1px solid #d9cde9;
+    border-radius: .55rem;
+    font-size: .875rem;
+  }
+  .pressure-presets button[aria-pressed="true"] { background: #e9dff9; color: #402174; border-color: #aa8dd4; }
+  .pressure-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: .8rem; }
+  .pressure-controls label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .6rem;
+    margin: .45rem 0 0;
+    font-size: .875rem;
+    font-weight: 650;
+  }
+  .pressure-controls label output { color: #56319f; white-space: nowrap; }
+  .pressure-controls input { display: block; width: 100%; min-height: 2.4rem; margin: 0; accent-color: #5937ae; }
+  .pressure-result {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .5rem;
+    margin-top: .5rem;
+    padding: .55rem .7rem;
+    border-radius: .55rem;
+    background: #e9dff9;
+    color: #3c236b;
+    font-size: .9rem;
+  }
+  .pressure-result output { font-size: 1.4rem; font-weight: 750; }
+  .pressure-simulation .pressure-figure { margin: .65rem 0 0; }
+  .pressure-diagram {
+    min-height: 11.5rem;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(#e9e3f6, #f7f4fc);
+    border: 1px solid #dacdeb;
+    border-radius: .55rem;
+  }
+  .pressure-sand {
+    position: absolute;
+    inset: auto 8% 0;
+    height: 32%;
+    border-radius: .35rem .35rem 0 0;
+    background: radial-gradient(circle at 2px 2px, #bdcfdb 0.55px, transparent .8px) 0 0/5px 5px, #e5eff6;
+  }
+  .pressure-tray {
+    position: absolute;
+    inset: auto 8% 0;
+    height: 43%;
+    border: 3px solid #548da5;
+    border-top: 0;
+    border-radius: 0 0 .35rem .35rem;
+  }
+  .pressure-weight {
+    position: absolute;
+    width: var(--block-width, 59%);
+    max-height: 55%;
+    height: var(--block-height, 2.5rem);
+    bottom: calc(32% - var(--sink-depth, .375rem));
+    left: 50%;
+    transform: translateX(-50%);
+    border: 1px solid #3c435d;
+    border-radius: .3rem;
+    background: linear-gradient(180deg, #aab4d0, #626d89 28%, #4f5872);
+    box-shadow: 0 3px 7px #3c435d3b;
+    transition: width .2s, height .2s, bottom .2s;
+  }
+  .pressure-diagram[data-stacked="true"] .pressure-weight::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    border-top: 1px solid #3c435d;
+    box-shadow: 0 1px #b3bed0;
+  }
+  .pressure-question { font-size: .9rem; }
+  @media (prefers-reduced-motion: reduce) { .pressure-weight { transition: none; } }
+  @container (min-width: 33rem) {
+    .pressure-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pressure-simulation .pressure-figure { margin-top: 0; }
+  }
+</style>
