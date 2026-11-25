@@ -42,7 +42,12 @@
   cursor: grab;
 }
 .investigation-lab .investigation-weight { font-size: .74rem; padding-inline: .4rem; min-height: 2.75rem; }
-.investigation-lab .investigation-meter { background: #126b54; }
+.investigation-lab .investigation-board button.investigation-meter { background: #126b54; color: white; }
+.investigation-lab .investigation-actions button[data-investigation-start] {
+  background: var(--lesson-accent);
+  border-color: transparent;
+  color: white;
+}
 .investigation-weight.is-moving { cursor: grabbing; }
 .investigation-hole-controls { grid-template-columns: repeat(auto-fit,minmax(3.6rem,1fr)); }
 .investigation-hole { display: grid; justify-items: center; line-height: 1.35; }

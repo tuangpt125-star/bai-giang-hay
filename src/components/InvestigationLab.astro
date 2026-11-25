@@ -132,13 +132,17 @@ const audible = ['sound', 'pitch', 'echo'].includes(definition.model);
         if (output) output.textContent = controlValue(control, values[control.key]);
       }
       if (waterLevel) waterLevel.hidden = values.sample !== 2;
-      if (movingMeter) positionHandle(movingMeter, canvas, hookX(values.arm), 222);
+      if (movingMeter) {
+        movingMeter.textContent = 'Lực kế';
+        positionHandle(movingMeter, canvas, hookX(values.arm), 222);
+      }
       draw(0);
     }
 
     function showResult() {
       latest = observe(model, values);
       status.textContent = latest.note;
+      if (movingMeter) movingMeter.textContent = latest.measures[1][1];
       for (const [label, measure] of latest.measures) {
         const item = document.createElement('div');
         const term = document.createElement('dt');

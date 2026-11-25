@@ -320,8 +320,6 @@ function mechanics(p: Pen, model: string, v: Inputs, t: number) {
     const extend = t * scaleForce(v.arm) * 2.5;
     spring(p, x, y + 8, 0, 64 + extend);
     if (t > 0) {
-      const left = x > 420;
-      text(p, format(scaleForce(v.arm) * t, 'N', 1), x + (left ? -83 : 15), Math.min(271, y + 59 + extend), green);
       text(p, '18 N', hookX(-20) - 24, beamY + 64, red);
     }
   } else text(p, 'Mỗi quả 2 N', 38, 37);
