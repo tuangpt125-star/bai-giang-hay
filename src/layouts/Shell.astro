@@ -37,7 +37,7 @@ const otherBooks = books.filter((option) => option.grade !== book.grade);
           <span class="navigation-label">THƯ VIỆN</span>
           <a class="navigation-link" href={catalogue} aria-current={isHome ? 'page' : undefined}><Icon name="grid" size={18} /> Mục lục Vật lí {book.grade}</a>
           {books.length > 1 && (
-            <div class="grade-links" aria-label="Chọn lớp">
+            <div class="grade-links" role="group" aria-label="Chọn lớp">
               {books.map((option) => <a href={catalogUrl(option)} aria-current={option.grade === book.grade ? 'true' : undefined}>Lớp {option.grade}</a>)}
             </div>
           )}
@@ -62,12 +62,12 @@ const otherBooks = books.filter((option) => option.grade !== book.grade);
             {currentLesson && <><span aria-hidden="true">/</span><strong>{currentLesson}</strong></>}
           </nav>
           {otherBooks.length > 0 && (
-            <div class="grade-links top-grade-links" aria-label="Chuyển lớp">
+            <div class="grade-links top-grade-links" role="group" aria-label="Chuyển lớp">
               {otherBooks.map((option) => <a href={catalogUrl(option)}>Lớp {option.grade}</a>)}
             </div>
           )}
         </header>
-        <main id="noi-dung" class="main"><slot /></main>
+        <main id="noi-dung" class="main" tabindex="-1"><slot /></main>
         <footer class="footer">
           <a href="/">Bài Giảng Hay</a>
           <span>{book.title} · {book.series}</span>

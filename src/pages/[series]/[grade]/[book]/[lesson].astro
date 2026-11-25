@@ -1,9 +1,10 @@
 ---
-import { render } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
+import { render, type CollectionEntry } from 'astro:content';
 import Shell from '../../../../layouts/Shell.astro';
 import Icon from '../../../../components/Icon.astro';
 import PressureSimulation from '../../../../components/PressureSimulation.astro';
-import { bookRoute, books, catalogUrl, lessonId, lessonUrl, loadBookLessons, physicsLessons } from '../../../../book';
+import { bookRoute, books, catalogUrl, lessonId, lessonUrl, loadBookLessons, physicsLessons, type Book, type Chapter, type Lesson } from '../../../../book';
 
 export async function getStaticPaths() {
   const entries = await loadBookLessons();
@@ -16,12 +17,20 @@ export async function getStaticPaths() {
   });
 }
 
+interface Props {
+  book: Book;
+  lesson: Lesson & { chapter: Chapter };
+  index: number;
+  entry?: CollectionEntry<'lessons'>;
+}
+
 const { book, lesson, index, entry } = Astro.props;
 const lessons = physicsLessons(book);
 const catalogue = catalogUrl(book);
 const reading = entry ? await render(entry) : null;
 const Content = reading?.Content;
-const headings = reading?.headings.filter((heading) => heading.depth === 2) ?? [];
+const allHeadings: MarkdownHeading[] = reading?.headings ?? [];
+const headings = allHeadings.filter((heading) => heading.depth === 2);
 const previous = lessons[index - 1];
 const next = lessons[index + 1];
 const showSimulation = book.grade === 8 && lesson.slug === 'ap-suat-tren-mot-be-mat';
