@@ -28,6 +28,6 @@ src/
 
 `book.json` lưu các chương, thứ tự bài, slug và khoảng trang in. Khi có tệp `bai-hoc/<slug>.mdx`, trang bài sẽ hiện bản đọc HTML. Tệp MDX cần có trường `title` trong frontmatter. Hình, công thức và bảng của bài được đặt trực tiếp trong nội dung. Các bài chưa có MDX hiển thị trạng thái chuẩn bị.
 
-Bản xem riêng tư chứa các bài đọc HTML cùng hình và bảng trong bài. Repo GitHub công khai chứa giao diện, cấu hình và mục lục.
+Bản xem riêng tư chứa các bài đọc HTML cùng hình và bảng trong bài. Repo GitHub công khai chứa giao diện, cấu hình, mục lục và các bài đọc tự biên soạn đã được bổ sung.
 
 [Nguồn mục lục lớp 7](https://sachdientu.nxbgd.vn/thu-vien-so/doc-sach/shs-khoa-hoc-tu-nhien.4492017677) · [Nguồn mục lục lớp 8](https://online.pubhtml5.com/ngvcn/wlly/#p=5)
