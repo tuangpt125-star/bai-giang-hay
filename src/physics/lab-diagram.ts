@@ -96,3 +96,26 @@ export function spring(pen: CanvasRenderingContext2D, x: number, y: number, dx: 
   pen.lineWidth = 1.8;
   pen.stroke();
 }
+
+export function keepLabControlVisible(controls: HTMLElement, stage: HTMLElement) {
+  controls.addEventListener('focusin', (event) => {
+    const control = event.target;
+    if (!(control instanceof HTMLElement) || getComputedStyle(stage).position !== 'sticky') return;
+    requestAnimationFrame(() => {
+      if (document.activeElement !== control) return;
+      const panel = stage.getBoundingClientRect();
+      const bounds = control.getBoundingClientRect();
+      const overlaps = bounds.left < panel.right && bounds.right > panel.left
+        && bounds.top < panel.bottom && bounds.bottom > panel.top;
+      if (overlaps) window.scrollBy(0, bounds.top - panel.bottom - 8);
+    });
+  });
+}
+
+export function revealLabResult(stage: HTMLElement) {
+  const bounds = stage.getBoundingClientRect();
+  const availableHeight = window.innerHeight;
+  if (bounds.bottom > availableHeight && bounds.height < availableHeight - 84) {
+    window.scrollBy(0, bounds.bottom - availableHeight + 12);
+  }
+}
