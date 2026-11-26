@@ -19,4 +19,4 @@ const paths: Record<string, string> = {
   check: '<path d="m5 12 4 4L19 6"/>',
 };
 ---
-<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={paths[name]} /></svg>
+<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={paths[name] ?? paths.book} /></svg>

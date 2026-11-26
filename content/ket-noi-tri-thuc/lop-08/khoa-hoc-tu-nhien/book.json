@@ -10,17 +10,192 @@
   "readerPageOffset": 1,
   "chapters": [
     {
+      "id": "mo-dau",
+      "number": "Mở đầu",
+      "title": "Hoá chất và thiết bị",
+      "subject": "hoa-hoc",
+      "icon": "flask",
+      "lessons": [
+        {
+          "number": 1,
+          "title": "Sử dụng một số hoá chất, thiết bị cơ bản trong phòng thí nghiệm",
+          "slug": "su-dung-mot-so-hoa-chat-thiet-bi-co-ban-trong-phong-thi-nghiem",
+          "pages": [
+            6,
+            10
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuong-1",
+      "number": "I",
+      "title": "Phản ứng hoá học",
+      "subject": "hoa-hoc",
+      "icon": "flask",
+      "lessons": [
+        {
+          "number": 2,
+          "title": "Phản ứng hoá học",
+          "slug": "phan-ung-hoa-hoc",
+          "pages": [
+            11,
+            15
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Mol và tỉ khối chất khí",
+          "slug": "mol-va-ti-khoi-chat-khi",
+          "pages": [
+            16,
+            19
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Dung dịch và nồng độ",
+          "slug": "dung-dich-va-nong-do",
+          "pages": [
+            20,
+            23
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Định luật bảo toàn khối lượng và phương trình hoá học",
+          "slug": "dinh-luat-bao-toan-khoi-luong-va-phuong-trinh-hoa-hoc",
+          "pages": [
+            24,
+            27
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Tính theo phương trình hoá học",
+          "slug": "tinh-theo-phuong-trinh-hoa-hoc",
+          "pages": [
+            28,
+            30
+          ]
+        },
+        {
+          "number": 7,
+          "title": "Tốc độ phản ứng và chất xúc tác",
+          "slug": "toc-do-phan-ung-va-chat-xuc-tac",
+          "pages": [
+            31,
+            34
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuong-2",
+      "number": "II",
+      "title": "Một số hợp chất thông dụng",
+      "subject": "hoa-hoc",
+      "icon": "compound",
+      "lessons": [
+        {
+          "number": 8,
+          "title": "Acid",
+          "slug": "acid",
+          "pages": [
+            35,
+            38
+          ]
+        },
+        {
+          "number": 9,
+          "title": "Base. Thang pH",
+          "slug": "base-thang-ph",
+          "pages": [
+            39,
+            43
+          ]
+        },
+        {
+          "number": 10,
+          "title": "Oxide",
+          "slug": "oxide",
+          "pages": [
+            44,
+            47
+          ]
+        },
+        {
+          "number": 11,
+          "title": "Muối",
+          "slug": "muoi",
+          "pages": [
+            48,
+            52
+          ]
+        },
+        {
+          "number": 12,
+          "title": "Phân bón hoá học",
+          "slug": "phan-bon-hoa-hoc",
+          "pages": [
+            53,
+            55
+          ]
+        }
+      ]
+    },
+    {
       "id": "chuong-3",
       "number": "III",
       "title": "Khối lượng riêng và áp suất",
       "subject": "vat-li",
       "icon": "layers",
       "lessons": [
-        { "number": 13, "title": "Khối lượng riêng", "slug": "khoi-luong-rieng", "pages": [56, 58] },
-        { "number": 14, "title": "Thực hành xác định khối lượng riêng", "slug": "thuc-hanh-xac-dinh-khoi-luong-rieng", "pages": [59, 63] },
-        { "number": 15, "title": "Áp suất trên một bề mặt", "slug": "ap-suat-tren-mot-be-mat", "pages": [64, 66] },
-        { "number": 16, "title": "Áp suất chất lỏng. Áp suất khí quyển", "slug": "ap-suat-chat-long-ap-suat-khi-quyen", "pages": [67, 72] },
-        { "number": 17, "title": "Lực đẩy Archimedes", "slug": "luc-day-archimedes", "pages": [73, 75] }
+        {
+          "number": 13,
+          "title": "Khối lượng riêng",
+          "slug": "khoi-luong-rieng",
+          "pages": [
+            56,
+            58
+          ]
+        },
+        {
+          "number": 14,
+          "title": "Thực hành xác định khối lượng riêng",
+          "slug": "thuc-hanh-xac-dinh-khoi-luong-rieng",
+          "pages": [
+            59,
+            63
+          ]
+        },
+        {
+          "number": 15,
+          "title": "Áp suất trên một bề mặt",
+          "slug": "ap-suat-tren-mot-be-mat",
+          "pages": [
+            64,
+            66
+          ]
+        },
+        {
+          "number": 16,
+          "title": "Áp suất chất lỏng. Áp suất khí quyển",
+          "slug": "ap-suat-chat-long-ap-suat-khi-quyen",
+          "pages": [
+            67,
+            72
+          ]
+        },
+        {
+          "number": 17,
+          "title": "Lực đẩy Archimedes",
+          "slug": "luc-day-archimedes",
+          "pages": [
+            73,
+            75
+          ]
+        }
       ]
     },
     {
@@ -30,8 +205,24 @@
       "subject": "vat-li",
       "icon": "rotate",
       "lessons": [
-        { "number": 18, "title": "Tác dụng làm quay của lực. Moment lực", "slug": "tac-dung-lam-quay-cua-luc-moment-luc", "pages": [76, 78] },
-        { "number": 19, "title": "Đòn bẩy và ứng dụng", "slug": "don-bay-va-ung-dung", "pages": [79, 83] }
+        {
+          "number": 18,
+          "title": "Tác dụng làm quay của lực. Moment lực",
+          "slug": "tac-dung-lam-quay-cua-luc-moment-luc",
+          "pages": [
+            76,
+            78
+          ]
+        },
+        {
+          "number": 19,
+          "title": "Đòn bẩy và ứng dụng",
+          "slug": "don-bay-va-ung-dung",
+          "pages": [
+            79,
+            83
+          ]
+        }
       ]
     },
     {
@@ -41,12 +232,60 @@
       "subject": "vat-li",
       "icon": "bolt",
       "lessons": [
-        { "number": 20, "title": "Hiện tượng nhiễm điện do cọ xát", "slug": "hien-tuong-nhiem-dien-do-co-xat", "pages": [84, 87] },
-        { "number": 21, "title": "Dòng điện, nguồn điện", "slug": "dong-dien-nguon-dien", "pages": [88, 90] },
-        { "number": 22, "title": "Mạch điện đơn giản", "slug": "mach-dien-don-gian", "pages": [91, 94] },
-        { "number": 23, "title": "Tác dụng của dòng điện", "slug": "tac-dung-cua-dong-dien", "pages": [95, 98] },
-        { "number": 24, "title": "Cường độ dòng điện và hiệu điện thế", "slug": "cuong-do-dong-dien-va-hieu-dien-the", "pages": [99, 101] },
-        { "number": 25, "title": "Thực hành đo cường độ dòng điện và hiệu điện thế", "slug": "thuc-hanh-do-cuong-do-dong-dien-va-hieu-dien-the", "pages": [102, 104] }
+        {
+          "number": 20,
+          "title": "Hiện tượng nhiễm điện do cọ xát",
+          "slug": "hien-tuong-nhiem-dien-do-co-xat",
+          "pages": [
+            84,
+            87
+          ]
+        },
+        {
+          "number": 21,
+          "title": "Dòng điện, nguồn điện",
+          "slug": "dong-dien-nguon-dien",
+          "pages": [
+            88,
+            90
+          ]
+        },
+        {
+          "number": 22,
+          "title": "Mạch điện đơn giản",
+          "slug": "mach-dien-don-gian",
+          "pages": [
+            91,
+            94
+          ]
+        },
+        {
+          "number": 23,
+          "title": "Tác dụng của dòng điện",
+          "slug": "tac-dung-cua-dong-dien",
+          "pages": [
+            95,
+            98
+          ]
+        },
+        {
+          "number": 24,
+          "title": "Cường độ dòng điện và hiệu điện thế",
+          "slug": "cuong-do-dong-dien-va-hieu-dien-the",
+          "pages": [
+            99,
+            101
+          ]
+        },
+        {
+          "number": 25,
+          "title": "Thực hành đo cường độ dòng điện và hiệu điện thế",
+          "slug": "thuc-hanh-do-cuong-do-dong-dien-va-hieu-dien-the",
+          "pages": [
+            102,
+            104
+          ]
+        }
       ]
     },
     {
@@ -56,10 +295,222 @@
       "subject": "vat-li",
       "icon": "thermometer",
       "lessons": [
-        { "number": 26, "title": "Năng lượng nhiệt và nội năng", "slug": "nang-luong-nhiet-va-noi-nang", "pages": [105, 108] },
-        { "number": 27, "title": "Thực hành đo năng lượng nhiệt bằng joulemeter", "slug": "thuc-hanh-do-nang-luong-nhiet-bang-joulemeter", "pages": [109, 111] },
-        { "number": 28, "title": "Sự truyền nhiệt", "slug": "su-truyen-nhiet", "pages": [112, 117] },
-        { "number": 29, "title": "Sự nở vì nhiệt", "slug": "su-no-vi-nhiet", "pages": [118, 122] }
+        {
+          "number": 26,
+          "title": "Năng lượng nhiệt và nội năng",
+          "slug": "nang-luong-nhiet-va-noi-nang",
+          "pages": [
+            105,
+            108
+          ]
+        },
+        {
+          "number": 27,
+          "title": "Thực hành đo năng lượng nhiệt bằng joulemeter",
+          "slug": "thuc-hanh-do-nang-luong-nhiet-bang-joulemeter",
+          "pages": [
+            109,
+            111
+          ]
+        },
+        {
+          "number": 28,
+          "title": "Sự truyền nhiệt",
+          "slug": "su-truyen-nhiet",
+          "pages": [
+            112,
+            117
+          ]
+        },
+        {
+          "number": 29,
+          "title": "Sự nở vì nhiệt",
+          "slug": "su-no-vi-nhiet",
+          "pages": [
+            118,
+            122
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuong-7",
+      "number": "VII",
+      "title": "Sinh học cơ thể người",
+      "subject": "sinh-hoc",
+      "icon": "body",
+      "lessons": [
+        {
+          "number": 30,
+          "title": "Khái quát về cơ thể người",
+          "slug": "khai-quat-ve-co-the-nguoi",
+          "pages": [
+            123,
+            124
+          ]
+        },
+        {
+          "number": 31,
+          "title": "Hệ vận động ở người",
+          "slug": "he-van-dong-o-nguoi",
+          "pages": [
+            125,
+            127
+          ]
+        },
+        {
+          "number": 32,
+          "title": "Dinh dưỡng và tiêu hoá ở người",
+          "slug": "dinh-duong-va-tieu-hoa-o-nguoi",
+          "pages": [
+            128,
+            134
+          ]
+        },
+        {
+          "number": 33,
+          "title": "Máu và hệ tuần hoàn của cơ thể người",
+          "slug": "mau-va-he-tuan-hoan-cua-co-the-nguoi",
+          "pages": [
+            135,
+            141
+          ]
+        },
+        {
+          "number": 34,
+          "title": "Hệ hô hấp ở người",
+          "slug": "he-ho-hap-o-nguoi",
+          "pages": [
+            142,
+            145
+          ]
+        },
+        {
+          "number": 35,
+          "title": "Hệ bài tiết ở người",
+          "slug": "he-bai-tiet-o-nguoi",
+          "pages": [
+            146,
+            149
+          ]
+        },
+        {
+          "number": 36,
+          "title": "Điều hoà môi trường trong của cơ thể người",
+          "slug": "dieu-hoa-moi-truong-trong-cua-co-the-nguoi",
+          "pages": [
+            150,
+            151
+          ]
+        },
+        {
+          "number": 37,
+          "title": "Hệ thần kinh và các giác quan ở người",
+          "slug": "he-than-kinh-va-cac-giac-quan-o-nguoi",
+          "pages": [
+            152,
+            156
+          ]
+        },
+        {
+          "number": 38,
+          "title": "Hệ nội tiết ở người",
+          "slug": "he-noi-tiet-o-nguoi",
+          "pages": [
+            157,
+            159
+          ]
+        },
+        {
+          "number": 39,
+          "title": "Da và điều hoà thân nhiệt ở người",
+          "slug": "da-va-dieu-hoa-than-nhiet-o-nguoi",
+          "pages": [
+            160,
+            164
+          ]
+        },
+        {
+          "number": 40,
+          "title": "Sinh sản ở người",
+          "slug": "sinh-san-o-nguoi",
+          "pages": [
+            165,
+            169
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuong-8",
+      "number": "VIII",
+      "title": "Sinh vật và môi trường",
+      "subject": "sinh-hoc",
+      "icon": "ecosystem",
+      "lessons": [
+        {
+          "number": 41,
+          "title": "Môi trường và các nhân tố sinh thái",
+          "slug": "moi-truong-va-cac-nhan-to-sinh-thai",
+          "pages": [
+            170,
+            173
+          ]
+        },
+        {
+          "number": 42,
+          "title": "Quần thể sinh vật",
+          "slug": "quan-the-sinh-vat",
+          "pages": [
+            174,
+            176
+          ]
+        },
+        {
+          "number": 43,
+          "title": "Quần xã sinh vật",
+          "slug": "quan-xa-sinh-vat",
+          "pages": [
+            177,
+            179
+          ]
+        },
+        {
+          "number": 44,
+          "title": "Hệ sinh thái",
+          "slug": "he-sinh-thai",
+          "pages": [
+            180,
+            184
+          ]
+        },
+        {
+          "number": 45,
+          "title": "Sinh quyển",
+          "slug": "sinh-quyen",
+          "pages": [
+            185,
+            187
+          ]
+        },
+        {
+          "number": 46,
+          "title": "Cân bằng tự nhiên",
+          "slug": "can-bang-tu-nhien",
+          "pages": [
+            188,
+            190
+          ]
+        },
+        {
+          "number": 47,
+          "title": "Bảo vệ môi trường",
+          "slug": "bao-ve-moi-truong",
+          "pages": [
+            191,
+            194
+          ]
+        }
       ]
     }
   ]

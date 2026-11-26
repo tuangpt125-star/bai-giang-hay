@@ -1,9 +1,9 @@
 ---
 import BookCatalog from '../../../../components/BookCatalog.astro';
-import { bookRoute, books, defaultBook, type Book } from '../../../../book';
+import { bookRoute, books, type Book } from '../../../../book';
 
 export function getStaticPaths() {
-  return books.filter((book) => book !== defaultBook).map((book) => ({
+  return books.map((book) => ({
     params: bookRoute(book),
     props: { book },
   }));

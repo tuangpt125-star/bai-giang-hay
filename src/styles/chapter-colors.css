@@ -70,3 +70,43 @@
   --lesson-canvas: #fcece4;
   --lesson-glow: #e9a58e;
 }
+[data-chapter='atom'], [data-chapter='flask'] {
+  --lesson-deep: #222c57;
+  --lesson-accent: #3b4c98;
+  --lesson-tint: #eef0ff;
+  --lesson-rule: #c6cbf0;
+  --lesson-canvas: #e9edfa;
+  --lesson-glow: #a9b3ee;
+}
+[data-chapter='molecule'], [data-chapter='compound'] {
+  --lesson-deep: #532638;
+  --lesson-accent: #8f3856;
+  --lesson-tint: #fbedf2;
+  --lesson-rule: #e4bdcd;
+  --lesson-canvas: #faeaf2;
+  --lesson-glow: #e8a7c2;
+}
+[data-chapter='leaf'], [data-chapter='growth'], [data-chapter='ecosystem'] {
+  --lesson-deep: #193a2b;
+  --lesson-accent: #226646;
+  --lesson-tint: #e9f7eb;
+  --lesson-rule: #b9dfc3;
+  --lesson-canvas: #eaf7ec;
+  --lesson-glow: #a6d6b2;
+}
+[data-chapter='response'], [data-chapter='reproduction'] {
+  --lesson-deep: #44334f;
+  --lesson-accent: #6a4484;
+  --lesson-tint: #f5edf9;
+  --lesson-rule: #dcc9e8;
+  --lesson-canvas: #f3ebf8;
+  --lesson-glow: #d3b4e5;
+}
+[data-chapter='body'] {
+  --lesson-deep: #532f22;
+  --lesson-accent: #93482e;
+  --lesson-tint: #fff1e7;
+  --lesson-rule: #edc9b4;
+  --lesson-canvas: #fcefe5;
+  --lesson-glow: #edb393;
+}

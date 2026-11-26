@@ -2,6 +2,8 @@
 import type { MarkdownHeading } from 'astro';
 import { render, type CollectionEntry } from 'astro:content';
 import Shell from '../../../../layouts/Shell.astro';
+import ScienceReading from '../../../../components/ScienceReading.astro';
+import { scienceLesson } from '../../../../science';
 import Icon from '../../../../components/Icon.astro';
 import CircuitDiagram from '../../../../components/CircuitDiagram.astro';
 import ReflectionDiagram from '../../../../components/ReflectionDiagram.astro';
@@ -9,12 +11,12 @@ import PressureSetups from '../../../../components/PressureSetups.astro';
 import PressureSimulation from '../../../../components/PressureSimulation.astro';
 import DistanceTimeSimulation from '../../../../components/DistanceTimeSimulation.astro';
 import PhetActivity from '../../../../components/PhetActivity.astro';
-import { bookRoute, books, catalogUrl, lessonId, lessonUrl, lessonWorkspaceUrl, loadBookLessons, physicsLessons, type Book, type Chapter, type Lesson } from '../../../../book';
+import { bookRoute, books, catalogUrl, lessonId, lessonUrl, lessonWorkspaceUrl, loadBookLessons, bookLessons, chapterLabel, type Book, type Chapter, type Lesson } from '../../../../book';
 
 export async function getStaticPaths() {
   const entries = await loadBookLessons();
   return books.flatMap((book) => {
-    const lessons = physicsLessons(book);
+    const lessons = bookLessons(book);
     return lessons.map((lesson, index) => ({
       params: { ...bookRoute(book), lesson: lesson.slug },
       props: { book, lesson, index, entry: entries.get(lessonId(book, lesson)) },
@@ -30,12 +32,19 @@ interface Props {
 }
 
 const { book, lesson, index, entry } = Astro.props;
-const lessons = physicsLessons(book);
+const lessons = bookLessons(book);
 const catalogue = catalogUrl(book);
 const reading = entry ? await render(entry) : null;
 const Content = reading?.Content;
+const science = scienceLesson(book.grade, lesson.number);
+const keyId = book.grade + '-' + lesson.number;
+const hasReading = Boolean(Content || science);
 const allHeadings: MarkdownHeading[] = reading?.headings ?? [];
-const headings = allHeadings.filter((heading) => heading.depth === 2);
+const headings = science ? [
+  { slug: 'kien-thuc', text: 'Kiến thức trong bài' },
+  { slug: 'thuc-hanh-truc-quan', text: 'Thực hành trực quan' },
+  { slug: 'tu-kiem-tra', text: 'Tự kiểm tra' },
+] : allHeadings.filter((heading) => heading.depth === 2);
 const previous = lessons[index - 1];
 const next = lessons[index + 1];
 const showSimulation = book.grade === 8 && lesson.slug === 'ap-suat-tren-mot-be-mat';
@@ -49,14 +58,14 @@ const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pag
 ---
 <Shell book={book} title={`Bài ${lesson.number}. ${lesson.title}`} currentChapter={lesson.chapter.id} currentLesson={`Bài ${lesson.number}`}>
   <div class="reading">
-    <a class="back-link reading-back" href={`${catalogue}#${lesson.chapter.id}`}>‹ Mục lục chương {lesson.chapter.number}</a>
+    <a class="back-link reading-back" href={`${catalogue}#${lesson.chapter.id}`}>‹ Mục lục · {chapterLabel(lesson.chapter)}</a>
     <header class:list={['reading-header', { 'has-cover': densityCover }]}>
       <div class="reading-heading">
-        <p class="reading-chapter">Chương {lesson.chapter.number} · {lesson.chapter.title}</p>
+        <p class="reading-chapter">{chapterLabel(lesson.chapter)} · {lesson.chapter.title}</p>
         <h1>{lesson.title}</h1>
         <p class="reading-meta">Bài {lesson.number} <span aria-hidden="true">·</span> SGK trang {pages}</p>
         <div class="hero-actions">
-          {Content && <a class="workspace-link" href="#thuc-hanh-truc-quan">Mở thí nghiệm</a>}
+          {hasReading && <a class="workspace-link" href="#thuc-hanh-truc-quan">Mở thí nghiệm</a>}
           <a class="workspace-link" href={lessonWorkspaceUrl(book, lesson)}>Soạn giáo án hoặc slide cho bài này</a>
         </div>
       </div>
@@ -67,8 +76,8 @@ const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pag
         </figure>
       )}
     </header>
-    <div class:list={['reading-grid', { 'has-text': Content }]}>
-      {Content ? (
+    <div class:list={['reading-grid', { 'has-text': hasReading }]}>
+      {hasReading ? (
         <>
           <nav class="in-this-lesson" aria-label="Các mục trong bài">
             <details open data-reading-toc>
@@ -76,7 +85,9 @@ const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pag
               <ul>{headings.map(({ slug, text }) => <li><a href={`#${slug}`}>{text}</a></li>)}</ul>
             </details>
           </nav>
-          <article class="lesson-text"><Content /></article>
+          <article class="lesson-text">
+            {science ? <ScienceReading keyId={keyId} data={science} book={book} /> : Content && <Content />}
+          </article>
         </>
       ) : (
         <section class="pending-reading">
@@ -88,7 +99,7 @@ const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pag
         </section>
       )}
     </div>
-    {!Content && showSimulation && <><PressureSetups /><PressureSimulation /></>}
+    {!hasReading && showSimulation && <><PressureSetups /><PressureSimulation /></>}
     {circuitLesson && <CircuitDiagram />}
     {book.grade === 7 && lesson.slug === 'do-thi-quang-duong-thoi-gian' && <DistanceTimeSimulation />}
     {book.grade === 8 && lesson.slug === 'luc-day-archimedes' && (
@@ -120,7 +131,7 @@ const pages = lesson.pages[0] === lesson.pages[1] ? lesson.pages[0] : lesson.pag
           : 'Nếu chuyển ampe kế sang phía còn lại của đèn trong cùng vòng mạch, số chỉ có đổi không? Hãy đo để kiểm tra.'}
       />
     )}
-    {!Content && book.grade === 7 && lesson.slug === 'su-phan-xa-anh-sang' && <ReflectionDiagram />}
+    {!hasReading && book.grade === 7 && lesson.slug === 'su-phan-xa-anh-sang' && <ReflectionDiagram />}
     <nav class="lesson-navigation" aria-label="Chuyển bài">
       {previous && <a href={lessonUrl(book, previous)}><small>Bài trước · {previous.number}</small><strong>{previous.title}</strong></a>}
       {next && <a href={lessonUrl(book, next)}><small>Bài sau · {next.number}</small><strong>{next.title}</strong></a>}

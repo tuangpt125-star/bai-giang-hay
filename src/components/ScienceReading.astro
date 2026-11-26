@@ -1,0 +1,24 @@
+---
+import ScienceLab from './ScienceLab.astro';
+import type { ScienceLesson } from '../science/lesson';
+import type { Book } from '../book';
+
+interface Props { keyId: string; data: ScienceLesson; book: Book }
+const { keyId, data, book } = Astro.props;
+---
+<p class="callout"><strong>Mục tiêu.</strong> {data.goal}</p>
+<h2 id="kien-thuc">Kiến thức trong bài</h2>
+{data.sections.map(([title,text]) => (
+  <>
+    <h3>{title}</h3>
+    <p>{text}</p>
+  </>
+))}
+<ScienceLab keyId={keyId} data={data} />
+<h2 id="tu-kiem-tra">Tự kiểm tra</h2>
+<p>{data.question}</p>
+<details class="lesson-answer">
+  <summary>Xem cách giải thích</summary>
+  <p>{data.answer}</p>
+</details>
+{book.source && <p class="lesson-source"><a href={book.source}>Đối chiếu sách giáo khoa {book.title}</a></p>}

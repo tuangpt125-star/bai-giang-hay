@@ -1,6 +1,6 @@
 ---
 import Icon from '../components/Icon.astro';
-import { books, catalogUrl, defaultBook, homeUrl, physicsChapters, type Book } from '../book';
+import { books, catalogUrl, defaultBook, homeUrl, subjects, type Book } from '../book';
 import '../styles/site.css';
 
 interface Props {
@@ -12,8 +12,9 @@ interface Props {
 }
 
 const { title, book = defaultBook, currentChapter, isHome, currentLesson } = Astro.props;
-const chapters = physicsChapters(book);
-const chapterTheme = chapters.find(({ id }) => id === currentChapter)?.icon;
+const chapters = book.chapters;
+const current = chapters.find(({ id }) => id === currentChapter);
+const chapterTheme = current?.icon;
 const catalogue = catalogUrl(book);
 const otherBooks = books.filter((option) => option.grade !== book.grade);
 ---
@@ -22,7 +23,7 @@ const otherBooks = books.filter((option) => option.grade !== book.grade);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={`Mục lục và bài đọc Vật lí lớp ${book.grade} theo sách ${book.title}, bộ ${book.series}.`} />
+    <meta name="description" content={`Mục lục và bài đọc Khoa học tự nhiên lớp ${book.grade} theo sách ${book.title}, bộ ${book.series}.`} />
     <meta name="theme-color" content="#f8f8fc" />
     <title>{title} · Bài Giảng Hay</title>
   </head>
@@ -36,7 +37,7 @@ const otherBooks = books.filter((option) => option.grade !== book.grade);
         </a>
         <nav aria-label="Điều hướng chính">
           <span class="navigation-label">THƯ VIỆN</span>
-          <a class="navigation-link" href={catalogue} aria-current={isHome ? 'page' : undefined}><Icon name="grid" size={18} /> Mục lục Vật lí {book.grade}</a>
+          <a class="navigation-link" href={catalogue} aria-current={isHome ? 'page' : undefined}><Icon name="grid" size={18} /> Mục lục KHTN {book.grade}</a>
           {books.length > 1 && (
             <div class="grade-links" role="group" aria-label="Chọn lớp">
               {books.map((option) => <a href={catalogUrl(option)} aria-current={option.grade === book.grade ? 'true' : undefined}>Lớp {option.grade}</a>)}
@@ -59,7 +60,7 @@ const otherBooks = books.filter((option) => option.grade !== book.grade);
           <button type="button" class="mobile-menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="Mở mục lục"><Icon name="menu" size={22} /></button>
           <nav class="breadcrumbs" aria-label="Đường dẫn trang">
             <a href={catalogue}>Lớp {book.grade}</a><span aria-hidden="true">/</span>
-            {isHome ? <strong>Vật lí</strong> : <a href={catalogue}>Vật lí</a>}
+            {current ? <a href={`${catalogue}#${current.subject}`}>{subjects[current.subject]}</a> : <strong>KHTN</strong>}
             {currentLesson && <><span aria-hidden="true">/</span><strong>{currentLesson}</strong></>}
           </nav>
           {otherBooks.length > 0 && (
