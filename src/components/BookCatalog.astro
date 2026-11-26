@@ -1,22 +1,26 @@
 ---
 import Shell from '../layouts/Shell.astro';
 import Icon from './Icon.astro';
-import { physicsChapters, physicsLessons, workspaceUrl, lessonId, lessonUrl, loadBookLessons, type Book } from '../book';
+import { scienceLesson } from '../science';
+import { bookLessons, chapterLabel, subjects, type Subject, workspaceUrl, lessonId, lessonUrl, loadBookLessons, type Book } from '../book';
 
 interface Props { book: Book }
 const { book } = Astro.props;
-const chapters = physicsChapters(book);
-const lessons = physicsLessons(book);
+const chapters = book.chapters;
+const lessons = bookLessons(book);
+const subjectGroups = (Object.entries(subjects) as [Subject,string][]).map(([subject,label]) => ({
+  subject, label, chapters: chapters.filter(chapter => chapter.subject === subject),
+}));
 const entries = await loadBookLessons();
 const sample = book.grade === 8 ? lessons.find((lesson) => lesson.number === 15) : undefined;
-const hasText = (slug: string) => entries.has(lessonId(book, { slug }));
-const hasAll = lessons.every((lesson) => hasText(lesson.slug));
+const hasText = (lesson: { number: number; slug: string }) =>
+  entries.has(lessonId(book, lesson)) || Boolean(scienceLesson(book.grade, lesson.number));
+const hasAll = lessons.every(hasText);
 ---
-<Shell title={`Vật lí lớp ${book.grade}`} book={book} isHome>
+<Shell title={book.title} book={book} isHome>
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
-      <span class="hero-label"><Icon name="book" size={16} /> {book.title}</span>
-      <h1 id="hero-title">Vật lí lớp {book.grade}</h1>
+      <h1 id="hero-title">{book.title}</h1>
       <p>{book.series}</p>
       <div class="hero-actions">
         <a class="primary-button" href="#muc-luc">Xem mục lục</a>
@@ -27,16 +31,24 @@ const hasAll = lessons.every((lesson) => hasText(lesson.slug));
   </section>
 
   <section class="chapter-section" aria-labelledby="chapter-heading">
-    <h2 id="chapter-heading">Theo chương</h2>
-    <div class="chapter-grid">
-      {chapters.map((chapter) => (
-        <a class="chapter-card" data-chapter={chapter.icon} href={`#${chapter.id}`}>
-          <span class="chapter-icon"><Icon name={chapter.icon} size={22} /></span>
-          <span class="chapter-caption">Chương {chapter.number} · {chapter.lessons.length} bài</span>
-          <strong>{chapter.title}</strong>
-        </a>
-      ))}
-    </div>
+    <h2 id="chapter-heading">Chọn môn</h2>
+    <nav class="hero-actions subject-jumps" aria-label="Các môn trong sách">
+      {subjectGroups.map(group => <a class="workspace-link" href={`#${group.subject}`}>{group.label}</a>)}
+    </nav>
+    {subjectGroups.map(group => (
+      <div class="subject-chapters" id={group.subject}>
+        <h3>{group.label}</h3>
+        <div class="chapter-grid">
+          {group.chapters.map((chapter) => (
+            <a class="chapter-card" data-chapter={chapter.icon} href={`#${chapter.id}`}>
+              <span class="chapter-icon"><Icon name={chapter.icon} size={22} /></span>
+              <span class="chapter-caption">{chapterLabel(chapter)} · {chapter.lessons.length} bài</span>
+              <strong>{chapter.title}</strong>
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
   </section>
 
   <section class="catalog" aria-labelledby="muc-luc">
@@ -55,7 +67,7 @@ const hasAll = lessons.every((lesson) => hasText(lesson.slug));
     <p id="search-status" class="sr-only" aria-live="polite"></p>
     <p class="empty-search" hidden>Không tìm thấy bài phù hợp.</p>
 
-    {sample && hasText(sample.slug) && (
+    {sample && hasText(sample) && (
       <a class="featured" href={lessonUrl(book, sample)}>
         <span class="featured-icon"><Icon name="document" size={25} /></span>
         <span><small>Bài đọc HTML</small><strong>Bài {sample.number}. {sample.title}</strong></span>
@@ -66,14 +78,14 @@ const hasAll = lessons.every((lesson) => hasText(lesson.slug));
     <div class="groups">
       {chapters.map((chapter) => (
         <section class="lesson-group" data-chapter={chapter.icon} id={chapter.id} aria-labelledby={`${chapter.id}-heading`}>
-          <h3 id={`${chapter.id}-heading`}><span>Chương {chapter.number}</span>{chapter.title}</h3>
+          <h3 id={`${chapter.id}-heading`}><span>{chapterLabel(chapter)} · {subjects[chapter.subject]}</span>{chapter.title}</h3>
           <ul>
             {chapter.lessons.map((lesson) => (
               <li data-lesson>
                 <a class="lesson-row" href={lessonUrl(book, lesson)}>
                   <span class="lesson-number">Bài {lesson.number}</span>
                   <span class="lesson-name">{lesson.title}</span>
-                  {!hasAll && hasText(lesson.slug) && <span class="html-tag">Đọc HTML</span>}
+                  {!hasAll && hasText(lesson) && <span class="html-tag">Đọc HTML</span>}
                   <span class="lesson-page">Trang {lesson.pages[0]}</span>
                 </a>
               </li>
@@ -126,3 +138,9 @@ const hasAll = lessons.every((lesson) => hasText(lesson.slug));
     });
   }
 </script>
+
+<style>
+  .subject-jumps { margin: 0 0 1rem; }
+  .subject-chapters + .subject-chapters { margin-top: 1.1rem; }
+  .subject-chapters h3 { margin: 0 0 .45rem; color: var(--lesson-deep); font-size: 1.05rem; }
+</style>

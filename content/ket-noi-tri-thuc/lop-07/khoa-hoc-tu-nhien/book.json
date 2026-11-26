@@ -8,6 +8,78 @@
   "source": "https://sachdientu.nxbgd.vn/thu-vien-so/doc-sach/shs-khoa-hoc-tu-nhien.4492017677",
   "chapters": [
     {
+      "id": "chuong-1",
+      "number": "I",
+      "title": "Nguyên tử. Sơ lược về bảng tuần hoàn các nguyên tố hoá học",
+      "subject": "hoa-hoc",
+      "icon": "atom",
+      "lessons": [
+        {
+          "number": 2,
+          "title": "Nguyên tử",
+          "slug": "nguyen-tu",
+          "pages": [
+            14,
+            18
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Nguyên tố hoá học",
+          "slug": "nguyen-to-hoa-hoc",
+          "pages": [
+            19,
+            22
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Sơ lược về bảng tuần hoàn các nguyên tố hoá học",
+          "slug": "so-luoc-ve-bang-tuan-hoan-cac-nguyen-to-hoa-hoc",
+          "pages": [
+            23,
+            31
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuong-2",
+      "number": "II",
+      "title": "Phân tử. Liên kết hoá học",
+      "subject": "hoa-hoc",
+      "icon": "molecule",
+      "lessons": [
+        {
+          "number": 5,
+          "title": "Phân tử – Đơn chất – Hợp chất",
+          "slug": "phan-tu-don-chat-hop-chat",
+          "pages": [
+            32,
+            35
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Giới thiệu về liên kết hoá học",
+          "slug": "gioi-thieu-ve-lien-ket-hoa-hoc",
+          "pages": [
+            36,
+            39
+          ]
+        },
+        {
+          "number": 7,
+          "title": "Hoá trị và công thức hoá học",
+          "slug": "hoa-tri-va-cong-thuc-hoa-hoc",
+          "pages": [
+            40,
+            44
+          ]
+        }
+      ]
+    },
+    {
       "id": "chuong-3",
       "number": "III",
       "title": "Tốc độ",
@@ -156,6 +228,240 @@
           "pages": [
             96,
             98
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuong-7",
+      "number": "VII",
+      "title": "Trao đổi chất và chuyển hoá năng lượng ở sinh vật",
+      "subject": "sinh-hoc",
+      "icon": "leaf",
+      "lessons": [
+        {
+          "number": 21,
+          "title": "Khái quát về trao đổi chất và chuyển hoá năng lượng",
+          "slug": "khai-quat-ve-trao-doi-chat-va-chuyen-hoa-nang-luong",
+          "pages": [
+            99,
+            100
+          ]
+        },
+        {
+          "number": 22,
+          "title": "Quang hợp ở thực vật",
+          "slug": "quang-hop-o-thuc-vat",
+          "pages": [
+            101,
+            103
+          ]
+        },
+        {
+          "number": 23,
+          "title": "Một số yếu tố ảnh hưởng đến quang hợp",
+          "slug": "mot-so-yeu-to-anh-huong-den-quang-hop",
+          "pages": [
+            104,
+            107
+          ]
+        },
+        {
+          "number": 24,
+          "title": "Thực hành: Chứng minh quang hợp ở thực vật",
+          "slug": "thuc-hanh-chung-minh-quang-hop-o-thuc-vat",
+          "pages": [
+            108,
+            110
+          ]
+        },
+        {
+          "number": 25,
+          "title": "Hô hấp tế bào",
+          "slug": "ho-hap-te-bao",
+          "pages": [
+            111,
+            112
+          ]
+        },
+        {
+          "number": 26,
+          "title": "Một số yếu tố ảnh hưởng đến hô hấp tế bào",
+          "slug": "mot-so-yeu-to-anh-huong-den-ho-hap-te-bao",
+          "pages": [
+            113,
+            115
+          ]
+        },
+        {
+          "number": 27,
+          "title": "Thực hành: Hô hấp ở thực vật",
+          "slug": "thuc-hanh-ho-hap-o-thuc-vat",
+          "pages": [
+            116,
+            117
+          ]
+        },
+        {
+          "number": 28,
+          "title": "Trao đổi khí ở sinh vật",
+          "slug": "trao-doi-khi-o-sinh-vat",
+          "pages": [
+            118,
+            121
+          ]
+        },
+        {
+          "number": 29,
+          "title": "Vai trò của nước và chất dinh dưỡng đối với sinh vật",
+          "slug": "vai-tro-cua-nuoc-va-chat-dinh-duong-doi-voi-sinh-vat",
+          "pages": [
+            122,
+            126
+          ]
+        },
+        {
+          "number": 30,
+          "title": "Trao đổi nước và chất dinh dưỡng ở thực vật",
+          "slug": "trao-doi-nuoc-va-chat-dinh-duong-o-thuc-vat",
+          "pages": [
+            127,
+            130
+          ]
+        },
+        {
+          "number": 31,
+          "title": "Trao đổi nước và chất dinh dưỡng ở động vật",
+          "slug": "trao-doi-nuoc-va-chat-dinh-duong-o-dong-vat",
+          "pages": [
+            131,
+            135
+          ]
+        },
+        {
+          "number": 32,
+          "title": "Thực hành: Chứng minh thân vận chuyển nước và lá thoát hơi nước",
+          "slug": "thuc-hanh-chung-minh-than-van-chuyen-nuoc-va-la-thoat-hoi-nuoc",
+          "pages": [
+            136,
+            137
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuong-8",
+      "number": "VIII",
+      "title": "Cảm ứng ở sinh vật",
+      "subject": "sinh-hoc",
+      "icon": "response",
+      "lessons": [
+        {
+          "number": 33,
+          "title": "Cảm ứng ở sinh vật và tập tính ở động vật",
+          "slug": "cam-ung-o-sinh-vat-va-tap-tinh-o-dong-vat",
+          "pages": [
+            138,
+            140
+          ]
+        },
+        {
+          "number": 34,
+          "title": "Vận dụng hiện tượng cảm ứng ở sinh vật vào thực tiễn",
+          "slug": "van-dung-hien-tuong-cam-ung-o-sinh-vat-vao-thuc-tien",
+          "pages": [
+            141,
+            144
+          ]
+        },
+        {
+          "number": 35,
+          "title": "Thực hành: Cảm ứng ở sinh vật",
+          "slug": "thuc-hanh-cam-ung-o-sinh-vat",
+          "pages": [
+            145,
+            147
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuong-9",
+      "number": "IX",
+      "title": "Sinh trưởng và phát triển ở sinh vật",
+      "subject": "sinh-hoc",
+      "icon": "growth",
+      "lessons": [
+        {
+          "number": 36,
+          "title": "Khái quát về sinh trưởng và phát triển ở sinh vật",
+          "slug": "khai-quat-ve-sinh-truong-va-phat-trien-o-sinh-vat",
+          "pages": [
+            148,
+            150
+          ]
+        },
+        {
+          "number": 37,
+          "title": "Ứng dụng sinh trưởng và phát triển ở sinh vật vào thực tiễn",
+          "slug": "ung-dung-sinh-truong-va-phat-trien-o-sinh-vat-vao-thuc-tien",
+          "pages": [
+            151,
+            155
+          ]
+        },
+        {
+          "number": 38,
+          "title": "Thực hành: Quan sát, mô tả sự sinh trưởng và phát triển ở một số sinh vật",
+          "slug": "thuc-hanh-quan-sat-mo-ta-su-sinh-truong-va-phat-trien-o-mot-so-sinh-vat",
+          "pages": [
+            156,
+            157
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuong-10",
+      "number": "X",
+      "title": "Sinh sản ở sinh vật",
+      "subject": "sinh-hoc",
+      "icon": "reproduction",
+      "lessons": [
+        {
+          "number": 39,
+          "title": "Sinh sản vô tính ở sinh vật",
+          "slug": "sinh-san-vo-tinh-o-sinh-vat",
+          "pages": [
+            158,
+            163
+          ]
+        },
+        {
+          "number": 40,
+          "title": "Sinh sản hữu tính ở sinh vật",
+          "slug": "sinh-san-huu-tinh-o-sinh-vat",
+          "pages": [
+            164,
+            168
+          ]
+        },
+        {
+          "number": 41,
+          "title": "Một số yếu tố ảnh hưởng và điều hoà, điều khiển sinh sản ở sinh vật",
+          "slug": "mot-so-yeu-to-anh-huong-va-dieu-hoa-dieu-khien-sinh-san-o-sinh-vat",
+          "pages": [
+            169,
+            172
+          ]
+        },
+        {
+          "number": 42,
+          "title": "Cơ thể sinh vật là một thể thống nhất",
+          "slug": "co-the-sinh-vat-la-mot-the-thong-nhat",
+          "pages": [
+            173,
+            174
           ]
         }
       ]

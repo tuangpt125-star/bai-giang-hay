@@ -1,0 +1,189 @@
+---
+import type { ScienceLesson } from '../science/lesson';
+import '../styles/measurement-lab.css';
+import '../styles/investigation-lab.css';
+
+interface Props { keyId: string; data: ScienceLesson }
+const { keyId, data } = Astro.props;
+const { kind, task, scenarios } = data;
+const balancing = keyId === '8-5';
+---
+<section class="measurement-lab investigation-lab science-lab" id="thuc-hanh-truc-quan"
+  data-science={keyId} data-kind={kind} data-scenarios={JSON.stringify(scenarios)} aria-labelledby="science-lab-heading">
+  <h2 id="science-lab-heading">Thực hành trực quan</h2>
+  <p class="investigation-task">{task}</p>
+  <noscript><p>Mô hình cần JavaScript. Hãy đọc câu hỏi và ghi dự đoán vào vở.</p></noscript>
+  <div class="investigation-workbench" data-science-ui hidden>
+    <div class="investigation-stage">
+      <div class="investigation-board">
+        <canvas width="560" height="294" role="img" aria-label="Sơ đồ mô hình thực hành"></canvas>
+      </div>
+      <p class="investigation-status" role="status" data-science-status>Chọn điều kiện, rồi bấm Thử.</p>
+      <dl class="investigation-results" data-science-measures aria-label="Số liệu của lượt thử"></dl>
+    </div>
+    <div class="investigation-console">
+      <div class="investigation-controls">
+        <label for="science-setup">Điều kiện hoặc mẫu</label>
+        <select id="science-setup" data-science-setup>
+          {scenarios.map((scenario,index) => <option value={index}>{scenario.condition}</option>)}
+          {balancing && <option value="custom">Tự đặt hệ số</option>}
+        </select>
+      </div>
+      {balancing && (
+        <fieldset class="balance-coefficients" data-science-coefficients hidden>
+          <legend>Hệ số trước mỗi chất</legend>
+          {['H₂', 'O₂', 'H₂O'].map(label => <label>{label}<input data-coefficient type="number" min="1" max="6" step="1" value="1" required /></label>)}
+        </fieldset>
+      )}
+      <label class="investigation-prediction">
+        Dự đoán của em <span>(tùy chọn)</span>
+        <input type="text" data-science-prediction maxlength="160" placeholder="Em nghĩ sẽ quan sát được gì?" />
+      </label>
+      <div class="investigation-actions">
+        <button type="button" data-science-run>Thử</button>
+        <button type="button" data-science-save disabled>Ghi kết quả</button>
+      </div>
+    </div>
+  </div>
+  <details class="investigation-notebook" data-science-notebook hidden>
+    <summary>Bảng kết quả <span data-science-count></span></summary>
+    <div class="investigation-table-wrap" tabindex="0" role="region" aria-label="Bảng kết quả có thể cuộn">
+      <table>
+        <thead><tr><th scope="col">Thiết lập và dự đoán</th><th scope="col">Quan sát</th></tr></thead>
+        <tbody data-science-rows></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<script>
+  import { keepLabControlVisible, revealLabResult } from '../physics/lab-diagram';
+  import { checkWaterEquation } from '../science/chemistry-model';
+  import { drawScience } from '../science/draw';
+  import type { DiagramKind, Scenario } from '../science/lesson';
+
+  for (const lab of document.querySelectorAll<HTMLElement>('[data-science]')) {
+    const keyId = lab.dataset.science!;
+    const kind = lab.dataset.kind as DiagramKind;
+    const cases: Scenario[] = JSON.parse(lab.dataset.scenarios!);
+    const find = <T extends HTMLElement>(selector: string) => lab.querySelector<T>(selector)!;
+    const canvas = find<HTMLCanvasElement>('canvas');
+    const pen = canvas.getContext('2d');
+    const stage = find('.investigation-stage');
+    const consolePanel = find('.investigation-console');
+    const mode = find<HTMLSelectElement>('[data-science-setup]');
+    const coefficients = lab.querySelector<HTMLElement>('[data-science-coefficients]');
+    const inputs = [...lab.querySelectorAll<HTMLInputElement>('[data-coefficient]')];
+    const status = find<HTMLElement>('[data-science-status]');
+    const readings = find<HTMLElement>('[data-science-measures]');
+    const prediction = find<HTMLInputElement>('[data-science-prediction]');
+    const record = find<HTMLButtonElement>('[data-science-save]');
+    const notes = find<HTMLDetailsElement>('[data-science-notebook]');
+    const rows = find<HTMLTableSectionElement>('[data-science-rows]');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = 0;
+    let previous: { scenario: Scenario; prediction: string } | null = null;
+
+    function selected(): Scenario | undefined {
+      if (mode.value !== 'custom') return cases[Number(mode.value)];
+      const invalid = inputs.find(input => !input.validity.valid);
+      if (invalid) return;
+      return checkWaterEquation(inputs[0].valueAsNumber,inputs[1].valueAsNumber,inputs[2].valueAsNumber);
+    }
+
+    function draw(scenario: Scenario, progress: number) {
+      if (pen) drawScience(pen, keyId, kind, scenario, Number(mode.value) || 0, progress);
+    }
+
+    function prepare() {
+      cancelAnimationFrame(frame);
+      previous = null;
+      readings.replaceChildren();
+      record.disabled = true;
+      status.textContent = 'Đã chọn mẫu. Bấm Thử để quan sát.';
+      if (coefficients) coefficients.hidden = mode.value !== 'custom';
+      const condition = selected();
+      if (condition) draw(condition, 0);
+      else pen?.clearRect(0, 0, canvas.width, canvas.height);
+      lab.dataset.scienceState = 'ready';
+    }
+
+    function measurements(scenario: Scenario): [string,string][] {
+      const legend = kind === 'atom' ? scenario.labels.slice(1) : scenario.labels;
+      return scenario.values?.map((value, index) => [legend[index], value.toLocaleString('vi-VN')]) ?? [];
+    }
+
+    function showMeasurements(scenario: Scenario) {
+      for (const [term, value] of measurements(scenario)) {
+        const item = document.createElement('div');
+        const label = document.createElement('dt');
+        const number = document.createElement('dd');
+        label.textContent = term;
+        number.textContent = value;
+        item.append(label, number);
+        readings.append(item);
+      }
+    }
+
+    function finish(scenario: Scenario, guess: string) {
+      status.textContent = scenario.observation;
+      showMeasurements(scenario);
+      previous = { scenario, prediction: guess };
+      record.disabled = false;
+      lab.dataset.scienceState = 'observed';
+    }
+
+    function run() {
+      const scenario = selected();
+      if (!scenario) {
+        inputs.find(input => !input.validity.valid)?.reportValidity();
+        return;
+      }
+      prepare();
+      status.textContent = 'Đang quan sát…';
+      lab.dataset.scienceState = 'running';
+      const guess = prediction.value.trim();
+      revealLabResult(stage);
+      if (reducedMotion.matches || !pen) {
+        draw(scenario, 1);
+        finish(scenario, guess);
+        return;
+      }
+      const begin = performance.now();
+      const tick = (now: number) => {
+        const progress = Math.min(1, (now - begin) / 1300);
+        draw(scenario, progress);
+        if (progress < 1) frame = requestAnimationFrame(tick);
+        else finish(scenario, guess);
+      };
+      frame = requestAnimationFrame(tick);
+    }
+
+    mode.addEventListener('input', prepare);
+    for (const input of inputs) input.addEventListener('input', prepare);
+    find('[data-science-run]').addEventListener('click', run);
+    record.addEventListener('click', () => {
+      if (!previous) return;
+      const { scenario, prediction: guess } = previous;
+      const row = rows.insertRow();
+      row.insertCell().textContent = scenario.condition + (guess ? ' · Dự đoán: ' + guess : '');
+      const values = measurements(scenario).map(([term,value]) => term + ' ' + value).join(' · ');
+      row.insertCell().textContent = scenario.observation + (values ? ' ' + values : '');
+      find('[data-science-count]').textContent = '(' + rows.rows.length + ' lượt)';
+      notes.hidden = false;
+      notes.open = true;
+      record.disabled = true;
+    });
+    if (!pen) find('.investigation-board').hidden = true;
+    keepLabControlVisible(consolePanel, stage);
+    prepare();
+    find('[data-science-ui]').hidden = false;
+  }
+</script>
+
+<style>
+  .lesson-text .science-lab h2 { margin-top: 0; }
+  .balance-coefficients { display: flex; gap: .4rem; padding: .3rem; border: 1px solid var(--lesson-rule); }
+  .balance-coefficients label { flex: 1; min-width: 0; text-align: center; }
+  .balance-coefficients input { display: block; width: 100%; padding-inline: .25rem; }
+</style>

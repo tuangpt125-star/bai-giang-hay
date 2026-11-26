@@ -7,11 +7,18 @@ export interface Lesson {
   pages: number[];
 }
 
+export const subjects = {
+  'hoa-hoc': 'Hoá học',
+  'vat-li': 'Vật lí',
+  'sinh-hoc': 'Sinh học',
+} as const;
+export type Subject = keyof typeof subjects;
+
 export interface Chapter {
   id: string;
   number: string;
   title: string;
-  subject: string;
+  subject: Subject;
   icon: string;
   lessons: Lesson[];
 }
@@ -22,6 +29,7 @@ export interface Book {
   title: string;
   slug: string;
   grade: number;
+  source?: string;
   chapters: Chapter[];
 }
 
@@ -29,14 +37,14 @@ const catalogues = import.meta.glob<Book>('../content/*/*/*/book.json', { eager:
 export const books = Object.values(catalogues).sort((a, b) => a.grade - b.grade);
 export const defaultBook = books.find((book) => book.grade === 8)!;
 
-export function physicsChapters(book: Book) {
-  return book.chapters.filter((chapter) => chapter.subject === 'vat-li');
-}
-
-export function physicsLessons(book: Book) {
-  return physicsChapters(book).flatMap((chapter) =>
+export function bookLessons(book: Book) {
+  return book.chapters.flatMap((chapter) =>
     chapter.lessons.map((lesson) => ({ ...lesson, chapter }))
   );
+}
+
+export function chapterLabel(chapter: Chapter) {
+  return chapter.id === 'mo-dau' ? 'Mở đầu' : 'Chương ' + chapter.number;
 }
 
 export function bookRoute(book: Book) {

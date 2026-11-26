@@ -43,7 +43,7 @@
 }
 .investigation-lab .investigation-weight { font-size: .74rem; padding-inline: .4rem; min-height: 2.75rem; }
 .investigation-lab .investigation-board button.investigation-meter { background: #126b54; color: white; }
-.investigation-lab .investigation-actions button[data-investigation-start] {
+.investigation-lab .investigation-actions button:is([data-investigation-start], [data-science-run]) {
   background: var(--lesson-accent);
   border-color: transparent;
   color: white;

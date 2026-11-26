@@ -1,6 +1,7 @@
 ---
 import Shell from '../layouts/Shell.astro';
-import { books, lessonUrl, physicsLessons } from '../book';
+import { books, lessonUrl, bookLessons, subjects, type Subject } from '../book';
+import { scienceLesson } from '../science';
 import { prompts } from '../soan-bai/prompts';
 import '../soan-bai/workspace.css';
 ---
@@ -8,18 +9,24 @@ import '../soan-bai/workspace.css';
   <div class="planner" data-planner>
     <header class="planner-header">
       <h1>Soạn bài</h1>
-      <p>Chọn một bài Vật lí để thiết kế tiết dạy hoặc chuẩn bị bài thuyết trình.</p>
+      <p>Chọn một bài Khoa học tự nhiên để thiết kế tiết dạy hoặc chuẩn bị bài thuyết trình.</p>
     </header>
     <noscript><p>Hãy bật JavaScript để mở trình soạn bài.</p></noscript>
     <div class="planner-setup" data-setup hidden>
       <div class="planner-lesson">
         <label for="lesson-select">Bài học</label>
         <select id="lesson-select" data-lesson>
-          {books.map((book) => (
-            <optgroup label={`Vật lí lớp ${book.grade}`}>
-              {physicsLessons(book).map((lesson) => {
+          {books.flatMap((book) => (Object.keys(subjects) as Subject[]).map((subject) => (
+            <optgroup label={`${subjects[subject]} lớp ${book.grade}`}>
+              {bookLessons(book).filter((lesson) => lesson.chapter.subject === subject).map((lesson) => {
                 const key = `${book.grade}-${lesson.number}`;
-                const prompt = prompts[key];
+                const science = scienceLesson(book.grade, lesson.number);
+                const prompt = science ? {
+                  question: science.question,
+                  activity: science.task,
+                  takeaway: science.answer,
+                  visual: 'Sơ đồ ở phần Thực hành trực quan và bảng kết quả từng lượt.',
+                } : prompts[key];
                 return (
                   <option value={key} data-title={lesson.title} data-pages={lesson.pages.join('–')} data-url={lessonUrl(book, lesson)}
                     data-question={prompt.question} data-activity={prompt.activity} data-takeaway={prompt.takeaway} data-visual={prompt.visual}>
@@ -28,7 +35,7 @@ import '../soan-bai/workspace.css';
                 );
               })}
             </optgroup>
-          ))}
+          )))}
         </select>
         <a data-reading-link>Đọc bài học</a>
         <a data-investigation-link>Mở thí nghiệm của bài</a>
